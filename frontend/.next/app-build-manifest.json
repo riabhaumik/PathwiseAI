@@ -1,0 +1,99 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-2a07a2f4383ed7e4.js",
+      "static/chunks/4bd1b696-cf72ae8a39fa05aa.js",
+      "static/chunks/964-02efbd2195ef91bd.js",
+      "static/chunks/main-app-7f009f680dfeda59.js",
+      "static/chunks/app/_not-found/page-43caa482d9826d43.js"
+    ],
+    "/api/ai/chat/route": [
+      "static/chunks/webpack-2a07a2f4383ed7e4.js",
+      "static/chunks/4bd1b696-cf72ae8a39fa05aa.js",
+      "static/chunks/964-02efbd2195ef91bd.js",
+      "static/chunks/main-app-7f009f680dfeda59.js",
+      "static/chunks/app/api/ai/chat/route-cffb523967d31e6a.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-2a07a2f4383ed7e4.js",
+      "static/chunks/4bd1b696-cf72ae8a39fa05aa.js",
+      "static/chunks/964-02efbd2195ef91bd.js",
+      "static/chunks/main-app-7f009f680dfeda59.js",
+      "static/css/0e97047a7bb27be5.css",
+      "static/chunks/124-4167392bb160ea06.js",
+      "static/chunks/app/layout-5d71545976ec2d32.js"
+    ],
+    "/login/page": [
+      "static/chunks/webpack-2a07a2f4383ed7e4.js",
+      "static/chunks/4bd1b696-cf72ae8a39fa05aa.js",
+      "static/chunks/964-02efbd2195ef91bd.js",
+      "static/chunks/main-app-7f009f680dfeda59.js",
+      "static/chunks/124-4167392bb160ea06.js",
+      "static/chunks/876-b87809882840b9e3.js",
+      "static/chunks/app/login/page-09d947a2366b3b55.js"
+    ],
+    "/jobs/page": [
+      "static/chunks/webpack-2a07a2f4383ed7e4.js",
+      "static/chunks/4bd1b696-cf72ae8a39fa05aa.js",
+      "static/chunks/964-02efbd2195ef91bd.js",
+      "static/chunks/main-app-7f009f680dfeda59.js",
+      "static/chunks/124-4167392bb160ea06.js",
+      "static/chunks/876-b87809882840b9e3.js",
+      "static/chunks/app/jobs/page-026b47acfad01690.js"
+    ],
+    "/careers/page": [
+      "static/chunks/webpack-2a07a2f4383ed7e4.js",
+      "static/chunks/4bd1b696-cf72ae8a39fa05aa.js",
+      "static/chunks/964-02efbd2195ef91bd.js",
+      "static/chunks/main-app-7f009f680dfeda59.js",
+      "static/chunks/124-4167392bb160ea06.js",
+      "static/chunks/876-b87809882840b9e3.js",
+      "static/chunks/app/careers/page-06e8bcde5075e751.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-2a07a2f4383ed7e4.js",
+      "static/chunks/4bd1b696-cf72ae8a39fa05aa.js",
+      "static/chunks/964-02efbd2195ef91bd.js",
+      "static/chunks/main-app-7f009f680dfeda59.js",
+      "static/chunks/124-4167392bb160ea06.js",
+      "static/chunks/876-b87809882840b9e3.js",
+      "static/chunks/app/page-b4ec223bf2690b6a.js"
+    ],
+    "/math/page": [
+      "static/chunks/webpack-2a07a2f4383ed7e4.js",
+      "static/chunks/4bd1b696-cf72ae8a39fa05aa.js",
+      "static/chunks/964-02efbd2195ef91bd.js",
+      "static/chunks/main-app-7f009f680dfeda59.js",
+      "static/chunks/124-4167392bb160ea06.js",
+      "static/chunks/876-b87809882840b9e3.js",
+      "static/chunks/app/math/page-10b40ab89cd4916a.js"
+    ],
+    "/practice/page": [
+      "static/chunks/webpack-2a07a2f4383ed7e4.js",
+      "static/chunks/4bd1b696-cf72ae8a39fa05aa.js",
+      "static/chunks/964-02efbd2195ef91bd.js",
+      "static/chunks/main-app-7f009f680dfeda59.js",
+      "static/chunks/124-4167392bb160ea06.js",
+      "static/chunks/876-b87809882840b9e3.js",
+      "static/chunks/app/practice/page-97e20ae8de0f2c59.js"
+    ],
+    "/resources/page": [
+      "static/chunks/webpack-2a07a2f4383ed7e4.js",
+      "static/chunks/4bd1b696-cf72ae8a39fa05aa.js",
+      "static/chunks/964-02efbd2195ef91bd.js",
+      "static/chunks/main-app-7f009f680dfeda59.js",
+      "static/chunks/124-4167392bb160ea06.js",
+      "static/chunks/876-b87809882840b9e3.js",
+      "static/chunks/app/resources/page-054c03fc991a68a9.js"
+    ],
+    "/signup/page": [
+      "static/chunks/webpack-2a07a2f4383ed7e4.js",
+      "static/chunks/4bd1b696-cf72ae8a39fa05aa.js",
+      "static/chunks/964-02efbd2195ef91bd.js",
+      "static/chunks/main-app-7f009f680dfeda59.js",
+      "static/chunks/124-4167392bb160ea06.js",
+      "static/chunks/876-b87809882840b9e3.js",
+      "static/chunks/app/signup/page-5201b78cf2be2a08.js"
+    ]
+  }
+}
