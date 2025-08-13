@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { Brain, Menu, X, Target, BookOpen, Briefcase, Calculator, Code, Home, Map } from 'lucide-react'
 import ThemeToggle from './ThemeToggle'
-import { useAuth } from '@/lib/auth-context'
+import { useAuth } from '../lib/auth-context'
 
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useAuth } from '@/lib/auth-context'
+import { useAuth } from '../../lib/auth-context'
 import { Eye, EyeOff, Loader2, Brain, ArrowLeft, User } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import Navigation from '@/components/Navigation'
