@@ -1,7 +1,7 @@
 'use client'
 
 
-import { useAuth } from '../lib/auth-context'
+import { useAuth } from 'src/lib/auth-context'
 import { useRouter } from 'next/navigation'
 import { Brain, Target, BookOpen, ArrowRight, Star, ChevronRight, Calculator, Briefcase, Award, Globe, ExternalLink, Map } from 'lucide-react'
 import Navigation from '@/components/Navigation'
