@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { Brain, Menu, X, Target, BookOpen, Briefcase, Calculator, Code, Home } from 'lucide-react'
+import { Brain, Menu, X, Target, BookOpen, Briefcase, Calculator, Code, Home, Map } from 'lucide-react'
 import ThemeToggle from './ThemeToggle'
 import { useAuth } from '@/lib/auth-context'
 
@@ -15,6 +15,7 @@ export default function Navigation() {
   const navigation = [
     { name: 'Home', href: '/', icon: Home },
     { name: 'Careers', href: '/careers', icon: Target },
+    { name: 'Roadmaps', href: '/roadmap', icon: Map },
     { name: 'Resources', href: '/resources', icon: BookOpen },
     { name: 'Jobs', href: '/jobs', icon: Briefcase },
     { name: 'Practice', href: '/practice', icon: Code },

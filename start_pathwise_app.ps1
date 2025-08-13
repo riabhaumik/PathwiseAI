@@ -60,7 +60,34 @@ Write-Host "   2. Edit frontend\.env.local with your actual API keys" -Foregroun
 Write-Host "   3. Update Supabase URL and keys" -ForegroundColor Yellow
 Write-Host "   4. Update OpenAI API key" -ForegroundColor Yellow
 
-Write-Host ""
-Write-Host "Ready to start servers!" -ForegroundColor Green
-Write-Host "   Backend: cd backend; python main.py" -ForegroundColor Cyan
-Write-Host "   Frontend: cd frontend; npm run dev" -ForegroundColor Cyan
+Write-Host "`n🚀 Starting servers automatically..." -ForegroundColor Green
+
+# Start backend
+Write-Host "Starting backend server on port 8000..." -ForegroundColor Yellow
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd backend; python -m uvicorn main:app --reload --port 8000 --host 0.0.0.0"
+
+# Wait for backend to start
+Start-Sleep -Seconds 5
+
+# Start frontend  
+Write-Host "Starting frontend server on port 3000..." -ForegroundColor Yellow
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd frontend; npm run dev"
+
+Write-Host "`n✅ Pathwise AI is starting up!" -ForegroundColor Green
+Write-Host "=========================================" -ForegroundColor Cyan
+Write-Host "🔗 Backend API:  http://localhost:8000" -ForegroundColor Cyan
+Write-Host "🔗 Frontend App: http://localhost:3000" -ForegroundColor Cyan  
+Write-Host "📚 API Docs:     http://localhost:8000/docs" -ForegroundColor Cyan
+Write-Host "=========================================" -ForegroundColor Cyan
+
+Write-Host "`n📋 FIXED FEATURES:" -ForegroundColor White
+Write-Host "   ✅ 25+ Job Opportunities from top tech companies" -ForegroundColor Green
+Write-Host "   ✅ Dynamic Career Roadmaps for Software Engineer, Data Scientist, AI Engineer" -ForegroundColor Green
+Write-Host "   ✅ Comprehensive Math Resources from massive database" -ForegroundColor Green
+Write-Host "   ✅ Interactive Practice Problems (Coding, Math, System Design, Behavioral)" -ForegroundColor Green
+Write-Host "   ✅ Mock Authentication (works without Supabase configuration)" -ForegroundColor Green
+Write-Host "   ✅ Enhanced Job Search with career-specific matching" -ForegroundColor Green
+
+Write-Host "`n📝 Note: App works out-of-the-box with mock data. Configure API keys for full functionality." -ForegroundColor Yellow
+Write-Host "Press any key to exit..." -ForegroundColor Gray
+$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")

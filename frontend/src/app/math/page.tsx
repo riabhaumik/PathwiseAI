@@ -5,9 +5,20 @@ import { useRouter } from 'next/navigation'
 import { 
   Calculator, BookOpen, Play, Star, Clock, 
   Target, ExternalLink, Award, TrendingUp,
-  ChevronRight, Code, FileText, Users, X
+  ChevronRight, Code, FileText, Users, X,
+  BarChart3, Brain, Zap, BookOpen as BookOpenIcon
 } from 'lucide-react'
 import Navigation from '@/components/Navigation'
+import {
+  CourseWidget,
+  VideoWidget,
+  ArticleWidget,
+  BookWidget,
+  PracticeWidget,
+  CertificationWidget,
+  StatsWidget,
+  FeaturedResourcesWidget
+} from '@/components/ResourceWidgets'
 
 interface MathTopic {
   id: string
@@ -26,7 +37,7 @@ interface MathTopic {
 interface MathResource {
   id: string
   title: string
-  type: 'video' | 'article' | 'interactive' | 'problem_set' | 'course'
+  type: 'video' | 'article' | 'interactive' | 'problem_set' | 'course' | 'book'
   platform: string
   duration: string
   url: string
@@ -46,44 +57,70 @@ export default function MathPage() {
 
   useEffect(() => {
     loadMathTopics()
+    
+    // Fallback timer to ensure content is shown
+    const fallbackTimer = setTimeout(() => {
+      if (topics.length === 0) {
+        console.log('Fallback timer triggered, using mock data')
+        setTopics(generateMockMathTopics())
+        setLoading(false)
+      }
+    }, 5000) // 5 second fallback
+    
+    return () => clearTimeout(fallbackTimer)
   }, [])
 
   const loadMathTopics = async () => {
     try {
       // Try to load from backend API first
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
       const response = await fetch(`${baseUrl}/api/math-resources`)
       if (response.ok) {
         const data = await response.json()
-        // Support both backend massive JSON shape and fallback flat list
-        const topicsFromBackend: any[] = Array.isArray(data)
-          ? data
-          : (data.topics || data.mathematics_resources?.categories
-              ? Object.entries(data.mathematics_resources.categories).map(([cat, val]: any) => ({
-                  id: cat,
-                  title: cat,
-                  description: val.description || '',
-                  difficulty: 'Intermediate',
-                  category: cat,
-                  concepts: (val.topics || []) as string[],
-                  exercises: (val.practice_problems || []).length * 20,
-                  completionTime: 'Self-paced',
-                  prerequisites: [],
-                  applications: (val.applications || []) as string[],
-                  resources: (val.courses || []).map((c: any, idx: number) => ({
-                    id: `${cat}-${idx}`,
-                    title: c.title,
-                    type: 'course',
-                    platform: c.platform,
-                    duration: c.duration || 'Variable',
-                    url: c.url,
-                    rating: 5,
-                    description: (c.topics && c.topics.join(', ')) || '',
-                    free: c.certificate === false
-                  })) as any[]
-                }))
-              : [])
-        setTopics(topicsFromBackend)
+        console.log('Math resources data:', data)
+        
+        // Normalize massive JSON structures to topic list
+        let topicsFromBackend: any[] = []
+        
+        if (Array.isArray(data)) {
+          topicsFromBackend = data
+        } else if (data.mathematics_massive && data.mathematics_massive.categories) {
+          // Handle the mathematics_massive structure
+          topicsFromBackend = Object.entries(data.mathematics_massive.categories).map(([cat, val]: [string, any]) => ({
+            id: cat,
+            title: val?.title || cat,
+            description: val?.description || `Comprehensive ${cat} resources and courses`,
+            difficulty: 'Intermediate',
+            category: cat,
+            concepts: (val?.topics || []) as string[],
+            exercises: val?.practice_problems ? (Array.isArray(val.practice_problems) ? val.practice_problems.length * 20 : 100) : 100,
+            completionTime: 'Self-paced',
+            prerequisites: [],
+            applications: (val?.applications || []) as string[],
+            resources: (val?.courses || []).map((c: any, idx: number) => ({
+              id: `${cat}-${idx}`,
+              title: c.title || `Course ${idx + 1}`,
+              type: 'course',
+              platform: c.platform || 'Various',
+              duration: c.duration || 'Variable',
+              url: c.url || '#',
+              rating: 5,
+              description: (c.topics && Array.isArray(c.topics) ? c.topics.join(', ') : '') || '',
+              free: c.certificate === false
+            }))
+          }))
+        } else if (data.topics) {
+          topicsFromBackend = data.topics
+        }
+        
+        if (topicsFromBackend.length > 0) {
+          console.log('Setting topics from backend:', topicsFromBackend)
+          setTopics(topicsFromBackend)
+        } else {
+          // If no valid data structure found, use fallback
+          console.warn('No valid math topics structure found, using fallback')
+          setTopics(generateMockMathTopics())
+        }
       } else {
         // Fallback to local data
         const response = await fetch('/math_resources.json')
@@ -142,7 +179,7 @@ export default function MathPage() {
     },
     {
       id: '2',
-      title: 'Linear Algebra',
+      title: 'Linear Algebra - Visual Approach',
       description: 'Essential linear algebra concepts for machine learning, computer graphics, and data science',
       difficulty: 'Intermediate',
       category: 'Linear Algebra',
@@ -336,6 +373,306 @@ export default function MathPage() {
           free: true
         }
       ]
+    },
+    {
+      id: '9',
+      title: 'Differential Equations',
+      description: 'Study of equations involving derivatives, essential for modeling dynamic systems',
+      difficulty: 'Advanced',
+      category: 'Differential Equations',
+      concepts: ['First Order ODEs', 'Second Order ODEs', 'Systems of ODEs', 'Laplace Transforms', 'Series Solutions'],
+      exercises: 140,
+      completionTime: '10-12 weeks',
+      prerequisites: ['Calculus II', 'Linear Algebra'],
+      applications: ['Physics', 'Engineering', 'Biology', 'Economics'],
+      resources: [
+        {
+          id: '9a',
+          title: 'MIT 18.03 Differential Equations',
+          type: 'course',
+          platform: 'MIT OCW',
+          duration: '45 hours',
+          url: 'https://ocw.mit.edu/courses/mathematics/18-03-differential-equations-spring-2010/',
+          rating: 4.7,
+          description: 'Comprehensive differential equations course',
+          free: true
+        }
+      ]
+    },
+    {
+      id: '10',
+      title: 'Abstract Algebra',
+      description: 'Study of algebraic structures including groups, rings, and fields',
+      difficulty: 'Advanced',
+      category: 'Abstract Algebra',
+      concepts: ['Groups', 'Rings', 'Fields', 'Homomorphisms', 'Galois Theory'],
+      exercises: 110,
+      completionTime: '12-14 weeks',
+      prerequisites: ['Linear Algebra', 'Number Theory'],
+      applications: ['Cryptography', 'Quantum Computing', 'Pure Mathematics'],
+      resources: [
+        {
+          id: '10a',
+          title: 'Abstract Algebra Course',
+          type: 'course',
+          platform: 'MIT OCW',
+          duration: '50 hours',
+          url: 'https://ocw.mit.edu/courses/mathematics/18-703-modern-algebra-spring-2013/',
+          rating: 4.8,
+          description: 'Modern algebra concepts and applications',
+          free: true
+        }
+      ]
+    },
+    {
+      id: '11',
+      title: 'Real Analysis',
+      description: 'Rigorous study of calculus foundations and real number properties',
+      difficulty: 'Advanced',
+      category: 'Analysis',
+      concepts: ['Sequences', 'Series', 'Continuity', 'Differentiability', 'Riemann Integration'],
+      exercises: 130,
+      completionTime: '12-14 weeks',
+      prerequisites: ['Calculus II', 'Proof Techniques'],
+      applications: ['Pure Mathematics', 'Advanced Calculus', 'Research'],
+      resources: [
+        {
+          id: '11a',
+          title: 'Real Analysis Fundamentals',
+          type: 'course',
+          platform: 'MIT OCW',
+          duration: '55 hours',
+          url: 'https://ocw.mit.edu/courses/mathematics/18-100a-introduction-to-analysis-fall-2012/',
+          rating: 4.7,
+          description: 'Introduction to real analysis concepts',
+          free: true
+        }
+      ]
+    },
+    {
+      id: '12',
+      title: 'Complex Analysis',
+      description: 'Study of functions of complex variables with applications in physics and engineering',
+      difficulty: 'Advanced',
+      category: 'Analysis',
+      concepts: ['Complex Numbers', 'Analytic Functions', 'Cauchy\'s Theorem', 'Residues', 'Conformal Mappings'],
+      exercises: 120,
+      completionTime: '10-12 weeks',
+      prerequisites: ['Calculus II', 'Linear Algebra'],
+      applications: ['Physics', 'Engineering', 'Signal Processing', 'Fluid Dynamics'],
+      resources: [
+        {
+          id: '12a',
+          title: 'Complex Analysis Course',
+          type: 'course',
+          platform: 'MIT OCW',
+          duration: '45 hours',
+          url: 'https://ocw.mit.edu/courses/mathematics/18-04-complex-variables-with-applications-spring-2018/',
+          rating: 4.8,
+          description: 'Complex analysis with applications',
+          free: true
+        }
+      ]
+    },
+    {
+      id: '13',
+      title: 'Topology',
+      description: 'Study of geometric properties preserved under continuous deformations',
+      difficulty: 'Advanced',
+      category: 'Topology',
+      concepts: ['Metric Spaces', 'Topological Spaces', 'Connectedness', 'Compactness', 'Homotopy'],
+      exercises: 100,
+      completionTime: '10-12 weeks',
+      prerequisites: ['Real Analysis', 'Abstract Algebra'],
+      applications: ['Geometry', 'Physics', 'Data Analysis', 'Pure Mathematics'],
+      resources: [
+        {
+          id: '13a',
+          title: 'Introduction to Topology',
+          type: 'course',
+          platform: 'MIT OCW',
+          duration: '40 hours',
+          url: 'https://ocw.mit.edu/courses/mathematics/18-901-introduction-to-topology-spring-2004/',
+          rating: 4.6,
+          description: 'Fundamental topology concepts',
+          free: true
+        }
+      ]
+    },
+    {
+      id: '14',
+      title: 'Mathematical Logic',
+      description: 'Study of formal systems, proofs, and mathematical reasoning',
+      difficulty: 'Advanced',
+      category: 'Logic',
+      concepts: ['Propositional Logic', 'Predicate Logic', 'Proof Theory', 'Model Theory', 'Computability'],
+      exercises: 90,
+      completionTime: '8-10 weeks',
+      prerequisites: ['Discrete Math', 'Proof Techniques'],
+      applications: ['Computer Science', 'Philosophy', 'Artificial Intelligence'],
+      resources: [
+        {
+          id: '14a',
+          title: 'Mathematical Logic Course',
+          type: 'course',
+          platform: 'MIT OCW',
+          duration: '35 hours',
+          url: 'https://ocw.mit.edu/courses/mathematics/24-242-logic-ii-spring-2004/',
+          rating: 4.7,
+          description: 'Advanced logic and proof theory',
+          free: true
+        }
+      ]
+    },
+    {
+      id: '15',
+      title: 'Combinatorics',
+      description: 'Study of counting, arrangement, and combination problems',
+      difficulty: 'Intermediate',
+      category: 'Combinatorics',
+      concepts: ['Counting Principles', 'Permutations', 'Combinations', 'Generating Functions', 'Graph Theory'],
+      exercises: 140,
+      completionTime: '8-10 weeks',
+      prerequisites: ['Algebra', 'Discrete Math'],
+      applications: ['Computer Science', 'Probability', 'Operations Research', 'Cryptography'],
+      resources: [
+        {
+          id: '15a',
+          title: 'Combinatorics Course',
+          type: 'course',
+          platform: 'MIT OCW',
+          duration: '40 hours',
+          url: 'https://ocw.mit.edu/courses/mathematics/18-314-combinatorial-analysis-spring-2004/',
+          rating: 4.6,
+          description: 'Combinatorial analysis techniques',
+          free: true
+        }
+      ]
+    },
+    {
+      id: '16',
+      title: 'Numerical Analysis',
+      description: 'Study of algorithms for numerical approximation and computation',
+      difficulty: 'Advanced',
+      category: 'Numerical Methods',
+      concepts: ['Root Finding', 'Interpolation', 'Numerical Integration', 'Differential Equations', 'Error Analysis'],
+      exercises: 110,
+      completionTime: '10-12 weeks',
+      prerequisites: ['Calculus', 'Linear Algebra', 'Programming'],
+      applications: ['Scientific Computing', 'Engineering', 'Finance', 'Data Science'],
+      resources: [
+        {
+          id: '16a',
+          title: 'Numerical Analysis Course',
+          type: 'course',
+          platform: 'MIT OCW',
+          duration: '45 hours',
+          url: 'https://ocw.mit.edu/courses/mathematics/18-330-introduction-to-numerical-analysis-spring-2012/',
+          rating: 4.8,
+          description: 'Numerical methods and algorithms',
+          free: true
+        }
+      ]
+    },
+    {
+      id: '17',
+      title: 'Game Theory',
+      description: 'Mathematical study of strategic decision-making and conflict resolution',
+      difficulty: 'Intermediate',
+      category: 'Game Theory',
+      concepts: ['Strategic Games', 'Nash Equilibrium', 'Cooperative Games', 'Auction Theory', 'Mechanism Design'],
+      exercises: 100,
+      completionTime: '8-10 weeks',
+      prerequisites: ['Probability', 'Linear Algebra'],
+      applications: ['Economics', 'Political Science', 'Biology', 'Computer Science'],
+      resources: [
+        {
+          id: '17a',
+          title: 'Game Theory Course',
+          type: 'course',
+          platform: 'Coursera',
+          duration: '20 hours',
+          url: 'https://coursera.org/learn/game-theory',
+          rating: 4.7,
+          description: 'Introduction to game theory concepts',
+          free: true
+        }
+      ]
+    },
+    {
+      id: '18',
+      title: 'Mathematical Finance',
+      description: 'Application of mathematical methods to financial problems and risk management',
+      difficulty: 'Advanced',
+      category: 'Mathematical Finance',
+      concepts: ['Stochastic Processes', 'Option Pricing', 'Risk Management', 'Portfolio Theory', 'Interest Rate Models'],
+      exercises: 120,
+      completionTime: '12-14 weeks',
+      prerequisites: ['Probability', 'Calculus', 'Linear Algebra'],
+      applications: ['Finance', 'Banking', 'Insurance', 'Investment Management'],
+      resources: [
+        {
+          id: '18a',
+          title: 'Mathematical Finance Course',
+          type: 'course',
+          platform: 'MIT OCW',
+          duration: '50 hours',
+          url: 'https://ocw.mit.edu/courses/mathematics/18-s096-topics-in-mathematics-with-applications-in-finance-fall-2013/',
+          rating: 4.8,
+          description: 'Mathematical methods in finance',
+          free: true
+        }
+      ]
+    },
+    {
+      id: '19',
+      title: 'Mathematical Biology',
+      description: 'Mathematical modeling of biological systems and processes',
+      difficulty: 'Advanced',
+      category: 'Mathematical Biology',
+      concepts: ['Population Dynamics', 'Epidemiology', 'Neural Networks', 'Biochemical Networks', 'Evolutionary Dynamics'],
+      exercises: 90,
+      completionTime: '10-12 weeks',
+      prerequisites: ['Differential Equations', 'Probability', 'Linear Algebra'],
+      applications: ['Biology', 'Medicine', 'Ecology', 'Public Health'],
+      resources: [
+        {
+          id: '19a',
+          title: 'Mathematical Biology Course',
+          type: 'course',
+          platform: 'MIT OCW',
+          duration: '40 hours',
+          url: 'https://ocw.mit.edu/courses/mathematics/18-03sc-differential-equations-fall-2011/',
+          rating: 4.6,
+          description: 'Mathematical modeling in biology',
+          free: true
+        }
+      ]
+    },
+    {
+      id: '20',
+      title: 'Mathematical Physics',
+      description: 'Mathematical methods and techniques used in theoretical physics',
+      difficulty: 'Advanced',
+      category: 'Mathematical Physics',
+      concepts: ['Vector Calculus', 'Tensor Analysis', 'Group Theory', 'Functional Analysis', 'Quantum Mechanics'],
+      exercises: 130,
+      completionTime: '12-14 weeks',
+      prerequisites: ['Calculus III', 'Linear Algebra', 'Differential Equations'],
+      applications: ['Physics', 'Engineering', 'Quantum Computing', 'Astrophysics'],
+      resources: [
+        {
+          id: '20a',
+          title: 'Mathematical Methods in Physics',
+          type: 'course',
+          platform: 'MIT OCW',
+          duration: '55 hours',
+          url: 'https://ocw.mit.edu/courses/mathematics/18-325-topics-in-applied-mathematics-wavelets-and-signal-processing-spring-2003/',
+          rating: 4.9,
+          description: 'Advanced mathematical methods for physics',
+          free: true
+        }
+      ]
     }
   ]
 
@@ -347,6 +684,12 @@ export default function MathPage() {
 
   const categories = ['all', ...Array.from(new Set(topics.map(t => t.category)))]
   const difficulties = ['all', 'Beginner', 'Intermediate', 'Advanced']
+
+  const navigateToCourse = (topic: MathTopic) => {
+    if (topic.resources && topic.resources.length > 0) {
+      window.open(topic.resources[0].url, '_blank')
+    }
+  }
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -478,6 +821,144 @@ export default function MathPage() {
         </div>
       </section>
 
+      {/* Math Learning Stats */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+        <StatsWidget 
+          stats={[
+            { label: 'Topics Available', value: topics.length, icon: BookOpenIcon, color: 'bg-orange-500' },
+            { label: 'Total Exercises', value: topics.reduce((sum, t) => sum + t.exercises, 0), icon: Calculator, color: 'bg-blue-500' },
+            { label: 'Learning Resources', value: topics.reduce((sum, t) => sum + t.resources.length, 0), icon: Brain, color: 'bg-green-500' },
+            { label: 'Categories', value: categories.length - 1, icon: BarChart3, color: 'bg-purple-500' }
+          ]} 
+        />
+      </section>
+
+      {/* Math Resource Widgets */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Featured Math Courses */}
+          <CourseWidget
+            courses={topics.flatMap(t => t.resources.filter(r => r.type === 'course')).slice(0, 6)}
+            title="Featured Math Courses"
+            subtitle="Comprehensive courses from top institutions"
+            maxItems={4}
+            showViewAll={true}
+            onViewAll={() => {
+              // Could navigate to a courses-only view
+              console.log('View all math courses')
+            }}
+          />
+
+          {/* Math Videos */}
+          <VideoWidget
+            videos={topics.flatMap(t => t.resources.filter(r => r.type === 'video')).slice(0, 4)}
+            title="Math Videos"
+            subtitle="Visual explanations and tutorials"
+            maxItems={3}
+            showViewAll={true}
+            onViewAll={() => {
+              console.log('View all math videos')
+            }}
+          />
+
+          {/* Math Practice Problems */}
+          <PracticeWidget
+            problems={topics.map(t => ({
+              id: t.id,
+              title: `${t.title} Practice`,
+              difficulty: t.difficulty,
+              platform: 'Pathwise AI',
+              url: '#'
+            })).slice(0, 6)}
+            title="Practice Problems"
+            subtitle="Interactive exercises for each topic"
+            maxItems={4}
+            showViewAll={true}
+            onViewAll={() => {
+              console.log('View all practice problems')
+            }}
+          />
+
+          {/* Math Books */}
+          <BookWidget
+            books={topics.flatMap(t => t.resources.filter(r => r.type === 'book')).slice(0, 4)}
+            title="Math Books"
+            subtitle="Textbooks and reference materials"
+            maxItems={3}
+            showViewAll={true}
+            onViewAll={() => {
+              console.log('View all math books')
+            }}
+          />
+
+          {/* Quick Start Topics */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-3 mb-4">
+              <Zap className="h-6 w-6 text-yellow-600" />
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Quick Start Topics</h3>
+            </div>
+            <div className="space-y-3">
+              {topics.slice(0, 4).map((topic, index) => (
+                <div
+                  key={topic.id}
+                  className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+                  onClick={() => handleTopicClick(topic)}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="text-2xl font-mono">{getCategoryIcon(topic.category)}</div>
+                    <div>
+                      <h4 className="font-medium text-gray-900 dark:text-white text-sm">{topic.title}</h4>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{topic.category}</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-gray-400" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Learning Paths */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-3 mb-4">
+              <Target className="h-6 w-6 text-green-600" />
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Learning Paths</h3>
+            </div>
+            <div className="space-y-3">
+              {['Beginner', 'Intermediate', 'Advanced'].map((level, index) => (
+                <div
+                  key={level}
+                  className="p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+                  onClick={() => setSelectedDifficulty(level.toLowerCase())}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium text-gray-900 dark:text-white text-sm">{level} Path</h4>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {topics.filter(t => t.difficulty === level).length} topics
+                      </p>
+                    </div>
+                    <div className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(level)}`}>
+                      {level}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Math Resources */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+        <FeaturedResourcesWidget
+          resources={topics.flatMap(t => t.resources).slice(0, 3).map(r => ({
+            ...r,
+            platform: r.platform || 'Math Platform'
+          }))}
+          title="Featured Math Resources"
+        />
+      </section>
+
       {/* Math Topics */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -556,7 +1037,7 @@ export default function MathPage() {
               <button
                 onClick={(e) => {
                   e.stopPropagation()
-                  handleTopicClick(topic)
+                  navigateToCourse(topic)
                 }}
                 className="w-full bg-orange-600 text-white py-3 rounded-lg hover:bg-orange-700 transition-colors font-medium flex items-center justify-center gap-2"
               >

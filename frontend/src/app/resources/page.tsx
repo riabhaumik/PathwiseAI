@@ -5,9 +5,20 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { 
   Search, Filter, BookOpen, Star, Clock, Target, 
   ExternalLink, Play, FileText, Code, Monitor,
-  Youtube, Globe, Award, TrendingUp
+  Youtube, Globe, Award, TrendingUp, Calculator,
+  Users, Calendar, TrendingUp as TrendingUpIcon
 } from 'lucide-react'
 import Navigation from '@/components/Navigation'
+import {
+  CourseWidget,
+  VideoWidget,
+  ArticleWidget,
+  BookWidget,
+  PracticeWidget,
+  CertificationWidget,
+  StatsWidget,
+  FeaturedResourcesWidget
+} from '@/components/ResourceWidgets'
 
 interface LearningResource {
   id: string
@@ -44,13 +55,29 @@ function ResourcesPageInner() {
   const loadResources = async () => {
     try {
       // Try to load from backend API first
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
       const params = new URLSearchParams()
       if (careerParam) params.append('career', decodeURIComponent(careerParam))
-      const response = await fetch(`${baseUrl}/api/resources?${params}`)
+      params.append('validate', 'true')
+      const response = await fetch(`${baseUrl}/api/resources?${params.toString()}`)
       if (response.ok) {
         const data = await response.json()
-        setResources(data.resources || [])
+        setResources((data.resources || []).map((r: any, idx: number) => ({
+          id: r.id || `${idx}`,
+          title: r.title,
+          type: (r.type || (r.platform && r.platform.toLowerCase().includes('youtube') ? 'video' : 'course')) as any,
+          platform: r.platform || 'Resource',
+          duration: r.duration || 'Variable',
+          difficulty: r.difficulty || 'Beginner',
+          rating: parseFloat(r.rating || '4.7'),
+          url: r.url,
+          description: r.description || '',
+          topics: r.topics || [],
+          price: r.price,
+          instructor: r.instructor,
+          language: r.language,
+          category: r.category || 'General'
+        })))
       } else {
         // Fallback to local data
         const response = await fetch('/resources.json')
@@ -73,6 +100,22 @@ function ResourcesPageInner() {
   const generateMockResources = (): LearningResource[] => [
     {
       id: '1',
+      title: 'Essence of Linear Algebra - 3Blue1Brown',
+      type: 'video',
+      platform: 'YouTube',
+      duration: '12 hours',
+      difficulty: 'Intermediate',
+      rating: 4.9,
+      url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab',
+      description: 'Master linear algebra through beautiful visualizations and intuitive explanations. Essential for machine learning, computer graphics, and data science.',
+      topics: ['Linear Algebra', 'Vectors', 'Matrices', 'Eigenvalues', 'Linear Transformations'],
+      price: 'Free',
+      instructor: '3Blue1Brown',
+      language: 'English',
+      category: 'Mathematics'
+    },
+    {
+      id: '2',
       title: 'Complete Python Bootcamp',
       type: 'course',
       platform: 'Udemy',
@@ -88,7 +131,7 @@ function ResourcesPageInner() {
       category: 'Programming'
     },
     {
-      id: '2',
+      id: '3',
       title: 'Machine Learning Specialization',
       type: 'course',
       platform: 'Coursera',
@@ -104,7 +147,7 @@ function ResourcesPageInner() {
       category: 'Machine Learning'
     },
     {
-      id: '3',
+      id: '4',
       title: 'System Design Interview Preparation',
       type: 'video',
       platform: 'YouTube',
@@ -120,7 +163,7 @@ function ResourcesPageInner() {
       category: 'System Design'
     },
     {
-      id: '4',
+      id: '5',
       title: 'Data Structures and Algorithms in Python',
       type: 'course',
       platform: 'edX',
@@ -136,7 +179,7 @@ function ResourcesPageInner() {
       category: 'Computer Science'
     },
     {
-      id: '5',
+      id: '6',
       title: 'AWS Certified Solutions Architect',
       type: 'certification',
       platform: 'AWS',
@@ -152,7 +195,7 @@ function ResourcesPageInner() {
       category: 'Cloud Computing'
     },
     {
-      id: '6',
+      id: '7',
       title: 'Linear Algebra for Machine Learning',
       type: 'course',
       platform: 'Khan Academy',
@@ -168,7 +211,7 @@ function ResourcesPageInner() {
       category: 'Mathematics'
     },
     {
-      id: '7',
+      id: '8',
       title: 'React Complete Developer Course',
       type: 'course',
       platform: 'Udemy',
@@ -184,7 +227,7 @@ function ResourcesPageInner() {
       category: 'Web Development'
     },
     {
-      id: '8',
+      id: '9',
       title: 'Introduction to Computer Science',
       type: 'course',
       platform: 'MIT OCW',
@@ -371,32 +414,105 @@ function ResourcesPageInner() {
 
       {/* Resource Stats */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg text-center">
-            <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">
-              {filteredResources.length}
-            </div>
-            <div className="text-gray-600 dark:text-gray-400">Resources Found</div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg text-center">
-            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
-              {categories.length - 1}
-            </div>
-            <div className="text-gray-600 dark:text-gray-400">Categories</div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg text-center">
-            <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">
-              {types.length - 1}
-            </div>
-            <div className="text-gray-600 dark:text-gray-400">Resource Types</div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg text-center">
-            <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">
-              4.7★
-            </div>
-            <div className="text-gray-600 dark:text-gray-400">Avg Rating</div>
-          </div>
+        <StatsWidget 
+          stats={[
+            { label: 'Resources Found', value: filteredResources.length, icon: BookOpen, color: 'bg-green-500' },
+            { label: 'Categories', value: categories.length - 1, icon: Target, color: 'bg-blue-500' },
+            { label: 'Resource Types', value: types.length - 1, icon: TrendingUpIcon, color: 'bg-purple-500' },
+            { label: 'Avg Rating', value: '4.7★', icon: Star, color: 'bg-orange-500' }
+          ]} 
+        />
+      </section>
+
+      {/* Resource Widgets */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Featured Courses */}
+          <CourseWidget
+            courses={filteredResources.filter(r => r.type === 'course').slice(0, 6)}
+            title="Featured Courses"
+            subtitle="Top-rated courses from leading platforms"
+            maxItems={4}
+            showViewAll={true}
+            onViewAll={() => {
+              setSelectedType('course')
+              setSearchTerm('')
+            }}
+          />
+
+          {/* Featured Videos */}
+          <VideoWidget
+            videos={filteredResources.filter(r => r.type === 'video').slice(0, 4)}
+            title="Featured Videos"
+            subtitle="Educational videos and tutorials"
+            maxItems={3}
+            showViewAll={true}
+            onViewAll={() => {
+              setSelectedType('video')
+              setSearchTerm('')
+            }}
+          />
+
+          {/* Featured Articles */}
+          <ArticleWidget
+            articles={filteredResources.filter(r => r.type === 'article').slice(0, 5)}
+            title="Featured Articles"
+            subtitle="In-depth articles and guides"
+            maxItems={4}
+            showViewAll={true}
+            onViewAll={() => {
+              setSelectedType('article')
+              setSearchTerm('')
+            }}
+          />
+
+          {/* Featured Books */}
+          <BookWidget
+            books={filteredResources.filter(r => r.type === 'book').slice(0, 4)}
+            title="Featured Books"
+            subtitle="Comprehensive textbooks and references"
+            maxItems={3}
+            showViewAll={true}
+            onViewAll={() => {
+              setSelectedType('book')
+              setSearchTerm('')
+            }}
+          />
+
+          {/* Practice Problems */}
+          <PracticeWidget
+            problems={filteredResources.filter(r => r.type === 'project').slice(0, 6)}
+            title="Practice Problems"
+            subtitle="Hands-on exercises and projects"
+            maxItems={4}
+            showViewAll={true}
+            onViewAll={() => {
+              setSelectedType('project')
+              setSearchTerm('')
+            }}
+          />
+
+          {/* Certifications */}
+          <CertificationWidget
+            certifications={filteredResources.filter(r => r.type === 'certification').slice(0, 4)}
+            title="Certifications"
+            subtitle="Industry-recognized credentials"
+            maxItems={3}
+            showViewAll={true}
+            onViewAll={() => {
+              setSelectedType('certification')
+              setSearchTerm('')
+            }}
+          />
         </div>
+      </section>
+
+      {/* Featured Resources */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+        <FeaturedResourcesWidget
+          resources={filteredResources.slice(0, 3)}
+          title="Featured Resources"
+        />
       </section>
 
       {/* Resources Grid */}

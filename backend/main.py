@@ -15,6 +15,7 @@ from openai import OpenAI
 from app.services.roadmap_service import RoadmapService
 from app.services.job_service import JobService
 import httpx
+import asyncio
 
 # Load environment variables robustly relative to this file location
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -39,10 +40,11 @@ app = FastAPI(
     version="2.0.0"
 )
 
-# CORS middleware
+# CORS middleware (allow configured frontend origin in addition to localhost)
+frontend_origin = os.getenv("FRONTEND_URL") or "http://localhost:3000"
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", frontend_origin],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -186,52 +188,32 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 
 # Load data functions
 def load_careers_data():
-    """Load careers from the massive database with thousands of careers"""
-    # First try Supabase if available for dynamic data
-    if supabase:
-        try:
-            resp = supabase.table('careers').select('*').limit(1000).execute()
-            if getattr(resp, 'data', None):
-                careers = {}
-                for row in resp.data:
-                    name = row.get('name') or row.get('title') or f"Career {row.get('id', '')}"
-                    careers[name] = {
-                        "description": row.get('description', ''),
-                        "skills": row.get('skills', []),
-                        "degree_required": row.get('degree_required', ''),
-                        "growth_rate": row.get('growth_rate', ''),
-                        "avg_salary": row.get('avg_salary', ''),
-                        "category": row.get('category', ''),
-                        "subjects": row.get('subjects', {}),
-                    }
-                print(f"✅ Loaded {len(careers)} careers from Supabase")
-                return careers
-        except Exception as e:
-            print(f"⚠️ Supabase careers fetch failed, falling back to file: {e}")
-
-    # Fallback to JSON files
+    """Load careers data from the database or fallback to STEM careers JSON file"""
     try:
-        with open("data/careers_massive.json", "r", encoding="utf-8") as f:
-            careers_data = json.load(f)
-            print(f"✅ Loaded {len(careers_data)} careers from careers_massive.json")
-            return careers_data
-    except FileNotFoundError:
-        print("❌ careers_massive.json not found in data/ directory")
-        try:
-            with open("data/careers_expanded.json", "r", encoding="utf-8") as f:
-                data = json.load(f)
-                print(f"✅ Loaded {len(data)} careers from careers_expanded.json")
-                return data
-        except FileNotFoundError:
-            print("❌ careers_expanded.json not found in data/ directory")
+        # Try to fetch from Supabase first
+        if supabase:
             try:
-                with open("../careers_expanded.json", "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                    print(f"✅ Loaded {len(data)} careers from ../careers_expanded.json")
-                    return data
-            except FileNotFoundError:
-                print("❌ No careers data files found anywhere")
-                return {}
+                response = supabase.table("careers").select("*").execute()
+                if response.data:
+                    print(f"SUCCESS: Loaded {len(response.data)} careers from Supabase")
+                    return response.data
+                else:
+                    print("WARNING: Supabase returned no data, falling back to file")
+            except Exception as e:
+                print(f"WARNING: Supabase careers fetch failed, falling back to file: {e}")
+
+        # Fallback to STEM careers JSON file
+        try:
+            with open("data/careers_stem.json", "r", encoding="utf-8") as f:
+                careers_data = json.load(f)
+                print(f"SUCCESS: Loaded {len(careers_data)} STEM careers from careers_stem.json")
+                return careers_data
+        except FileNotFoundError:
+            print("ERROR: careers_stem.json not found in data/ directory")
+            return {}
+    except Exception as e:
+        print(f"ERROR: Error loading careers data: {e}")
+        return {}
 
 def load_resources_data():
     """Load resources from the massive database"""
@@ -240,22 +222,14 @@ def load_resources_data():
         with open("data/resources_massive.json", "r", encoding="utf-8") as f:
             data = json.load(f)
             resources = data.get("resources", {})
-            print(f"✅ Loaded {len(resources)} resource categories from resources_massive.json")
-            print(f"📊 Total resources claimed: {data.get('metadata', {}).get('total_resources', 'Unknown')}")
+            print(f"SUCCESS: Loaded {len(resources)} resource categories from resources_massive.json")
+            print(f"INFO: Total resources claimed: {data.get('metadata', {}).get('total_resources', 'Unknown')}")
             
             # Return the resources as-is for the API to handle
             return resources
     except FileNotFoundError:
-        print("❌ resources_massive.json not found in data/ directory")
-        # Fallback to original resources
-        try:
-            with open("data/resources.json", "r", encoding="utf-8") as f:
-                data = json.load(f)
-                print(f"✅ Loaded original resources.json")
-                return data
-        except FileNotFoundError:
-            print("❌ No resources data files found")
-            return {}
+        print("ERROR: resources_massive.json not found in data/ directory")
+        return {}
 
 def load_interview_prep_data():
     """Load interview preparation data"""
@@ -274,15 +248,8 @@ def load_math_resources_data():
             print(f"Loaded massive math resources with {data.get('mathematics_massive', {}).get('total_resources', 0)} resources")
             return data
     except FileNotFoundError:
-        # Fallback to original math resources
-        try:
-            with open("data/math_resources.json", "r", encoding="utf-8") as f:
-                data = json.load(f)
-                print(f"Loaded {len(data)} math resource categories from math_resources.json")
-                return data
-        except FileNotFoundError:
-            print("Warning: No math resources data files found")
-            return {}
+        print("Warning: No math resources data files found")
+        return {}
 
 def load_job_opportunities_data():
     """Load job opportunities data from massive database"""
@@ -453,6 +420,13 @@ async def get_careers(category: Optional[str] = None, search: Optional[str] = No
         print(f"DEBUG: Error in careers endpoint: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/api/careers/categories")
+async def get_career_categories():
+    """Get all career categories"""
+    careers = load_careers_data()
+    categories = list(set(career.get("category", "") for career in careers.values()))
+    return {"categories": categories}
+
 @app.get("/api/careers/{career_name}")
 async def get_career(career_name: str):
     """Get specific career details"""
@@ -463,13 +437,6 @@ async def get_career(career_name: str):
     
     return careers[career_name]
 
-@app.get("/api/careers/categories")
-async def get_career_categories():
-    """Get all career categories"""
-    careers = load_careers_data()
-    categories = list(set(career.get("category", "") for career in careers.values()))
-    return {"categories": categories}
-
 @app.get("/api/resources")
 async def get_resources(
     category: Optional[str] = None,
@@ -477,10 +444,29 @@ async def get_resources(
     platform: Optional[str] = None,
     career: Optional[str] = None,
     search: Optional[str] = None,
-    limit: Optional[int] = None
+    topic: Optional[str] = None,
+    limit: Optional[int] = None,
+    validate: Optional[bool] = False
 ):
     """Get learning resources with filtering"""
     try:
+        # Simple in-memory cache for repeat queries
+        cache_key = json.dumps({
+            "category": category,
+            "difficulty": difficulty,
+            "platform": platform,
+            "career": career,
+            "search": search,
+            "limit": limit,
+            "topic": topic,
+            "validate": validate,
+        }, sort_keys=True)
+        if not hasattr(get_resources, "_cache"):
+            get_resources._cache = {}
+        _cache = getattr(get_resources, "_cache")
+        cached = _cache.get(cache_key)
+        if cached and (datetime.utcnow() - cached[0]) < timedelta(minutes=10):
+            return cached[1]
         resources = load_resources_data()
         
         # Flatten resources for easier filtering
@@ -522,13 +508,13 @@ async def get_resources(
         if career:
             try:
                 rs = RoadmapService()
-                # Parallel fetch would be ideal; keep sequential to avoid complexity
+                # Parallel fetch with asyncio
                 yt = rs.get_youtube_resources(career, 10)
                 cr = rs.get_coursera_resources(career, 10)
                 ka = rs.get_khan_academy_resources(career, 10)
                 ex = rs.get_edx_resources(career, 10)
                 import asyncio
-                yt_r, cr_r, ka_r, ex_r = asyncio.run(asyncio.gather(yt, cr, ka, ex))
+                yt_r, cr_r, ka_r, ex_r = await asyncio.gather(yt, cr, ka, ex)
                 for r in (yt_r + cr_r + ka_r + ex_r):
                     augmented_resources.append({
                         "title": r.get("title", ""),
@@ -554,34 +540,101 @@ async def get_resources(
             if augmented_resources:
                 all_resources = augmented_resources + all_resources
 
+        # Map topic to search if provided
+        if topic and not search:
+            search = topic
+
         if search:
             search_lower = search.lower()
             all_resources = [r for r in all_resources 
                             if search_lower in r.get("title", "").lower() or
                             search_lower in r.get("description", "").lower()]
         
+        # Optionally validate links server-side
+        if validate:
+            try:
+                import asyncio as _asyncio
+                async def _validate(urls):
+                    timeout = httpx.Timeout(5.0, connect=5.0)
+                    limits = httpx.Limits(max_keepalive_connections=5, max_connections=20)
+                    results = {}
+                    async with httpx.AsyncClient(timeout=timeout, limits=limits, follow_redirects=True) as client_http:
+                        async def check(u: str):
+                            try:
+                                r = await client_http.head(u)
+                                if r.status_code >= 400 or r.status_code == 405:
+                                    r = await client_http.get(u)
+                                results[u] = r.status_code
+                            except Exception:
+                                results[u] = None
+                        tasks = [check(u) for u in [r.get("url") for r in all_resources if r.get("url")][:200]]
+                        await _asyncio.gather(*tasks)
+                    return results
+                statuses = await _validate([r.get("url") for r in all_resources if r.get("url")])
+                ok_set = {u for u, s in statuses.items() if s and 200 <= s < 400}
+                all_resources = [r for r in all_resources if r.get("url") in ok_set]
+            except Exception as e:
+                print(f"Warning: link validation failed: {e}")
+
         # Apply limit
         if limit:
             all_resources = all_resources[:limit]
-        
-        return {
+
+        response = {
             "resources": all_resources,
             "total": len(all_resources),
             "categories": list(set(r.get("category", "") for r in all_resources)),
             "difficulties": list(set(r.get("difficulty", "") for r in all_resources)),
             "platforms": list(set(r.get("platform", "") for r in all_resources))
         }
+        _cache[cache_key] = (datetime.utcnow(), response)
+        return response
     except Exception as e:
         print(f"Error in resources endpoint: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+async def _validate_links(urls: List[str]) -> Dict[str, Optional[int]]:
+    results: Dict[str, Optional[int]] = {}
+    timeout = httpx.Timeout(5.0, connect=5.0)
+    limits = httpx.Limits(max_keepalive_connections=5, max_connections=20)
+    async with httpx.AsyncClient(timeout=timeout, limits=limits, follow_redirects=True) as client_http:
+        async def check(u: str):
+            try:
+                r = await client_http.head(u)
+                if r.status_code >= 400 or r.status_code == 405:
+                    r = await client_http.get(u)
+                results[u] = r.status_code
+            except Exception:
+                results[u] = None
+        tasks = [check(u) for u in urls[:200]]
+        await asyncio.gather(*tasks)
+    return results
+
+@app.post("/api/validate-links")
+async def validate_links(payload: Dict[str, Any]):
+    urls = payload.get("urls", [])
+    if not isinstance(urls, list) or not urls:
+        raise HTTPException(status_code=400, detail="urls list required")
+    statuses = await _validate_links([u for u in urls if isinstance(u, str)])
+    return {"statuses": statuses}
+
 @app.get("/api/jobs")
-async def get_live_jobs(career: Optional[str] = None, location: Optional[str] = None, limit: int = 10):
+async def get_live_jobs(career: Optional[str] = None, location: Optional[str] = None, limit: int = 20):
     """Fetch live jobs via LinkedIn RapidAPI with graceful fallback"""
     try:
         service = JobService()
         query = career or "Software Engineer"
-        result = await service.search_jobs(query, location, limit)
+        # cache layer for repeat queries
+        cache_key = f"jobs::{query}::{location or 'any'}::{limit}"
+        if not hasattr(get_live_jobs, "_cache"):
+            get_live_jobs._cache = {}
+        cache = getattr(get_live_jobs, "_cache")
+        cached = cache.get(cache_key)
+        if cached and (datetime.utcnow() - cached[0]) < timedelta(minutes=10):
+            result = cached[1]
+        else:
+            result = await service.search_jobs(query, location, limit)
+            cache[cache_key] = (datetime.utcnow(), result)
         raw_jobs = result.get("jobs", [])
 
         # Normalize to frontend Job shape
@@ -607,27 +660,29 @@ async def get_live_jobs(career: Optional[str] = None, location: Optional[str] = 
                 "verified": True
             })
 
-        return {
+        response = {
             "jobs": normalized_jobs,
             "total_found": len(normalized_jobs),
             "source": result.get("source", "unknown"),
             "searched_at": result.get("searched_at")
         }
+        return response
     except Exception as e:
         print(f"Error in jobs endpoint: {e}")
         raise HTTPException(status_code=500, detail="Failed to fetch jobs")
 
 @app.get("/api/practice/problems")
 async def get_practice_problems(career: Optional[str] = None, category: Optional[str] = None):
-    """Return interactive coding/system-design/behavioral practice problems."""
-    # Minimal curated set; can be extended or sourced from DB later
+    """Return comprehensive interactive practice problems for STEM careers."""
+    
+    # Enhanced coding problems with career-specific focus
     coding = [
         {
             "id": "p_two_sum",
             "title": "Two Sum",
             "description": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
             "difficulty": "Easy",
-            "category": "Arrays",
+            "category": "Arrays & Hashing",
             "timeLimit": 30,
             "points": 10,
             "code": "def twoSum(nums, target):\n    # TODO: implement\n    return []",
@@ -636,14 +691,15 @@ async def get_practice_problems(career: Optional[str] = None, category: Optional
             "testcases": [
                 {"stdin": "[2,7,11,15]\n9", "expected_output": "[0,1]"},
                 {"stdin": "[3,2,4]\n6", "expected_output": "[1,2]"}
-            ]
+            ],
+            "careers": ["Software Engineer", "Data Scientist", "AI Engineer"]
         },
         {
             "id": "p_valid_parentheses",
             "title": "Valid Parentheses",
             "description": "Given a string s containing just the characters '()[]{}', determine if the input string is valid.",
             "difficulty": "Easy",
-            "category": "Stacks",
+            "category": "Stack & Queue",
             "timeLimit": 25,
             "points": 10,
             "code": "def isValid(s):\n    # TODO: implement\n    return False",
@@ -653,7 +709,74 @@ async def get_practice_problems(career: Optional[str] = None, category: Optional
                 {"stdin": "()", "expected_output": "true"},
                 {"stdin": "()[]{}", "expected_output": "true"},
                 {"stdin": "(]", "expected_output": "false"}
-            ]
+            ],
+            "careers": ["Software Engineer", "DevOps Engineer"]
+        },
+        {
+            "id": "p_binary_search",
+            "title": "Binary Search Implementation",
+            "description": "Implement binary search algorithm to find target in sorted array. Return index if found, -1 otherwise.",
+            "difficulty": "Easy",
+            "category": "Binary Search",
+            "timeLimit": 20,
+            "points": 15,
+            "code": "def binarySearch(nums, target):\n    # TODO: implement\n    return -1",
+            "solution": "def binarySearch(nums, target):\n    left, right = 0, len(nums) - 1\n    while left <= right:\n        mid = (left + right) // 2\n        if nums[mid] == target:\n            return mid\n        elif nums[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    return -1",
+            "language": "python",
+            "testcases": [
+                {"stdin": "[1,3,5,7,9]\n5", "expected_output": "2"},
+                {"stdin": "[1,2,3,4,5]\n6", "expected_output": "-1"}
+            ],
+            "careers": ["Software Engineer", "AI Engineer", "Data Scientist"]
+        },
+        {
+            "id": "p_merge_sorted_arrays",
+            "title": "Merge Two Sorted Arrays",
+            "description": "Merge two sorted arrays into one sorted array efficiently.",
+            "difficulty": "Medium",
+            "category": "Two Pointers",
+            "timeLimit": 35,
+            "points": 20,
+            "code": "def merge(nums1, m, nums2, n):\n    # TODO: merge nums2 into nums1\n    pass",
+            "solution": "def merge(nums1, m, nums2, n):\n    i, j, k = m - 1, n - 1, m + n - 1\n    while j >= 0:\n        if i >= 0 and nums1[i] > nums2[j]:\n            nums1[k] = nums1[i]\n            i -= 1\n        else:\n            nums1[k] = nums2[j]\n            j -= 1\n        k -= 1",
+            "language": "python",
+            "testcases": [
+                {"stdin": "[1,2,3,0,0,0]\n3\n[2,5,6]\n3", "expected_output": "[1,2,2,3,5,6]"}
+            ],
+            "careers": ["Software Engineer", "Data Scientist"]
+        },
+        {
+            "id": "p_max_subarray",
+            "title": "Maximum Subarray (Kadane's Algorithm)",
+            "description": "Find the contiguous subarray with the largest sum and return its sum.",
+            "difficulty": "Medium",
+            "category": "Dynamic Programming",
+            "timeLimit": 40,
+            "points": 25,
+            "code": "def maxSubArray(nums):\n    # TODO: implement Kadane's algorithm\n    return 0",
+            "solution": "def maxSubArray(nums):\n    max_sum = current_sum = nums[0]\n    for num in nums[1:]:\n        current_sum = max(num, current_sum + num)\n        max_sum = max(max_sum, current_sum)\n    return max_sum",
+            "language": "python",
+            "testcases": [
+                {"stdin": "[-2,1,-3,4,-1,2,1,-5,4]", "expected_output": "6"},
+                {"stdin": "[1]", "expected_output": "1"}
+            ],
+            "careers": ["Software Engineer", "AI Engineer", "Data Scientist"]
+        },
+        {
+            "id": "p_reverse_linked_list",
+            "title": "Reverse Linked List",
+            "description": "Reverse a singly linked list iteratively and return the new head.",
+            "difficulty": "Medium",
+            "category": "Linked Lists",
+            "timeLimit": 30,
+            "points": 20,
+            "code": "class ListNode:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n\ndef reverseList(head):\n    # TODO: reverse the linked list\n    return head",
+            "solution": "def reverseList(head):\n    prev = None\n    current = head\n    while current:\n        next_temp = current.next\n        current.next = prev\n        prev = current\n        current = next_temp\n    return prev",
+            "language": "python",
+            "testcases": [
+                {"stdin": "[1,2,3,4,5]", "expected_output": "[5,4,3,2,1]"}
+            ],
+            "careers": ["Software Engineer", "DevOps Engineer"]
         }
     ]
 
@@ -666,7 +789,41 @@ async def get_practice_problems(career: Optional[str] = None, category: Optional
             "category": "Web Services",
             "timeLimit": 45,
             "points": 20,
-            "completed": False
+            "completed": False,
+            "careers": ["Software Engineer", "DevOps Engineer"]
+        },
+        {
+            "id": "sd_chat_system",
+            "title": "Design a Chat System",
+            "description": "Design a real-time chat application like WhatsApp. Consider message delivery, online presence, push notifications.",
+            "difficulty": "Hard",
+            "category": "Distributed Systems",
+            "timeLimit": 60,
+            "points": 30,
+            "completed": False,
+            "careers": ["Software Engineer", "DevOps Engineer"]
+        },
+        {
+            "id": "sd_recommendation_system",
+            "title": "Design a Recommendation System",
+            "description": "Design a recommendation system for an e-commerce platform. Discuss collaborative filtering, content-based filtering, and scalability.",
+            "difficulty": "Hard",
+            "category": "Machine Learning Systems",
+            "timeLimit": 50,
+            "points": 25,
+            "completed": False,
+            "careers": ["Data Scientist", "AI Engineer", "Software Engineer"]
+        },
+        {
+            "id": "sd_data_pipeline",
+            "title": "Design a Data Processing Pipeline",
+            "description": "Design a real-time data processing pipeline for analytics. Consider data ingestion, processing, storage, and monitoring.",
+            "difficulty": "Medium",
+            "category": "Data Engineering",
+            "timeLimit": 40,
+            "points": 20,
+            "completed": False,
+            "careers": ["Data Scientist", "DevOps Engineer"]
         }
     ]
 
@@ -679,7 +836,89 @@ async def get_practice_problems(career: Optional[str] = None, category: Optional
             "category": "Leadership",
             "timeLimit": 60,
             "points": 15,
-            "completed": False
+            "completed": False,
+            "careers": ["Software Engineer", "Product Manager", "Data Scientist"]
+        },
+        {
+            "id": "b_team_conflict",
+            "title": "Describe a time you had to resolve team conflict",
+            "description": "Explain how you handled disagreements in a team setting and achieved resolution.",
+            "difficulty": "Medium",
+            "category": "Teamwork",
+            "timeLimit": 45,
+            "points": 15,
+            "completed": False,
+            "careers": ["Product Manager", "Software Engineer", "DevOps Engineer"]
+        },
+        {
+            "id": "b_technical_decision",
+            "title": "Explain a difficult technical decision you made",
+            "description": "Describe the trade-offs you considered and how you arrived at your decision.",
+            "difficulty": "Hard",
+            "category": "Technical Leadership",
+            "timeLimit": 50,
+            "points": 20,
+            "completed": False,
+            "careers": ["Software Engineer", "DevOps Engineer", "AI Engineer"]
+        },
+        {
+            "id": "b_failure_learning",
+            "title": "Tell me about a time you failed and what you learned",
+            "description": "Discuss a professional failure, what you learned, and how you applied those lessons.",
+            "difficulty": "Medium",
+            "category": "Growth Mindset",
+            "timeLimit": 40,
+            "points": 15,
+            "completed": False,
+            "careers": ["Software Engineer", "Product Manager", "Data Scientist", "AI Engineer"]
+        }
+    ]
+
+    # Math problems for STEM careers
+    math_problems = [
+        {
+            "id": "m_linear_algebra",
+            "title": "Matrix Multiplication",
+            "description": "Given two matrices A and B, compute their product C = A × B. Verify dimensions are compatible.",
+            "difficulty": "Medium",
+            "category": "Linear Algebra",
+            "timeLimit": 25,
+            "points": 15,
+            "completed": False,
+            "careers": ["Data Scientist", "AI Engineer"]
+        },
+        {
+            "id": "m_statistics",
+            "title": "Hypothesis Testing",
+            "description": "Design and conduct a t-test to determine if two sample means are significantly different.",
+            "difficulty": "Medium",
+            "category": "Statistics",
+            "timeLimit": 30,
+            "points": 20,
+            "completed": False,
+            "careers": ["Data Scientist", "Product Manager"]
+        },
+        {
+            "id": "m_calculus",
+            "title": "Gradient Descent",
+            "description": "Implement gradient descent algorithm to minimize a quadratic function. Calculate partial derivatives.",
+            "difficulty": "Hard",
+            "category": "Calculus & Optimization",
+            "timeLimit": 35,
+            "points": 25,
+            "completed": False,
+            "careers": ["AI Engineer", "Data Scientist"]
+        },
+        {
+            "id": "m_probability",
+            "title": "Bayes' Theorem Application",
+            "description": "Apply Bayes' theorem to solve a real-world classification problem with given prior probabilities.",
+            "difficulty": "Medium",
+            "category": "Probability",
+            "timeLimit": 20,
+            "points": 15,
+            "completed": False,
+            "careers": ["Data Scientist", "AI Engineer"]
         }
     ]
 
@@ -687,13 +926,66 @@ async def get_practice_problems(career: Optional[str] = None, category: Optional
         {"id": "coding", "name": "Coding Problems", "description": "Practice algorithms and data structures", "problems": coding, "totalProblems": len(coding), "completedProblems": 0},
         {"id": "system-design", "name": "System Design", "description": "Design scalable systems and architectures", "problems": system_design, "totalProblems": len(system_design), "completedProblems": 0},
         {"id": "behavioral", "name": "Behavioral Interviews", "description": "Practice STAR method and behavioral questions", "problems": behavioral, "totalProblems": len(behavioral), "completedProblems": 0},
+        {"id": "mathematics", "name": "Mathematics", "description": "Mathematical concepts for STEM careers", "problems": math_problems, "totalProblems": len(math_problems), "completedProblems": 0},
     ]
+
+    # Filter by career if specified
+    if career:
+        for cat in categories:
+            cat["problems"] = [p for p in cat["problems"] if not p.get("careers") or career in p.get("careers", [])]
+            cat["totalProblems"] = len(cat["problems"])
 
     # Optional filtering by category
     if category:
         categories = [c for c in categories if c["id"] == category]
 
-    return {"categories": categories, "career": career}
+    return {
+        "categories": categories, 
+        "career": career,
+        "total_problems": sum(len(cat["problems"]) for cat in categories),
+        "available_categories": ["coding", "system-design", "behavioral", "mathematics"]
+    }
+
+@app.post("/api/practice/save-progress")
+async def save_practice_progress(payload: Dict[str, Any]):
+    """Persist user's practice completion state in Supabase if configured."""
+    email = payload.get("email")
+    problem_id = payload.get("problem_id")
+    completed = bool(payload.get("completed", True))
+    career = payload.get("career")
+    if not problem_id:
+        raise HTTPException(status_code=400, detail="problem_id is required")
+
+    if not supabase:
+        return {"status": "ok", "stored": False}
+
+    try:
+        data = {
+            "email": email,
+            "problem_id": problem_id,
+            "completed": completed,
+            "career": career,
+            "updated_at": datetime.utcnow().isoformat()
+        }
+        supabase.table("practice_progress").upsert(data, on_conflict="email,problem_id").execute()
+        return {"status": "ok", "stored": True}
+    except Exception as e:
+        print(f"Supabase save progress failed: {e}")
+        return {"status": "ok", "stored": False}
+
+@app.get("/api/practice/progress")
+async def get_practice_progress(email: Optional[str] = None):
+    if not supabase:
+        return {"progress": []}
+    try:
+        query = supabase.table("practice_progress").select("email,problem_id,completed,career,updated_at")
+        if email:
+            query = query.eq("email", email)
+        resp = query.execute()
+        return {"progress": resp.data or []}
+    except Exception as e:
+        print(f"Supabase get progress failed: {e}")
+        return {"progress": []}
 
 @app.post("/api/practice/run-code")
 async def run_code(payload: Dict[str, Any]):
@@ -1098,7 +1390,7 @@ async def generate_roadmap(
     """Generate personalized learning roadmap using AI and external APIs"""
     try:
         roadmap_service = RoadmapService()
-        roadmap = roadmap_service.generate_roadmap(
+        roadmap = await roadmap_service.generate_roadmap(
             career_name=career_name,
             user_level=user_level,
             completed_topics=completed_topics
@@ -1118,7 +1410,7 @@ async def preview_roadmap(
     """Preview roadmap without authentication (for public access)"""
     try:
         roadmap_service = RoadmapService()
-        roadmap = roadmap_service.generate_roadmap(
+        roadmap = await roadmap_service.generate_roadmap(
             career_name=career_name,
             user_level=user_level,
             completed_topics=None
@@ -1129,6 +1421,10 @@ async def preview_roadmap(
     except Exception as e:
         print(f"Error generating roadmap preview: {e}")
         raise HTTPException(status_code=500, detail="Failed to generate roadmap preview")
+
+@app.get("/api/roadmap/{career_name}")
+async def roadmap_alias(career_name: str, user_level: str = "beginner"):
+    return await preview_roadmap(career_name=career_name, user_level=user_level)
 
 @app.get("/api/search")
 async def search_all(

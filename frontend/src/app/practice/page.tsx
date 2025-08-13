@@ -46,11 +46,12 @@ function PracticePageInner() {
   const [timeLeft, setTimeLeft] = useState(0)
 
   const [categories, setCategories] = useState<PracticeCategory[]>([])
+  const [mathRefs, setMathRefs] = useState<{ level: string, links: { title: string, url: string }[] }[]>([])
 
   useEffect(() => {
     const fetchProblems = async () => {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+        const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
         const params = new URLSearchParams()
         if (careerParam) params.append('career', decodeURIComponent(careerParam))
         const res = await fetch(`${baseUrl}/api/practice/problems?${params}`)
@@ -66,6 +67,33 @@ function PracticePageInner() {
             completedProblems: c.completedProblems || 0,
           }))
           setCategories(mapped)
+          // Add targeted math references per level
+          setMathRefs([
+            {
+              level: 'Beginner',
+              links: [
+                { title: 'Khan Academy Algebra I', url: 'https://www.khanacademy.org/math/algebra' },
+                { title: 'Coursera: Precalculus', url: 'https://www.coursera.org/learn/precalculus' },
+                { title: 'edX: College Algebra', url: 'https://www.edx.org/course/college-algebra' }
+              ]
+            },
+            {
+              level: 'Intermediate',
+              links: [
+                { title: 'MIT OCW: 18.06 Linear Algebra', url: 'https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/' },
+                { title: 'Khan: Probability & Statistics', url: 'https://www.khanacademy.org/math/statistics-probability' },
+                { title: 'Coursera: Calculus I', url: 'https://www.coursera.org/learn/calculus1' }
+              ]
+            },
+            {
+              level: 'Advanced',
+              links: [
+                { title: 'edX: Probability (MITx 6.431x)', url: 'https://www.edx.org/course/introduction-to-probability' },
+                { title: 'Stanford: Convex Optimization', url: 'https://web.stanford.edu/~boyd/cvxbook/' },
+                { title: '3Blue1Brown: Linear Algebra', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab' }
+              ]
+            }
+          ])
         }
       } catch (e) {
         setCategories([])
@@ -83,18 +111,32 @@ function PracticePageInner() {
   }
 
   const runCode = () => {
-    // Simulate code execution
-    setIsRunning(false)
-    // In a real app, this would send code to a backend for execution
-    alert('Code executed! Check the output below.')
+    setIsRunning(true)
+    const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+    fetch(`${baseUrl}/api/practice/run-code`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ language: 'python', code: userCode, testcases: [] })
+    }).then(() => {
+      setIsRunning(false)
+      alert('Code executed!')
+    }).catch(() => setIsRunning(false))
   }
 
   const submitSolution = () => {
     if (currentProblem) {
-      // Mark as completed
       const updatedProblem = { ...currentProblem, completed: true }
       setCurrentProblem(updatedProblem)
       setIsRunning(false)
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+        const email = typeof window !== 'undefined' ? localStorage.getItem('user_email') : null
+        fetch(`${baseUrl}/api/practice/save-progress`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, problem_id: currentProblem.id, completed: true, career: careerParam ? decodeURIComponent(careerParam) : undefined })
+        })
+      } catch {}
       alert('Solution submitted successfully!')
     }
   }
@@ -225,6 +267,26 @@ function PracticePageInner() {
           </div>
         ) : (
           <div className="space-y-6">
+            {/* Quick Math References */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Math References</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {mathRefs.map(ref => (
+                  <div key={ref.level} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                    <div className="mb-2 text-sm font-medium">{ref.level}</div>
+                    <ul className="space-y-1 text-sm">
+                      {ref.links.map(l => (
+                        <li key={l.url}>
+                          <a href={l.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">
+                            {l.title}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
             {/* Problem Header */}
             <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
               <div className="flex items-center justify-between mb-4">

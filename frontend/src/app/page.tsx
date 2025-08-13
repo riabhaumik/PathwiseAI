@@ -3,7 +3,7 @@
 
 import { useAuth } from '@/lib/auth-context'
 import { useRouter } from 'next/navigation'
-import { Brain, Target, BookOpen, ArrowRight, Star, ChevronRight, Calculator, Briefcase, Award, Globe, ExternalLink } from 'lucide-react'
+import { Brain, Target, BookOpen, ArrowRight, Star, ChevronRight, Calculator, Briefcase, Award, Globe, ExternalLink, Map } from 'lucide-react'
 import Navigation from '@/components/Navigation'
 
 
@@ -20,9 +20,16 @@ export default function Home() {
     {
       icon: Target,
       title: "STEM Career Explorer",
-      description: "Discover detailed career paths in science, technology, engineering, and mathematics with salary data and growth projections",
+      description: "Explore 30+ detailed STEM career paths in Computer Science, Engineering, Mathematics, Physics, and Chemistry with salary data and growth projections",
       color: "text-blue-600 dark:text-blue-400",
       href: "/careers"
+    },
+    {
+      icon: Map,
+      title: "Career Roadmaps",
+      description: "Follow structured learning paths with detailed phases, skills, and resources for each STEM career",
+      color: "text-purple-600 dark:text-purple-400",
+      href: "/roadmap"
     },
     {
       icon: BookOpen,
@@ -51,20 +58,13 @@ export default function Home() {
       description: "Prepare for technical interviews with coding challenges and system design problems",
       color: "text-indigo-600 dark:text-indigo-400",
       href: "/practice"
-    },
-    {
-      icon: Brain,
-      title: "AI-Powered Guidance",
-      description: "Get personalized recommendations and career advice tailored to your goals and interests",
-      color: "text-pink-600 dark:text-pink-400",
-      href: "/careers"
     }
   ]
 
   const stats = [
-    { number: "50+", label: "STEM Careers", icon: Briefcase },
+    { number: "30+", label: "STEM Careers", icon: Briefcase },
     { number: "100+", label: "Learning Resources", icon: BookOpen },
-    { number: "8", label: "Career Categories", icon: Globe },
+    { number: "5", label: "Career Categories", icon: Globe },
     { number: "10+", label: "Top Companies", icon: ExternalLink }
   ]
 
@@ -89,7 +89,7 @@ export default function Home() {
             <span className="block gradient-text">STEM Career Navigator</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-            Discover STEM careers, access learning resources, and get AI-powered guidance to build your dream career path.
+            Discover 30+ STEM careers in Computer Science, Engineering, Mathematics, Physics, and Chemistry with AI-powered guidance to build your dream career path.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
@@ -176,7 +176,7 @@ export default function Home() {
             Ready to Transform Your Career?
           </h2>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of students discovering their perfect STEM career path with Pathwise AI.
+            Join thousands of students discovering their perfect STEM career path in Computer Science, Engineering, Mathematics, Physics, and Chemistry with Pathwise AI.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button

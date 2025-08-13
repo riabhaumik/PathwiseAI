@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Heart, BookOpen, TrendingUp, DollarSign, MapPin, Clock, Star, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 interface CareerCardProps {
   career: {
@@ -27,6 +28,7 @@ interface CareerCardProps {
 export default function CareerCard({ career, onSelect, isSelected }: CareerCardProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [isFavorited, setIsFavorited] = useState(false)
+  const router = useRouter()
 
   const toggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -272,11 +274,11 @@ export default function CareerCard({ career, onSelect, isSelected }: CareerCardP
 
           {/* Action Buttons */}
           <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+            <button onClick={() => router.push(`/learn/${encodeURIComponent(career.name)}`)} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
               <BookOpen className="h-4 w-4" />
               Learn More
             </button>
-            <button className="flex-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+            <button onClick={() => router.push(`/jobs?career=${encodeURIComponent(career.name)}`)} className="flex-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
               <ExternalLink className="h-4 w-4" />
               View Jobs
             </button>

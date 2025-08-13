@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { 
   Search, Filter, TrendingUp, DollarSign, GraduationCap, 
   MapPin, Users, Award, ArrowRight, BookOpen, Target, 
-  Heart, Share2, X, ChevronRight
+  Heart, Share2, X, ChevronRight, ExternalLink
 } from 'lucide-react'
 import Navigation from '@/components/Navigation'
 
@@ -42,7 +42,7 @@ export default function CareersPage() {
   const loadCareers = async () => {
     try {
       // Try to load from backend API first
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
       const response = await fetch(`${baseUrl}/api/careers`)
       if (response.ok) {
         const data = await response.json()
@@ -66,8 +66,8 @@ export default function CareersPage() {
           setCareers(careersArray)
         }
       } else {
-        // Fallback to local data
-        const response = await fetch('/careers_expanded.json')
+        // Fallback to local STEM careers data
+        const response = await fetch('/careers_stem.json')
         if (response.ok) {
           const data = await response.json()
           const careersArray = Object.entries(data).map(([name, careerData]: [string, any]) => ({
@@ -91,27 +91,37 @@ export default function CareersPage() {
       }
     } catch (error) {
       console.error('Error loading careers:', error)
-      // Fallback to minimal data
+      // Fallback to STEM careers data
       setCareers([
         {
           id: 1,
           name: "Software Engineer",
-          description: "Develop software applications and systems using programming languages and development tools",
-          skills: ["Programming", "Problem Solving", "System Design", "Version Control", "Testing"],
+          description: "Develops software applications and systems using programming languages and development tools",
+          skills: ["Programming", "Problem Solving", "System Design", "Testing", "Version Control"],
           degree_required: "Bachelor's in Computer Science or related field",
-          growth_rate: "22% (Much faster than average)",
-          avg_salary: "$110,140",
-          category: "Software Development"
+          growth_rate: "25% (Much faster than average)",
+          avg_salary: "$120,730",
+          category: "Computer Science"
         },
         {
           id: 2,
           name: "Data Scientist",
-          description: "Analyze and interpret complex data to help organizations make decisions",
-          skills: ["Statistics", "Machine Learning", "Python", "SQL", "Data Visualization"],
-          degree_required: "Master's in Data Science, Statistics, or related field",
+          description: "Analyzes complex data to help organizations make informed decisions using statistical methods and machine learning",
+          skills: ["Statistics", "Machine Learning", "Python", "Data Visualization", "SQL"],
+          degree_required: "Bachelor's in Data Science, Statistics, or related field",
           growth_rate: "36% (Much faster than average)",
-          avg_salary: "$100,910",
-          category: "Data Science"
+          avg_salary: "$100,560",
+          category: "Computer Science"
+        },
+        {
+          id: 3,
+          name: "AI Engineer",
+          description: "Develops artificial intelligence systems and machine learning models for various applications",
+          skills: ["Machine Learning", "Deep Learning", "Python", "Neural Networks", "TensorFlow"],
+          degree_required: "Bachelor's in Computer Science, AI, or related field",
+          growth_rate: "40% (Much faster than average)",
+          avg_salary: "$130,000",
+          category: "Computer Science"
         }
       ])
     } finally {
@@ -139,7 +149,7 @@ export default function CareersPage() {
   }
 
   const handleStartLearning = (career: Career) => {
-    router.push(`/resources?career=${encodeURIComponent(career.name)}`)
+    router.push(`/roadmap`)
   }
 
   const handleStartPracticing = (career: Career) => {
@@ -172,7 +182,7 @@ export default function CareersPage() {
               Explore <span className="gradient-text">STEM Careers</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-              Discover {careers.length}+ detailed career paths with comprehensive information about skills, salaries, and growth potential.
+              Discover {careers.length}+ detailed STEM career paths with comprehensive information about skills, salaries, and growth potential.
             </p>
           </div>
         </div>
@@ -228,13 +238,13 @@ export default function CareersPage() {
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg text-center">
             <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">
-              $95K+
+              $100K+
             </div>
             <div className="text-gray-600 dark:text-gray-400">Avg Salary</div>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg text-center">
             <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">
-              25%+
+              30%+
             </div>
             <div className="text-gray-600 dark:text-gray-400">Growth Rate</div>
           </div>
@@ -478,6 +488,55 @@ export default function CareersPage() {
                 </div>
               )}
 
+              {/* Learning Subjects */}
+              {selectedCareer.subjects && Object.keys(selectedCareer.subjects).length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                    Learning Subjects
+                  </h3>
+                  <div className="space-y-4">
+                    {Object.entries(selectedCareer.subjects).map(([subjectName, subjectData]: [string, any]) => (
+                      <div key={subjectName} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 className="font-medium text-gray-900 dark:text-white mb-2">{subjectName}</h4>
+                        {Array.isArray(subjectData) && subjectData.map((topic: any, index: number) => (
+                          <div key={index} className="mb-3 p-3 bg-white dark:bg-gray-800 rounded border">
+                            <div className="flex items-center justify-between mb-2">
+                              <h5 className="font-medium text-gray-900 dark:text-white">{topic.name}</h5>
+                              <span className={`px-2 py-1 rounded text-xs ${
+                                topic.difficulty <= 3 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+                                topic.difficulty <= 5 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
+                                'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                              }`}>
+                                {topic.difficulty <= 3 ? 'Beginner' : topic.difficulty <= 5 ? 'Intermediate' : 'Advanced'}
+                              </span>
+                            </div>
+                            {topic.resources && (
+                              <div className="space-y-2">
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Resources:</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {Object.entries(topic.resources).map(([platform, url]: [string, unknown]) => (
+                                    <a
+                                      key={platform}
+                                      href={typeof url === 'string' ? url : '#'}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-flex items-center px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-xs hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
+                                    >
+                                      {platform}
+                                      <ExternalLink className="h-3 w-3 ml-1" />
+                                    </a>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Related Careers */}
               {selectedCareer.related_careers && selectedCareer.related_careers.length > 0 && (
                 <div>
@@ -509,7 +568,7 @@ export default function CareersPage() {
                 <button 
                   onClick={() => {
                     closeCareerModal()
-                    handleStartLearning(selectedCareer)
+                    router.push(`/roadmap`)
                   }}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                 >

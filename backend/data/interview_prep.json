@@ -1,0 +1,292 @@
+{
+  "interview_preparation": {
+    "title": "Comprehensive Interview Preparation",
+    "description": "Career-specific interview questions, strategies, and resources for STEM professionals",
+    "careers": {
+      "Software Engineer": {
+        "description": "Technical and behavioral interview preparation for software engineering roles",
+        "categories": {
+          "Technical Questions": {
+            "description": "Coding challenges and technical problem-solving",
+            "questions": [
+              {
+                "question": "Implement a function to find the longest palindromic substring in a string.",
+                "difficulty": "Medium",
+                "category": "String Manipulation",
+                "hint": "Consider using dynamic programming or expand around center approach",
+                "solution_approach": "Use dynamic programming with a 2D array to track palindromic substrings",
+                "time_complexity": "O(n²)",
+                "space_complexity": "O(n²)"
+              },
+              {
+                "question": "Design a data structure that supports insert, delete, and getRandom operations in O(1) average time.",
+                "difficulty": "Hard",
+                "category": "Data Structures",
+                "hint": "Think about combining a hash map with an array",
+                "solution_approach": "Use HashMap for O(1) access and ArrayList for O(1) random access",
+                "time_complexity": "O(1) average",
+                "space_complexity": "O(n)"
+              },
+              {
+                "question": "Explain the difference between REST and GraphQL APIs.",
+                "difficulty": "Easy",
+                "category": "System Design",
+                "hint": "Consider data fetching patterns and flexibility",
+                "solution_approach": "REST is resource-based, GraphQL is query-based with flexible data fetching",
+                "follow_up": "When would you choose one over the other?"
+              },
+              {
+                "question": "How would you design a URL shortening service like bit.ly?",
+                "difficulty": "Medium",
+                "category": "System Design",
+                "hint": "Consider scalability, storage, and URL generation",
+                "solution_approach": "Use hash functions, distributed storage, and CDN for global access",
+                "scale_considerations": "Millions of URLs, global distribution, analytics"
+              },
+              {
+                "question": "Implement a thread-safe singleton pattern in Java.",
+                "difficulty": "Medium",
+                "category": "Concurrency",
+                "hint": "Consider double-checked locking or enum-based approach",
+                "solution_approach": "Use volatile keyword and synchronized block for thread safety",
+                "best_practice": "Consider using enum-based singleton for simplicity"
+              }
+            ],
+            "resources": {
+              "LeetCode": "https://leetcode.com/problemset/all/",
+              "HackerRank": "https://www.hackerrank.com/domains/tutorials/10-days-of-javascript",
+              "Cracking the Coding Interview": "https://www.amazon.com/Cracking-Coding-Interview-Programming-Questions/dp/0984782850",
+              "System Design Primer": "https://github.com/donnemartin/system-design-primer"
+            }
+          },
+          "Behavioral Questions": {
+            "description": "Leadership, teamwork, and problem-solving scenarios",
+            "questions": [
+              {
+                "question": "Tell me about a time when you had to work with a difficult team member.",
+                "category": "Teamwork",
+                "star_method": {
+                  "situation": "Describe the specific situation and context",
+                  "task": "Explain your role and responsibilities",
+                  "action": "Detail the steps you took to address the issue",
+                  "result": "Share the outcome and what you learned"
+                },
+                "key_points": ["Conflict resolution", "Communication", "Team dynamics", "Learning outcome"]
+              },
+              {
+                "question": "Describe a project where you had to learn a new technology quickly.",
+                "category": "Adaptability",
+                "star_method": {
+                  "situation": "Project requirements and timeline",
+                  "task": "Your learning objectives and constraints",
+                  "action": "Learning strategy and implementation",
+                  "result": "Project success and skill development"
+                },
+                "key_points": ["Learning ability", "Time management", "Problem-solving", "Technical growth"]
+              },
+              {
+                "question": "How do you handle competing priorities and deadlines?",
+                "category": "Time Management",
+                "approach": "Discuss prioritization frameworks, communication, and trade-off decisions",
+                "key_points": ["Prioritization", "Communication", "Decision-making", "Stakeholder management"]
+              }
+            ],
+            "resources": {
+              "Behavioral Interview Guide": "https://www.amazon.com/Behavioral-Interview-Guide-Questions-Answers/dp/1507204583",
+              "STAR Method Guide": "https://www.indeed.com/career-advice/interviewing/how-to-use-the-star-interview-response-technique"
+            }
+          },
+          "System Design": {
+            "description": "Large-scale system architecture and design questions",
+            "topics": [
+              "Scalability patterns",
+              "Database design",
+              "Caching strategies",
+              "Load balancing",
+              "Microservices architecture",
+              "API design principles"
+            ],
+            "resources": {
+              "System Design Interview": "https://www.amazon.com/System-Design-Interview-Insiders-Guide/dp/1736049119",
+              "High Scalability": "http://highscalability.com/",
+              "Martin Fowler's Blog": "https://martinfowler.com/"
+            }
+          }
+        }
+      },
+      "Data Scientist": {
+        "description": "Technical and analytical interview preparation for data science roles",
+        "categories": {
+          "Technical Questions": {
+            "description": "Statistics, machine learning, and data analysis problems",
+            "questions": [
+              {
+                "question": "Explain the difference between overfitting and underfitting in machine learning.",
+                "difficulty": "Medium",
+                "category": "Machine Learning",
+                "key_points": ["Bias-variance trade-off", "Model complexity", "Validation strategies"],
+                "follow_up": "How would you detect and prevent overfitting?"
+              },
+              {
+                "question": "Design an A/B testing framework for a website.",
+                "difficulty": "Hard",
+                "category": "Statistics",
+                "key_points": ["Randomization", "Sample size calculation", "Statistical significance", "Implementation"],
+                "considerations": ["Traffic allocation", "Statistical power", "Multiple testing"]
+              },
+              {
+                "question": "How would you handle missing data in a dataset?",
+                "difficulty": "Medium",
+                "category": "Data Preprocessing",
+                "approaches": ["Imputation methods", "Deletion strategies", "Model-based approaches"],
+                "considerations": ["Data type", "Missing pattern", "Impact on analysis"]
+              },
+              {
+                "question": "Explain the concept of p-value and its interpretation.",
+                "difficulty": "Medium",
+                "category": "Statistics",
+                "definition": "Probability of observing data as extreme as or more extreme than the observed data, assuming the null hypothesis is true",
+                "interpretation": "Lower p-value suggests stronger evidence against null hypothesis"
+              }
+            ],
+            "resources": {
+              "Kaggle": "https://www.kaggle.com/",
+              "Data Science Interview Questions": "https://github.com/alexeygrigorev/data-science-interviews",
+              "Statistics for Data Science": "https://www.amazon.com/Statistics-Data-Science-Practical-Introduction/dp/1498713227"
+            }
+          },
+          "Case Studies": {
+            "description": "Real-world data science problems and scenarios",
+            "cases": [
+              {
+                "title": "Customer Churn Prediction",
+                "description": "Build a model to predict which customers are likely to churn",
+                "data": "Customer behavior data, transaction history, demographics",
+                "approach": "Feature engineering, model selection, evaluation metrics",
+                "key_considerations": ["Business impact", "Model interpretability", "Actionable insights"]
+              },
+              {
+                "title": "Recommendation System",
+                "description": "Design a recommendation system for an e-commerce platform",
+                "data": "User interactions, product metadata, purchase history",
+                "approach": "Collaborative filtering, content-based methods, hybrid approaches",
+                "evaluation": "Precision, recall, diversity, novelty"
+              }
+            ]
+          }
+        }
+      },
+      "AI Researcher": {
+        "description": "Advanced technical and research-focused interview preparation",
+        "categories": {
+          "Research Questions": {
+            "description": "Deep learning, algorithms, and research methodology",
+            "questions": [
+              {
+                "question": "Explain the attention mechanism in transformers.",
+                "difficulty": "Hard",
+                "category": "Deep Learning",
+                "key_concepts": ["Query, Key, Value", "Scaled dot-product attention", "Multi-head attention"],
+                "applications": ["Natural language processing", "Computer vision", "Speech recognition"]
+              },
+              {
+                "question": "How would you design an experiment to evaluate a new machine learning algorithm?",
+                "difficulty": "Hard",
+                "category": "Research Methodology",
+                "components": ["Hypothesis formulation", "Dataset selection", "Baseline comparison", "Statistical analysis"],
+                "considerations": ["Reproducibility", "Statistical significance", "Practical relevance"]
+              },
+              {
+                "question": "Discuss the trade-offs between different optimization algorithms (SGD, Adam, etc.).",
+                "difficulty": "Medium",
+                "category": "Optimization",
+                "comparison": ["Convergence speed", "Memory requirements", "Hyperparameter sensitivity"],
+                "selection_criteria": ["Problem type", "Dataset size", "Computational constraints"]
+              }
+            ],
+            "resources": {
+              "Papers With Code": "https://paperswithcode.com/",
+              "arXiv": "https://arxiv.org/",
+              "Deep Learning Book": "https://www.deeplearningbook.org/"
+            }
+          }
+        }
+      },
+      "Machine Learning Engineer": {
+        "description": "ML engineering, deployment, and production-focused questions",
+        "categories": {
+          "ML Engineering": {
+            "description": "Model deployment, MLOps, and production systems",
+            "questions": [
+              {
+                "question": "How would you deploy a machine learning model in production?",
+                "difficulty": "Medium",
+                "category": "MLOps",
+                "considerations": ["Model serving", "Monitoring", "Versioning", "Scaling"],
+                "tools": ["Docker", "Kubernetes", "MLflow", "TensorFlow Serving"]
+              },
+              {
+                "question": "Explain the concept of model drift and how to detect it.",
+                "difficulty": "Medium",
+                "category": "Model Monitoring",
+                "detection_methods": ["Data drift", "Concept drift", "Performance degradation"],
+                "mitigation": ["Retraining strategies", "Feature monitoring", "A/B testing"]
+              },
+              {
+                "question": "Design a recommendation system architecture for a streaming platform.",
+                "difficulty": "Hard",
+                "category": "System Design",
+                "components": ["Data pipeline", "Model training", "Real-time serving", "Feedback loop"],
+                "scalability": ["Distributed training", "Caching", "Load balancing"]
+              }
+            ],
+            "resources": {
+              "MLOps Community": "https://mlops.community/",
+              "Weights & Biases": "https://wandb.ai/",
+              "MLflow Documentation": "https://mlflow.org/"
+            }
+          }
+        }
+      }
+    },
+    "general_strategies": {
+      "preparation": [
+        "Research the company and role thoroughly",
+        "Practice coding problems regularly",
+        "Prepare STAR method responses for behavioral questions",
+        "Review fundamental concepts in your field",
+        "Mock interviews with peers or mentors"
+      ],
+      "interview_day": [
+        "Arrive early and be prepared",
+        "Ask clarifying questions",
+        "Think out loud during technical problems",
+        "Show enthusiasm and curiosity",
+        "Have questions ready for the interviewer"
+      ],
+      "follow_up": [
+        "Send thank-you notes within 24 hours",
+        "Follow up on next steps",
+        "Reflect on performance and areas for improvement"
+      ]
+    },
+    "resources": {
+      "coding_practice": {
+        "LeetCode": "https://leetcode.com/",
+        "HackerRank": "https://www.hackerrank.com/",
+        "CodeSignal": "https://codesignal.com/",
+        "TopCoder": "https://www.topcoder.com/"
+      },
+      "interview_prep": {
+        "Pramp": "https://www.pramp.com/",
+        "Interviewing.io": "https://interviewing.io/",
+        "Cracking the Coding Interview": "https://www.amazon.com/Cracking-Coding-Interview-Programming-Questions/dp/0984782850"
+      },
+      "salary_negotiation": {
+        "Levels.fyi": "https://www.levels.fyi/",
+        "Glassdoor": "https://www.glassdoor.com/",
+        "Salary Negotiation Guide": "https://www.amazon.com/Never-Split-Difference-Negotiating-Depended/dp/0062407805"
+      }
+    }
+  }
+} 

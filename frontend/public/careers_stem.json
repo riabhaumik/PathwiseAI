@@ -1,0 +1,506 @@
+{
+  "Software Engineer": {
+    "description": "Develops software applications and systems using programming languages and development tools.",
+    "skills": ["Programming", "Problem Solving", "System Design", "Testing", "Version Control"],
+    "degree_required": "Bachelor's in Computer Science or related field",
+    "growth_rate": "25% (Much faster than average)",
+    "avg_salary": "$120,730",
+    "category": "Computer Science",
+    "subjects": {
+      "Programming": [
+        {
+          "id": "programming_fundamentals",
+          "name": "Programming Fundamentals",
+          "difficulty": 3,
+          "resources": {
+            "freeCodeCamp": "https://freecodecamp.org",
+            "Codecademy": "https://codecademy.com"
+          }
+        }
+      ]
+    }
+  },
+  "Data Scientist": {
+    "description": "Analyzes complex data to help organizations make informed decisions using statistical methods and machine learning.",
+    "skills": ["Statistics", "Machine Learning", "Python", "Data Visualization", "SQL"],
+    "degree_required": "Bachelor's in Data Science, Statistics, or related field",
+    "growth_rate": "36% (Much faster than average)",
+    "avg_salary": "$100,560",
+    "category": "Computer Science",
+    "subjects": {
+      "Data Analysis": [
+        {
+          "id": "statistics_basics",
+          "name": "Statistics Basics",
+          "difficulty": 4,
+          "resources": {
+            "Khan Academy": "https://khanacademy.org",
+            "Coursera": "https://coursera.org"
+          }
+        }
+      ]
+    }
+  },
+  "AI Engineer": {
+    "description": "Develops artificial intelligence systems and machine learning models for various applications.",
+    "skills": ["Machine Learning", "Deep Learning", "Python", "Neural Networks", "TensorFlow"],
+    "degree_required": "Bachelor's in Computer Science, AI, or related field",
+    "growth_rate": "40% (Much faster than average)",
+    "avg_salary": "$130,000",
+    "category": "Computer Science",
+    "subjects": {
+      "AI Fundamentals": [
+        {
+          "id": "machine_learning",
+          "name": "Machine Learning",
+          "difficulty": 5,
+          "resources": {
+            "Coursera ML Course": "https://coursera.org/learn/machine-learning",
+            "Fast.ai": "https://fast.ai"
+          }
+        }
+      ]
+    }
+  },
+  "Cybersecurity Analyst": {
+    "description": "Protects computer systems and networks from security threats using advanced security tools and techniques.",
+    "skills": ["Network Security", "Incident Response", "Risk Assessment", "Security Tools", "Compliance"],
+    "degree_required": "Bachelor's in Cybersecurity, Computer Science, or related field",
+    "growth_rate": "35% (Much faster than average)",
+    "avg_salary": "$102,600",
+    "category": "Computer Science",
+    "subjects": {
+      "Security Fundamentals": [
+        {
+          "id": "cybersecurity_basics",
+          "name": "Cybersecurity Basics",
+          "difficulty": 4,
+          "resources": {
+            "Cybrary": "https://cybrary.it",
+            "SANS": "https://sans.org"
+          }
+        }
+      ]
+    }
+  },
+  "DevOps Engineer": {
+    "description": "Manages the development and operations infrastructure using automation and cloud technologies.",
+    "skills": ["Linux", "Docker", "Kubernetes", "CI/CD", "Cloud Platforms"],
+    "degree_required": "Bachelor's in Computer Science or related field",
+    "growth_rate": "30% (Much faster than average)",
+    "avg_salary": "$115,000",
+    "category": "Computer Science",
+    "subjects": {
+      "DevOps Tools": [
+        {
+          "id": "containerization",
+          "name": "Containerization",
+          "difficulty": 4,
+          "resources": {
+            "Docker Documentation": "https://docs.docker.com",
+            "Kubernetes.io": "https://kubernetes.io"
+          }
+        }
+      ]
+    }
+  },
+  "Machine Learning Engineer": {
+    "description": "Builds and deploys machine learning models in production environments using advanced algorithms.",
+    "skills": ["ML Algorithms", "Python", "TensorFlow", "MLOps", "Statistics"],
+    "degree_required": "Bachelor's in Computer Science, Mathematics, or related field",
+    "growth_rate": "38% (Much faster than average)",
+    "avg_salary": "$125,000",
+    "category": "Computer Science",
+    "subjects": {
+      "Machine Learning": [
+        {
+          "id": "ml_engineering",
+          "name": "ML Engineering",
+          "difficulty": 6,
+          "resources": {
+            "MLOps Community": "https://mlops.community",
+            "Weights & Biases": "https://wandb.ai"
+          }
+        }
+      ]
+    }
+  },
+  "Blockchain Developer": {
+    "description": "Develops decentralized applications and smart contracts using blockchain technology and cryptography.",
+    "skills": ["Solidity", "Blockchain", "Smart Contracts", "Web3", "Cryptography"],
+    "degree_required": "Bachelor's in Computer Science or related field",
+    "growth_rate": "45% (Much faster than average)",
+    "avg_salary": "$140,000",
+    "category": "Computer Science",
+    "subjects": {
+      "Blockchain Development": [
+        {
+          "id": "solidity_basics",
+          "name": "Solidity Basics",
+          "difficulty": 5,
+          "resources": {
+            "CryptoZombies": "https://cryptozombies.io",
+            "Ethereum.org": "https://ethereum.org/developers"
+          }
+        }
+      ]
+    }
+  },
+  "Civil Engineer": {
+    "description": "Designs and supervises construction of infrastructure projects using engineering principles and mathematics.",
+    "skills": ["Structural Design", "Project Management", "CAD Software", "Construction Methods", "Regulations"],
+    "degree_required": "Bachelor's in Civil Engineering",
+    "growth_rate": "8% (As fast as average)",
+    "avg_salary": "$88,050",
+    "category": "Engineering",
+    "subjects": {
+      "Civil Engineering": [
+        {
+          "id": "structural_engineering",
+          "name": "Structural Engineering",
+          "difficulty": 6,
+          "resources": {
+            "American Society of Civil Engineers": "https://asce.org",
+            "MIT OpenCourseWare": "https://ocw.mit.edu"
+          }
+        }
+      ]
+    }
+  },
+  "Mechanical Engineer": {
+    "description": "Designs and develops mechanical systems and products using physics and materials science principles.",
+    "skills": ["Mechanical Design", "CAD Software", "Thermodynamics", "Materials Science", "Manufacturing"],
+    "degree_required": "Bachelor's in Mechanical Engineering",
+    "growth_rate": "7% (As fast as average)",
+    "avg_salary": "$88,430",
+    "category": "Engineering",
+    "subjects": {
+      "Mechanical Engineering": [
+        {
+          "id": "mechanical_design",
+          "name": "Mechanical Design",
+          "difficulty": 5,
+          "resources": {
+            "American Society of Mechanical Engineers": "https://asme.org",
+            "MIT OpenCourseWare": "https://ocw.mit.edu"
+          }
+        }
+      ]
+    }
+  },
+  "Electrical Engineer": {
+    "description": "Designs and develops electrical systems and electronic devices using electrical engineering principles.",
+    "skills": ["Circuit Design", "Electronics", "Power Systems", "Control Systems", "Testing"],
+    "degree_required": "Bachelor's in Electrical Engineering",
+    "growth_rate": "7% (As fast as average)",
+    "avg_salary": "$100,830",
+    "category": "Engineering",
+    "subjects": {
+      "Electrical Engineering": [
+        {
+          "id": "electrical_circuits",
+          "name": "Electrical Circuits",
+          "difficulty": 5,
+          "resources": {
+            "IEEE": "https://ieee.org",
+            "MIT OpenCourseWare": "https://ocw.mit.edu"
+          }
+        }
+      ]
+    }
+  },
+  "Chemical Engineer": {
+    "description": "Designs and operates chemical manufacturing processes using chemistry and engineering principles.",
+    "skills": ["Process Design", "Chemical Reactions", "Safety", "Equipment Design", "Quality Control"],
+    "degree_required": "Bachelor's in Chemical Engineering",
+    "growth_rate": "9% (As fast as average)",
+    "avg_salary": "$105,550",
+    "category": "Engineering",
+    "subjects": {
+      "Chemical Engineering": [
+        {
+          "id": "chemical_processes",
+          "name": "Chemical Processes",
+          "difficulty": 6,
+          "resources": {
+            "American Institute of Chemical Engineers": "https://aiche.org",
+            "MIT OpenCourseWare": "https://ocw.mit.edu"
+          }
+        }
+      ]
+    }
+  },
+  "Biomedical Engineer": {
+    "description": "Develops medical devices and technologies using biology, medicine, and engineering principles.",
+    "skills": ["Medical Device Design", "Biology", "Biomechanics", "Regulatory Compliance", "Clinical Testing"],
+    "degree_required": "Bachelor's in Biomedical Engineering",
+    "growth_rate": "6% (As fast as average)",
+    "avg_salary": "$97,410",
+    "category": "Engineering",
+    "subjects": {
+      "Biomedical Engineering": [
+        {
+          "id": "biomedical_design",
+          "name": "Biomedical Design",
+          "difficulty": 6,
+          "resources": {
+            "Biomedical Engineering Society": "https://bmes.org",
+            "MIT OpenCourseWare": "https://ocw.mit.edu"
+          }
+        }
+      ]
+    }
+  },
+  "Aerospace Engineer": {
+    "description": "Designs aircraft and spacecraft using aerodynamics, flight mechanics, and materials science.",
+    "skills": ["Aerodynamics", "Flight Mechanics", "Materials Science", "Control Systems", "Testing"],
+    "degree_required": "Bachelor's in Aerospace Engineering",
+    "growth_rate": "8% (As fast as average)",
+    "avg_salary": "$118,610",
+    "category": "Engineering",
+    "subjects": {
+      "Aerospace Engineering": [
+        {
+          "id": "aerodynamics",
+          "name": "Aerodynamics",
+          "difficulty": 6,
+          "resources": {
+            "American Institute of Aeronautics and Astronautics": "https://aiaa.org",
+            "MIT OpenCourseWare": "https://ocw.mit.edu"
+          }
+        }
+      ]
+    }
+  },
+  "Robotics Engineer": {
+    "description": "Designs and develops robots using robotics, control systems, and mechanical engineering principles.",
+    "skills": ["Robotics", "Control Systems", "Mechanical Design", "Programming", "Sensors"],
+    "degree_required": "Bachelor's in Robotics Engineering, Mechanical Engineering, or related field",
+    "growth_rate": "9% (As fast as average)",
+    "avg_salary": "$99,040",
+    "category": "Engineering",
+    "subjects": {
+      "Robotics": [
+        {
+          "id": "robotics_basics",
+          "name": "Robotics Basics",
+          "difficulty": 6,
+          "resources": {
+            "Robotics.org": "https://robotics.org",
+            "MIT OpenCourseWare": "https://ocw.mit.edu"
+          }
+        }
+      ]
+    }
+  },
+  "Statistician": {
+    "description": "Collects and analyzes data using statistical methods and mathematical principles.",
+    "skills": ["Statistics", "Mathematics", "Data Analysis", "Statistical Software", "Research"],
+    "degree_required": "Bachelor's in Statistics, Mathematics, or related field",
+    "growth_rate": "33% (Much faster than average)",
+    "avg_salary": "$95,570",
+    "category": "Mathematics",
+    "subjects": {
+      "Statistics": [
+        {
+          "id": "statistics_basics",
+          "name": "Statistics Basics",
+          "difficulty": 4,
+          "resources": {
+            "American Statistical Association": "https://amstat.org",
+            "Khan Academy": "https://khanacademy.org"
+          }
+        }
+      ]
+    }
+  },
+  "Mathematician": {
+    "description": "Develops mathematical theories and applies mathematical principles to solve problems.",
+    "skills": ["Mathematics", "Mathematical Modeling", "Research", "Problem Solving", "Analysis"],
+    "degree_required": "Bachelor's in Mathematics or related field",
+    "growth_rate": "31% (Much faster than average)",
+    "avg_salary": "$105,030",
+    "category": "Mathematics",
+    "subjects": {
+      "Mathematics": [
+        {
+          "id": "mathematics_basics",
+          "name": "Mathematics Basics",
+          "difficulty": 5,
+          "resources": {
+            "American Mathematical Society": "https://ams.org",
+            "Khan Academy": "https://khanacademy.org"
+          }
+        }
+      ]
+    }
+  },
+  "Actuary": {
+    "description": "Analyzes financial costs of risk using mathematics, statistics, and financial theory.",
+    "skills": ["Mathematics", "Statistics", "Financial Theory", "Risk Assessment", "Excel"],
+    "degree_required": "Bachelor's in Mathematics, Statistics, or related field",
+    "growth_rate": "24% (Much faster than average)",
+    "avg_salary": "$111,030",
+    "category": "Mathematics",
+    "subjects": {
+      "Actuarial Science": [
+        {
+          "id": "actuarial_basics",
+          "name": "Actuarial Basics",
+          "difficulty": 5,
+          "resources": {
+            "Society of Actuaries": "https://soa.org",
+            "Casualty Actuarial Society": "https://casact.org"
+          }
+        }
+      ]
+    }
+  },
+  "Operations Research Analyst": {
+    "description": "Uses mathematical modeling to help organizations make better decisions.",
+    "skills": ["Operations Research", "Mathematical Modeling", "Statistics", "Optimization", "Data Analysis"],
+    "degree_required": "Bachelor's in Operations Research, Mathematics, or related field",
+    "growth_rate": "25% (Much faster than average)",
+    "avg_salary": "$84,810",
+    "category": "Mathematics",
+    "subjects": {
+      "Operations Research": [
+        {
+          "id": "operations_research",
+          "name": "Operations Research",
+          "difficulty": 5,
+          "resources": {
+            "Institute for Operations Research": "https://informs.org",
+            "MIT OpenCourseWare": "https://ocw.mit.edu"
+          }
+        }
+      ]
+    }
+  },
+  "Physicist": {
+    "description": "Studies matter and energy using physics principles and mathematical modeling.",
+    "skills": ["Physics", "Mathematics", "Research", "Laboratory Techniques", "Data Analysis"],
+    "degree_required": "Bachelor's in Physics or related field",
+    "growth_rate": "8% (As fast as average)",
+    "avg_salary": "$129,850",
+    "category": "Physics",
+    "subjects": {
+      "Physics": [
+        {
+          "id": "physics_basics",
+          "name": "Physics Basics",
+          "difficulty": 5,
+          "resources": {
+            "American Physical Society": "https://aps.org",
+            "Khan Academy": "https://khanacademy.org"
+          }
+        }
+      ]
+    }
+  },
+  "Astronomer": {
+    "description": "Studies celestial objects and phenomena using astronomy and physics principles.",
+    "skills": ["Astronomy", "Physics", "Mathematics", "Research", "Data Analysis"],
+    "degree_required": "Bachelor's in Astronomy, Physics, or related field",
+    "growth_rate": "8% (As fast as average)",
+    "avg_salary": "$119,730",
+    "category": "Physics",
+    "subjects": {
+      "Astronomy": [
+        {
+          "id": "astronomy_basics",
+          "name": "Astronomy Basics",
+          "difficulty": 4,
+          "resources": {
+            "American Astronomical Society": "https://aas.org",
+            "NASA": "https://nasa.gov"
+          }
+        }
+      ]
+    }
+  },
+  "Quantum Physicist": {
+    "description": "Studies quantum mechanics and quantum phenomena using physics and mathematics.",
+    "skills": ["Quantum Mechanics", "Physics", "Mathematics", "Research", "Theoretical Analysis"],
+    "degree_required": "Bachelor's in Physics or related field",
+    "growth_rate": "8% (As fast as average)",
+    "avg_salary": "$129,850",
+    "category": "Physics",
+    "subjects": {
+      "Quantum Physics": [
+        {
+          "id": "quantum_mechanics",
+          "name": "Quantum Mechanics",
+          "difficulty": 7,
+          "resources": {
+            "American Physical Society": "https://aps.org",
+            "MIT OpenCourseWare": "https://ocw.mit.edu"
+          }
+        }
+      ]
+    }
+  },
+  "Chemist": {
+    "description": "Studies the composition, structure, and properties of matter using chemistry principles and laboratory techniques.",
+    "skills": ["Chemistry", "Laboratory Techniques", "Research", "Data Analysis", "Scientific Writing"],
+    "degree_required": "Bachelor's in Chemistry or related field",
+    "growth_rate": "6% (As fast as average)",
+    "avg_salary": "$79,430",
+    "category": "Chemistry",
+    "subjects": {
+      "Chemistry": [
+        {
+          "id": "chemistry_basics",
+          "name": "Chemistry Basics",
+          "difficulty": 4,
+          "resources": {
+            "American Chemical Society": "https://acs.org",
+            "Khan Academy": "https://khanacademy.org"
+          }
+        }
+      ]
+    }
+  },
+  "Biochemist": {
+    "description": "Studies chemical processes in living organisms using chemistry and biology principles.",
+    "skills": ["Biochemistry", "Laboratory Techniques", "Data Analysis", "Research", "Scientific Writing"],
+    "degree_required": "Bachelor's in Biochemistry, Chemistry, or Biology",
+    "growth_rate": "15% (Much faster than average)",
+    "avg_salary": "$94,270",
+    "category": "Chemistry",
+    "subjects": {
+      "Biochemistry": [
+        {
+          "id": "biochemistry_basics",
+          "name": "Biochemistry Basics",
+          "difficulty": 5,
+          "resources": {
+            "American Society for Biochemistry and Molecular Biology": "https://asbmb.org",
+            "Khan Academy": "https://khanacademy.org"
+          }
+        }
+      ]
+    }
+  },
+  "Materials Chemist": {
+    "description": "Develops new materials with specific properties using chemistry and materials science principles.",
+    "skills": ["Chemistry", "Materials Science", "Laboratory Techniques", "Research", "Analysis"],
+    "degree_required": "Bachelor's in Chemistry, Materials Science, or related field",
+    "growth_rate": "6% (As fast as average)",
+    "avg_salary": "$79,430",
+    "category": "Chemistry",
+    "subjects": {
+      "Materials Chemistry": [
+        {
+          "id": "materials_chemistry",
+          "name": "Materials Chemistry",
+          "difficulty": 5,
+          "resources": {
+            "American Chemical Society": "https://acs.org",
+            "Materials Research Society": "https://mrs.org"
+          }
+        }
+      ]
+    }
+  }
+}

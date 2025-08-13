@@ -17,26 +17,37 @@ logger = logging.getLogger(__name__)
 
 class RoadmapService:
     def __init__(self):
-        if not settings.openai_api_key or settings.openai_api_key == "your_openai_api_key":
-            raise ValueError("OpenAI API key not configured")
-        
-        self.openai_client = OpenAI(api_key=settings.openai_api_key)
+        # Make OpenAI optional - provide comprehensive roadmaps even without API key
+        self.openai_client = None
         self.openai_model = settings.openai_model
+        
+        if settings.openai_api_key and settings.openai_api_key != "your_openai_api_key":
+            try:
+                self.openai_client = OpenAI(api_key=settings.openai_api_key)
+                logger.info("OpenAI client initialized successfully")
+            except Exception as e:
+                logger.warning(f"OpenAI client initialization failed: {e}. Using enhanced fallback roadmaps.")
+        else:
+            logger.info("OpenAI API key not configured. Using enhanced fallback roadmaps.")
         
         # API keys for external services
         self.youtube_api_key = settings.youtube_api_key
         self.coursera_api_key = settings.coursera_api_key
         self.khan_api_key = settings.khan_academy_api_key
         self.edx_api_key = settings.edx_api_key
-        
         # Cache for API responses to avoid rate limiting
         self._cache = {}
         self._cache_ttl = 3600  # 1 hour
+
+        # Resolve data directory robustly
+        # backend/app/services -> backend
+        self._base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     
     def load_careers_data(self) -> Dict[str, Any]:
         """Load careers data from JSON file"""
         try:
-            with open("../data/careers_massive.json", "r", encoding="utf-8") as f:
+            path = os.path.join(self._base_dir, "data", "careers_stem.json")
+            with open(path, "r", encoding="utf-8") as f:
                 return json.load(f)
         except Exception as e:
             logger.error(f"Error loading careers data: {e}")
@@ -45,7 +56,8 @@ class RoadmapService:
     def load_resources_data(self) -> Dict[str, Any]:
         """Load resources data from JSON file"""
         try:
-            with open("../data/resources_massive.json", "r", encoding="utf-8") as f:
+            path = os.path.join(self._base_dir, "data", "resources_massive.json")
+            with open(path, "r", encoding="utf-8") as f:
                 return json.load(f)
         except Exception as e:
             logger.error(f"Error loading resources data: {e}")
@@ -56,17 +68,19 @@ class RoadmapService:
         try:
             careers_data = self.load_careers_data()
             
-            # Search for career in the data
-            for career in careers_data.get("careers", []):
-                if career.get("name", "").lower() == career_name.lower():
-                    return {
-                        "career": career_name,
-                        "skills": career.get("skills", []),
-                        "degree_required": career.get("degree_required", "Not specified"),
-                        "description": career.get("description", ""),
-                        "growth_rate": career.get("growth_rate", ""),
-                        "avg_salary": career.get("avg_salary", "")
-                    }
+            # Search for career in the data (careers_stem.json structure)
+            if career_name in careers_data:
+                career_data = careers_data[career_name]
+                return {
+                    "career": career_name,
+                    "skills": career_data.get("skills", []),
+                    "degree_required": career_data.get("degree_required", "Not specified"),
+                    "description": career_data.get("description", ""),
+                    "growth_rate": career_data.get("growth_rate", ""),
+                    "avg_salary": career_data.get("avg_salary", ""),
+                    "category": career_data.get("category", ""),
+                    "subjects": career_data.get("subjects", {})
+                }
             
             # If not found in data, try to generate with AI
             return await self._generate_career_skills_with_ai(career_name)
@@ -422,7 +436,16 @@ class RoadmapService:
     
     def generate_basic_roadmap(self, career_name: str, career_data: Dict[str, Any], 
                              user_level: str = "beginner") -> Dict[str, Any]:
-        """Generate a basic roadmap when AI generation fails"""
+        """Generate enhanced roadmap with career-specific content"""
+        # Check for specific career roadmaps
+        if "software" in career_name.lower() or "engineer" in career_name.lower():
+            return self._get_software_engineer_roadmap(user_level, career_data)
+        elif "data" in career_name.lower() and "scientist" in career_name.lower():
+            return self._get_data_scientist_roadmap(user_level, career_data)
+        elif "ai" in career_name.lower() or "artificial intelligence" in career_name.lower():
+            return self._get_ai_engineer_roadmap(user_level, career_data)
+        
+        # Fallback to enhanced generic roadmap
         skills = career_data.get('skills', [])
         
         # Determine duration based on user level
@@ -432,33 +455,52 @@ class RoadmapService:
             "advanced": "6-12 months"
         }
         
-        # Create basic phases
+        # Create basic phases with fallback topics for generic careers
+        if not skills:
+            # For careers without specific skills, use generic topics
+            skills = [
+                "Core Concepts & Theory",
+                "Basic Tools & Technologies", 
+                "Fundamental Principles",
+                "Industry Standards",
+                "Essential Skills",
+                "Practical Applications",
+                "Real-world Projects",
+                "Advanced Techniques",
+                "Industry Best Practices",
+                "Problem-solving Skills",
+                "Specialized Knowledge",
+                "Leadership & Communication"
+            ]
+        
         phases = [
             {
                 "name": "Foundation",
                 "duration": "3-6 months",
-                "description": "Build fundamental knowledge and skills",
+                "description": "Build fundamental knowledge and core skills",
                 "topics": skills[:5] if len(skills) >= 5 else skills,
                 "difficulty": "beginner"
             },
             {
                 "name": "Intermediate",
                 "duration": "6-12 months", 
-                "description": "Develop intermediate skills and practical experience",
-                "topics": skills[5:10] if len(skills) >= 10 else skills[5:] if len(skills) > 5 else [],
+                "description": "Develop practical skills and hands-on experience",
+                "topics": skills[5:10] if len(skills) >= 10 else skills[5:] if len(skills) > 5 else skills[:5],
                 "difficulty": "intermediate"
             },
             {
                 "name": "Advanced",
                 "duration": "6-12 months",
-                "description": "Master advanced concepts and specialization",
-                "topics": skills[10:] if len(skills) > 10 else [],
+                "description": "Master advanced concepts and specialize in your area of interest",
+                "topics": skills[10:] if len(skills) > 10 else skills[5:10] if len(skills) >= 10 else skills[:5],
                 "difficulty": "advanced"
             }
         ]
         
-        # Filter out empty phases
-        phases = [phase for phase in phases if phase["topics"]]
+        # Ensure all phases have topics (never filter out phases completely)
+        for phase in phases:
+            if not phase["topics"]:
+                phase["topics"] = skills[:3]  # Use first 3 skills as fallback
         
         return {
             "career": career_name,
@@ -492,68 +534,65 @@ class RoadmapService:
             ]
         }
     
-    def enhance_roadmap_with_resources(self, roadmap: Dict[str, Any], career_data: Dict[str, Any]) -> Dict[str, Any]:
+    async def enhance_roadmap_with_resources(self, roadmap: Dict[str, Any], career_data: Dict[str, Any]) -> Dict[str, Any]:
         """Enhance roadmap with learning resources from multiple platforms"""
         try:
             # Get skills for resource search
             skills = career_data.get('skills', [])
             career_name = roadmap.get('career', '')
-            
+
             # Search for resources on multiple platforms
-            all_resources = []
-            
-            # Search for general career resources
+            all_resources: List[Dict[str, Any]] = []
+
+            # Aggregate tasks for concurrent fetches
+            tasks: List[asyncio.Task] = []
+
             if career_name:
-                # YouTube resources
-                youtube_resources = asyncio.run(self.get_youtube_resources(career_name, 3))
-                all_resources.extend(youtube_resources)
-                
-                # Coursera resources
-                coursera_resources = asyncio.run(self.get_coursera_resources(career_name, 3))
-                all_resources.extend(coursera_resources)
-                
-                # Khan Academy resources
-                khan_resources = asyncio.run(self.get_khan_academy_resources(career_name, 3))
-                all_resources.extend(khan_resources)
-                
-                # edX resources
-                edx_resources = asyncio.run(self.get_edx_resources(career_name, 3))
-                all_resources.extend(edx_resources)
-            
-            # Search for skill-specific resources
-            for skill in skills[:5]:  # Limit to first 5 skills to avoid API rate limits
-                try:
-                    # YouTube resources for specific skills
-                    skill_youtube = asyncio.run(self.get_youtube_resources(skill, 2))
-                    all_resources.extend(skill_youtube)
-                    
-                    # Coursera resources for specific skills
-                    skill_coursera = asyncio.run(self.get_coursera_resources(skill, 2))
-                    all_resources.extend(skill_coursera)
-                except Exception as e:
-                    logger.warning(f"Failed to fetch resources for skill {skill}: {e}")
-                    continue
-            
+                tasks.extend([
+                    asyncio.create_task(self.get_youtube_resources(career_name, 3)),
+                    asyncio.create_task(self.get_coursera_resources(career_name, 3)),
+                    asyncio.create_task(self.get_khan_academy_resources(career_name, 3)),
+                    asyncio.create_task(self.get_edx_resources(career_name, 3)),
+                ])
+
+            for skill in skills[:5]:
+                tasks.extend([
+                    asyncio.create_task(self.get_youtube_resources(skill, 2)),
+                    asyncio.create_task(self.get_coursera_resources(skill, 2)),
+                ])
+
+            if tasks:
+                results = await asyncio.gather(*tasks, return_exceptions=True)
+                for r in results:
+                    if isinstance(r, Exception):
+                        logger.warning(f"Resource fetch task failed: {r}")
+                    elif isinstance(r, list):
+                        all_resources.extend(r)
+
             # Remove duplicates and limit total resources
-            unique_resources = []
+            unique_resources: List[Dict[str, Any]] = []
             seen_urls = set()
             for resource in all_resources:
-                if resource['url'] not in seen_urls and len(unique_resources) < 20:
+                url = resource.get('url')
+                if not url:
+                    continue
+                if url not in seen_urls and len(unique_resources) < 30:
                     unique_resources.append(resource)
-                    seen_urls.add(resource['url'])
-            
+                    seen_urls.add(url)
+
             # Add resources to roadmap phases
             if unique_resources:
                 roadmap['resources'] = unique_resources
-                
-                # Distribute resources across phases
+
                 for i, phase in enumerate(roadmap.get('phases', [])):
-                    phase_resources = unique_resources[i*4:(i+1)*4]  # 4 resources per phase
+                    start = i * 4
+                    end = (i + 1) * 4
+                    phase_resources = unique_resources[start:end]
                     if phase_resources:
                         phase['resources'] = phase_resources
-            
+
             return roadmap
-            
+
         except Exception as e:
             logger.error(f"Error enhancing roadmap with resources: {e}")
             return roadmap
@@ -566,11 +605,17 @@ class RoadmapService:
             careers_data = self.load_careers_data()
             career_data = None
             
-            # Find career in database
-            for career in careers_data.get("careers", []):
-                if career.get("name", "").lower() == career_name.lower():
-                    career_data = career
-                    break
+            # Find career in database (careers_stem.json structure)
+            if career_name in careers_data:
+                career_data = careers_data[career_name]
+                # Convert to expected format
+                career_data = {
+                    "name": career_name,
+                    "description": career_data.get("description", ""),
+                    "skills": career_data.get("skills", []),
+                    "category": career_data.get("category", ""),
+                    "subjects": career_data.get("subjects", {})
+                }
             
             # If career not found, create basic data
             if not career_data:
@@ -586,9 +631,12 @@ class RoadmapService:
             except Exception as e:
                 logger.warning(f"AI roadmap generation failed, using basic: {e}")
                 roadmap = self.generate_basic_roadmap(career_name, career_data, user_level)
-            
+
             # Enhance with resources
-            roadmap = self.enhance_roadmap_with_resources(roadmap, career_data)
+            roadmap = await self.enhance_roadmap_with_resources(roadmap, career_data)
+
+            # Ensure minimum number of milestones (at least 10)
+            roadmap = self._ensure_minimum_milestones(roadmap)
             
             # Add completion tracking if topics provided
             if completed_topics:
@@ -609,4 +657,185 @@ class RoadmapService:
                 "error": str(e),
                 "phases": [],
                 "milestones": []
-            } 
+            }
+
+    def _ensure_minimum_milestones(self, roadmap: Dict[str, Any]) -> Dict[str, Any]:
+        """Ensure there are at least 10 milestones by deriving from phases/topics if needed"""
+        try:
+            milestones: List[Dict[str, Any]] = roadmap.get('milestones', []) or []
+            if len(milestones) >= 10:
+                roadmap['milestones'] = milestones
+                return roadmap
+
+            # Derive additional milestones from phases and topics
+            derived: List[Dict[str, Any]] = []
+            for phase in roadmap.get('phases', []):
+                phase_name = phase.get('name', 'Phase')
+                for topic in phase.get('topics', [])[:5]:  # cap per phase to avoid huge lists
+                    derived.append({
+                        "name": f"Complete: {topic}",
+                        "description": f"Finish {topic} in {phase_name}",
+                        "target_date": phase.get('duration', 'TBD'),
+                        "criteria": [f"Watch/Read core materials for {topic}", f"Complete 2-3 exercises on {topic}"]
+                    })
+                    if len(milestones) + len(derived) >= 12:  # a bit over 10 for buffer
+                        break
+                if len(milestones) + len(derived) >= 12:
+                    break
+
+            roadmap['milestones'] = milestones + derived
+            return roadmap
+        except Exception:
+            return roadmap
+    
+    def _get_software_engineer_roadmap(self, user_level: str, career_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Comprehensive Software Engineer roadmap"""
+        duration_map = {"beginner": "18-24 months", "intermediate": "12-18 months", "advanced": "6-12 months"}
+        
+        phases = [
+            {
+                "name": "Programming Fundamentals",
+                "duration": "2-4 months",
+                "description": "Master core programming concepts and your first language",
+                "topics": ["Variables and Data Types", "Control Flow", "Functions", "Object-Oriented Programming", "Basic Algorithms"],
+                "difficulty": "beginner"
+            },
+            {
+                "name": "Data Structures & Algorithms",
+                "duration": "3-4 months",
+                "description": "Learn essential CS concepts for technical interviews",
+                "topics": ["Arrays and Lists", "Stacks and Queues", "Trees and Graphs", "Sorting Algorithms", "Hash Tables"],
+                "difficulty": "intermediate"
+            },
+            {
+                "name": "Web Development",
+                "duration": "3-5 months",
+                "description": "Build full-stack web applications",
+                "topics": ["HTML/CSS/JavaScript", "Frontend Framework (React/Vue)", "Backend APIs", "Databases", "DevOps Basics"],
+                "difficulty": "intermediate"
+            },
+            {
+                "name": "System Design & Architecture",
+                "duration": "4-6 months",
+                "description": "Learn to design scalable systems",
+                "topics": ["Microservices", "Load Balancing", "Caching", "Database Design", "Cloud Platforms"],
+                "difficulty": "advanced"
+            }
+        ]
+        
+        return {
+            "career": "Software Engineer",
+            "overview": "Comprehensive roadmap to become a professional software engineer with strong technical skills.",
+            "estimated_duration": duration_map.get(user_level, "18-24 months"),
+            "skill_domains": {
+                "programming": ["Python", "JavaScript", "Java", "TypeScript", "Git"],
+                "web_development": ["React", "Node.js", "REST APIs", "Databases", "HTML/CSS"],
+                "computer_science": ["Data Structures", "Algorithms", "System Design", "Networking"],
+                "tools": ["Docker", "AWS/GCP", "CI/CD", "Testing Frameworks"]
+            },
+            "phases": phases,
+            "math_prerequisites": ["Basic Algebra", "Discrete Mathematics", "Statistics", "Linear Algebra"],
+            "milestones": [
+                {
+                    "name": "Programming Proficient",
+                    "description": "Can write clean, working code in at least one language",
+                    "target_date": "2-4 months",
+                    "criteria": ["Complete programming projects", "Understand OOP", "Debug effectively"]
+                },
+                {
+                    "name": "Technical Interview Ready",
+                    "description": "Can solve coding problems and explain solutions",
+                    "target_date": "6-8 months",
+                    "criteria": ["Solve coding problems", "Explain algorithms", "System design basics"]
+                }
+            ]
+        }
+    
+    def _get_data_scientist_roadmap(self, user_level: str, career_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Comprehensive Data Scientist roadmap"""
+        duration_map = {"beginner": "20-30 months", "intermediate": "15-20 months", "advanced": "8-12 months"}
+        
+        phases = [
+            {
+                "name": "Mathematics & Statistics Foundation",
+                "duration": "3-5 months",
+                "description": "Build essential mathematical foundation for data science",
+                "topics": ["Statistics", "Probability", "Linear Algebra", "Calculus", "Hypothesis Testing"],
+                "difficulty": "beginner"
+            },
+            {
+                "name": "Programming & Data Manipulation",
+                "duration": "3-4 months",
+                "description": "Master Python/R and data manipulation libraries",
+                "topics": ["Python Programming", "Pandas/NumPy", "Data Cleaning", "SQL", "Jupyter Notebooks"],
+                "difficulty": "intermediate"
+            },
+            {
+                "name": "Machine Learning Fundamentals",
+                "duration": "4-6 months",
+                "description": "Learn core ML algorithms and techniques",
+                "topics": ["Supervised Learning", "Unsupervised Learning", "Feature Engineering", "Model Evaluation"],
+                "difficulty": "intermediate"
+            },
+            {
+                "name": "Advanced ML & Deep Learning",
+                "duration": "4-6 months",
+                "description": "Master advanced techniques and neural networks",
+                "topics": ["Deep Learning", "Neural Networks", "Computer Vision", "NLP", "Time Series"],
+                "difficulty": "advanced"
+            }
+        ]
+        
+        return {
+            "career": "Data Scientist",
+            "overview": "Complete roadmap to become a professional data scientist with strong mathematical and ML skills.",
+            "estimated_duration": duration_map.get(user_level, "20-30 months"),
+            "skill_domains": {
+                "mathematics": ["Statistics", "Linear Algebra", "Calculus", "Probability Theory"],
+                "programming": ["Python", "R", "SQL", "Pandas", "NumPy"],
+                "machine_learning": ["Scikit-learn", "TensorFlow", "PyTorch", "Feature Engineering"],
+                "visualization": ["Matplotlib", "Seaborn", "Plotly", "Tableau"]
+            },
+            "phases": phases,
+            "math_prerequisites": ["Statistics & Probability", "Linear Algebra", "Calculus", "Discrete Math"],
+            "milestones": [
+                {
+                    "name": "Data Analysis Proficient",
+                    "description": "Can perform exploratory data analysis and statistical tests",
+                    "target_date": "6-8 months",
+                    "criteria": ["Clean and analyze datasets", "Create visualizations", "Statistical tests"]
+                }
+            ]
+        }
+    
+    def _get_ai_engineer_roadmap(self, user_level: str, career_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Comprehensive AI Engineer roadmap"""
+        return {
+            "career": "AI Engineer",
+            "overview": "Specialized roadmap for AI engineering focusing on deep learning and production AI systems.",
+            "estimated_duration": "18-24 months",
+            "skill_domains": {
+                "programming": ["Python", "C++", "PyTorch", "TensorFlow"],
+                "ai_ml": ["Deep Learning", "Transformers", "Computer Vision", "NLP"],
+                "mathematics": ["Linear Algebra", "Calculus", "Statistics", "Information Theory"],
+                "infrastructure": ["GPU Computing", "Distributed Training", "Model Optimization"]
+            },
+            "phases": [
+                {
+                    "name": "AI Fundamentals",
+                    "duration": "3-4 months",
+                    "description": "Build foundation in AI and machine learning",
+                    "topics": ["Machine Learning Basics", "Neural Networks", "Python Programming"],
+                    "difficulty": "beginner"
+                },
+                {
+                    "name": "Deep Learning Mastery",
+                    "duration": "4-6 months",
+                    "description": "Master deep learning architectures and frameworks",
+                    "topics": ["CNNs", "RNNs", "Transformers", "PyTorch/TensorFlow"],
+                    "difficulty": "intermediate"
+                }
+            ],
+            "math_prerequisites": ["Linear Algebra", "Calculus", "Statistics", "Information Theory"],
+            "milestones": []
+        } 

@@ -44,15 +44,16 @@ function JobsPageInner() {
 
   useEffect(() => {
     loadJobs()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const loadJobs = async () => {
     try {
       // Try to load from backend API first
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
       const params = new URLSearchParams()
       if (careerParam) params.append('career', decodeURIComponent(careerParam))
-      const response = await fetch(`${baseUrl}/api/jobs?${params}`)
+      const response = await fetch(`${baseUrl}/api/jobs?${params.toString()}`)
       if (response.ok) {
         const data = await response.json()
         setJobs(data.jobs || [])

@@ -49,7 +49,7 @@ Create a `.env` file in the root directory:
 cp env.example .env
 ```
 
-Edit `.env` with your credentials:
+Edit `.env` (backend) with your credentials:
 
 ```env
 # Supabase Configuration
@@ -65,6 +65,26 @@ OPENAI_TEMPERATURE=0.7
 
 # JWT Configuration
 JWT_SECRET_KEY=your_jwt_secret_key_change_in_production
+
+# RapidAPI Jobs
+RAPIDAPI_KEY=your_rapidapi_key
+
+# Optional providers
+YOUTUBE_API_KEY=
+COURSERA_API_KEY=
+EDX_API_KEY=
+KHAN_ACADEMY_API_KEY=
+
+# Frontend origin for CORS
+FRONTEND_URL=http://localhost:3000
+```
+
+Also create `frontend/.env.local` with:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
 ### 3. Install Dependencies
@@ -109,6 +129,14 @@ npm run dev
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:8000
 - **API Documentation**: http://localhost:8000/docs
+
+### Key Routes and Endpoints
+- Careers -> /careers (GET /api/careers)
+- Start Learning -> /learn/[careerId] (GET /api/roadmap/preview/{career})
+- Jobs -> /jobs (GET /api/jobs?career=..., cached)
+- Math -> /math (GET /api/math-resources)
+- Resources -> /resources (GET /api/resources?validate=true)
+- Practice -> /practice (GET /api/practice/problems, POST /api/practice/save-progress)
 
 ## 📁 Project Structure
 
