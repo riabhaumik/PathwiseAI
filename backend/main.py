@@ -15,6 +15,11 @@ from openai import OpenAI
 from app.services.roadmap_service import RoadmapService
 from app.services.job_service import JobService
 from app.api.interview_prep import router as interview_prep_router
+from app.api.careers import router as careers_router
+from app.api.roadmap import router as roadmap_router
+from app.api.resources import router as resources_router
+from app.api.math_resources import router as math_resources_router
+from app.api.ai import router as ai_router
 import httpx
 import asyncio
 
@@ -53,6 +58,11 @@ app.add_middleware(
 
 # Include routers
 app.include_router(interview_prep_router)
+app.include_router(careers_router)
+app.include_router(roadmap_router)
+app.include_router(resources_router)
+app.include_router(math_resources_router)
+app.include_router(ai_router)
 
 # Initialize Supabase client
 supabase_url = os.getenv("SUPABASE_URL")

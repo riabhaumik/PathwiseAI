@@ -595,6 +595,8 @@ class RoadmapService:
                     if phase_resources:
                         phase['resources'] = phase_resources
 
+            # Ensure roadmap has proper structure and no circular references
+            roadmap = self._clean_roadmap_structure(roadmap)
             return roadmap
 
         except Exception as e:
@@ -1589,7 +1591,7 @@ class RoadmapService:
                         "name": f"Complete: {topic}",
                         "description": f"Finish {topic} in {phase_name}",
                         "target_date": phase.get('duration', 'TBD'),
-                        "criteria": [f"Watch/Read core materials for {topic}", f"Complete 2-3 exercises on {topic}"]
+                        "criteria": [f"Watch/Read core materials for {topic}", f"Watch/Read core materials for {topic}", f"Complete 2-3 exercises on {topic}"]
                     })
                     if len(milestones) + len(derived) >= 12:  # a bit over 10 for buffer
                         break
@@ -1600,6 +1602,67 @@ class RoadmapService:
             return roadmap
         except Exception:
             return roadmap
+    
+    def _clean_roadmap_structure(self, roadmap: Dict[str, Any]) -> Dict[str, Any]:
+        """Clean roadmap structure to prevent circular references and ensure proper format"""
+        try:
+            # Create a clean copy to avoid modifying the original
+            clean_roadmap = {}
+            
+            # Copy basic fields
+            for key in ['career', 'overview', 'estimated_duration', 'skill_domains']:
+                if key in roadmap:
+                    clean_roadmap[key] = roadmap[key]
+            
+            # Clean phases - ensure no circular references
+            if 'phases' in roadmap:
+                clean_phases = []
+                for phase in roadmap['phases']:
+                    clean_phase = {
+                        'name': phase.get('name', ''),
+                        'duration': phase.get('duration', ''),
+                        'description': phase.get('description', ''),
+                        'topics': phase.get('topics', [])[:10],  # Limit topics to prevent huge lists
+                        'difficulty': phase.get('difficulty', 'beginner')
+                    }
+                    
+                    # Add resources if they exist (limit to prevent circular references)
+                    if 'resources' in phase and isinstance(phase['resources'], list):
+                        clean_phase['resources'] = phase['resources'][:5]  # Limit resources per phase
+                    
+                    clean_phases.append(clean_phase)
+                
+                clean_roadmap['phases'] = clean_phases
+            
+            # Clean milestones
+            if 'milestones' in roadmap:
+                clean_milestones = []
+                for milestone in roadmap['milestones'][:15]:  # Limit to 15 milestones
+                    clean_milestone = {
+                        'name': milestone.get('name', ''),
+                        'description': milestone.get('description', ''),
+                        'target_date': milestone.get('target_date', ''),
+                        'criteria': milestone.get('criteria', [])[:5]  # Limit criteria
+                    }
+                    clean_milestones.append(clean_milestone)
+                
+                clean_roadmap['milestones'] = clean_milestones
+            
+            # Add overall resources (limit to prevent circular references)
+            if 'resources' in roadmap and isinstance(roadmap['resources'], list):
+                clean_roadmap['resources'] = roadmap['resources'][:20]  # Limit total resources
+            
+            return clean_roadmap
+            
+        except Exception as e:
+            logger.error(f"Error cleaning roadmap structure: {e}")
+            # Return a basic roadmap if cleaning fails
+            return {
+                'career': roadmap.get('career', 'Unknown Career'),
+                'overview': 'Roadmap structure could not be processed',
+                'phases': [],
+                'milestones': []
+            }
     
     def _get_software_engineer_roadmap(self, user_level: str, career_data: Dict[str, Any]) -> Dict[str, Any]:
         """Comprehensive Software Engineer roadmap"""

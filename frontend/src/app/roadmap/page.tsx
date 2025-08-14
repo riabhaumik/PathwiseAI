@@ -329,7 +329,8 @@ export default function RoadmapPage() {
   const difficulties = ['all', 'Intermediate', 'Advanced', 'Expert']
 
   const handleStartRoadmap = (career: CareerRoadmap) => {
-    router.push(`/careers?career=${encodeURIComponent(career.name)}`)
+    // Navigate to roadmap detail page with career parameter
+    router.push(`/roadmap/${encodeURIComponent(career.name.toLowerCase().replace(/\s+/g, '-'))}`)
   }
 
   const getDifficultyColor = (difficulty: string) => {

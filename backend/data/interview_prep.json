@@ -1,292 +1,220 @@
 {
-  "interview_preparation": {
-    "title": "Comprehensive Interview Preparation",
-    "description": "Career-specific interview questions, strategies, and resources for STEM professionals",
-    "careers": {
-      "Software Engineer": {
-        "description": "Technical and behavioral interview preparation for software engineering roles",
-        "categories": {
-          "Technical Questions": {
-            "description": "Coding challenges and technical problem-solving",
-            "questions": [
-              {
-                "question": "Implement a function to find the longest palindromic substring in a string.",
-                "difficulty": "Medium",
-                "category": "String Manipulation",
-                "hint": "Consider using dynamic programming or expand around center approach",
-                "solution_approach": "Use dynamic programming with a 2D array to track palindromic substrings",
+  "challenging_problems": {
+    "title": "Challenging Coding & Math Problems",
+    "description": "A curated collection of 15+ challenging problems to test your problem-solving skills",
+    "problems": [
+      {
+        "id": "1",
+        "title": "Dynamic Programming - Longest Palindromic Subsequence",
+        "description": "Find the length of the longest palindromic subsequence in a string. A subsequence is a sequence that can be derived from another sequence by deleting some elements without changing the order of the remaining elements.",
+        "difficulty": "Hard",
+        "category": "Dynamic Programming",
+        "example": "Input: 'bbbab', Output: 4 (bbbb)",
+        "hint": "Think about the relationship between LPS and LCS with the reversed string",
+        "solution_approach": "Use dynamic programming with a 2D array. LPS[i][j] = 2 + LPS[i+1][j-1] if s[i] == s[j], else max(LPS[i+1][j], LPS[i][j-1])",
                 "time_complexity": "O(n²)",
-                "space_complexity": "O(n²)"
-              },
-              {
-                "question": "Design a data structure that supports insert, delete, and getRandom operations in O(1) average time.",
-                "difficulty": "Hard",
-                "category": "Data Structures",
-                "hint": "Think about combining a hash map with an array",
-                "solution_approach": "Use HashMap for O(1) access and ArrayList for O(1) random access",
-                "time_complexity": "O(1) average",
-                "space_complexity": "O(n)"
-              },
-              {
-                "question": "Explain the difference between REST and GraphQL APIs.",
-                "difficulty": "Easy",
-                "category": "System Design",
-                "hint": "Consider data fetching patterns and flexibility",
-                "solution_approach": "REST is resource-based, GraphQL is query-based with flexible data fetching",
-                "follow_up": "When would you choose one over the other?"
-              },
-              {
-                "question": "How would you design a URL shortening service like bit.ly?",
-                "difficulty": "Medium",
-                "category": "System Design",
-                "hint": "Consider scalability, storage, and URL generation",
-                "solution_approach": "Use hash functions, distributed storage, and CDN for global access",
-                "scale_considerations": "Millions of URLs, global distribution, analytics"
-              },
-              {
-                "question": "Implement a thread-safe singleton pattern in Java.",
-                "difficulty": "Medium",
-                "category": "Concurrency",
-                "hint": "Consider double-checked locking or enum-based approach",
-                "solution_approach": "Use volatile keyword and synchronized block for thread safety",
-                "best_practice": "Consider using enum-based singleton for simplicity"
-              }
-            ],
-            "resources": {
-              "LeetCode": "https://leetcode.com/problemset/all/",
-              "HackerRank": "https://www.hackerrank.com/domains/tutorials/10-days-of-javascript",
-              "Cracking the Coding Interview": "https://www.amazon.com/Cracking-Coding-Interview-Programming-Questions/dp/0984782850",
-              "System Design Primer": "https://github.com/donnemartin/system-design-primer"
-            }
-          },
-          "Behavioral Questions": {
-            "description": "Leadership, teamwork, and problem-solving scenarios",
-            "questions": [
-              {
-                "question": "Tell me about a time when you had to work with a difficult team member.",
-                "category": "Teamwork",
-                "star_method": {
-                  "situation": "Describe the specific situation and context",
-                  "task": "Explain your role and responsibilities",
-                  "action": "Detail the steps you took to address the issue",
-                  "result": "Share the outcome and what you learned"
-                },
-                "key_points": ["Conflict resolution", "Communication", "Team dynamics", "Learning outcome"]
-              },
-              {
-                "question": "Describe a project where you had to learn a new technology quickly.",
-                "category": "Adaptability",
-                "star_method": {
-                  "situation": "Project requirements and timeline",
-                  "task": "Your learning objectives and constraints",
-                  "action": "Learning strategy and implementation",
-                  "result": "Project success and skill development"
-                },
-                "key_points": ["Learning ability", "Time management", "Problem-solving", "Technical growth"]
-              },
-              {
-                "question": "How do you handle competing priorities and deadlines?",
-                "category": "Time Management",
-                "approach": "Discuss prioritization frameworks, communication, and trade-off decisions",
-                "key_points": ["Prioritization", "Communication", "Decision-making", "Stakeholder management"]
-              }
-            ],
-            "resources": {
-              "Behavioral Interview Guide": "https://www.amazon.com/Behavioral-Interview-Guide-Questions-Answers/dp/1507204583",
-              "STAR Method Guide": "https://www.indeed.com/career-advice/interviewing/how-to-use-the-star-interview-response-technique"
-            }
-          },
-          "System Design": {
-            "description": "Large-scale system architecture and design questions",
-            "topics": [
-              "Scalability patterns",
-              "Database design",
-              "Caching strategies",
-              "Load balancing",
-              "Microservices architecture",
-              "API design principles"
-            ],
-            "resources": {
-              "System Design Interview": "https://www.amazon.com/System-Design-Interview-Insiders-Guide/dp/1736049119",
-              "High Scalability": "http://highscalability.com/",
-              "Martin Fowler's Blog": "https://martinfowler.com/"
-            }
-          }
-        }
+        "space_complexity": "O(n²)",
+        "related_topics": ["Dynamic Programming", "String Manipulation", "Longest Common Subsequence"]
       },
-      "Data Scientist": {
-        "description": "Technical and analytical interview preparation for data science roles",
-        "categories": {
-          "Technical Questions": {
-            "description": "Statistics, machine learning, and data analysis problems",
-            "questions": [
-              {
-                "question": "Explain the difference between overfitting and underfitting in machine learning.",
-                "difficulty": "Medium",
-                "category": "Machine Learning",
-                "key_points": ["Bias-variance trade-off", "Model complexity", "Validation strategies"],
-                "follow_up": "How would you detect and prevent overfitting?"
-              },
-              {
-                "question": "Design an A/B testing framework for a website.",
-                "difficulty": "Hard",
-                "category": "Statistics",
-                "key_points": ["Randomization", "Sample size calculation", "Statistical significance", "Implementation"],
-                "considerations": ["Traffic allocation", "Statistical power", "Multiple testing"]
-              },
-              {
-                "question": "How would you handle missing data in a dataset?",
-                "difficulty": "Medium",
-                "category": "Data Preprocessing",
-                "approaches": ["Imputation methods", "Deletion strategies", "Model-based approaches"],
-                "considerations": ["Data type", "Missing pattern", "Impact on analysis"]
-              },
-              {
-                "question": "Explain the concept of p-value and its interpretation.",
-                "difficulty": "Medium",
-                "category": "Statistics",
-                "definition": "Probability of observing data as extreme as or more extreme than the observed data, assuming the null hypothesis is true",
-                "interpretation": "Lower p-value suggests stronger evidence against null hypothesis"
-              }
-            ],
-            "resources": {
-              "Kaggle": "https://www.kaggle.com/",
-              "Data Science Interview Questions": "https://github.com/alexeygrigorev/data-science-interviews",
-              "Statistics for Data Science": "https://www.amazon.com/Statistics-Data-Science-Practical-Introduction/dp/1498713227"
-            }
-          },
-          "Case Studies": {
-            "description": "Real-world data science problems and scenarios",
-            "cases": [
-              {
-                "title": "Customer Churn Prediction",
-                "description": "Build a model to predict which customers are likely to churn",
-                "data": "Customer behavior data, transaction history, demographics",
-                "approach": "Feature engineering, model selection, evaluation metrics",
-                "key_considerations": ["Business impact", "Model interpretability", "Actionable insights"]
-              },
-              {
-                "title": "Recommendation System",
-                "description": "Design a recommendation system for an e-commerce platform",
-                "data": "User interactions, product metadata, purchase history",
-                "approach": "Collaborative filtering, content-based methods, hybrid approaches",
-                "evaluation": "Precision, recall, diversity, novelty"
-              }
-            ]
-          }
-        }
+      {
+        "id": "2",
+        "title": "Graph Theory - Minimum Spanning Tree with Kruskal's",
+        "description": "Implement Kruskal's algorithm to find the minimum spanning tree of a weighted, undirected graph. Handle edge cases like disconnected graphs and negative weights.",
+        "difficulty": "Medium",
+        "category": "Graph Theory",
+        "example": "Graph with edges: (0,1,4), (0,2,3), (1,2,1), (1,3,2), (2,3,4)",
+        "hint": "Sort edges by weight and use Union-Find to detect cycles",
+        "solution_approach": "Sort edges by weight, use Union-Find data structure to detect cycles, add edges that don't form cycles",
+        "time_complexity": "O(E log E) where E is number of edges",
+        "space_complexity": "O(V + E)",
+        "related_topics": ["Graph Theory", "Union-Find", "Sorting", "Minimum Spanning Tree"]
       },
-      "AI Researcher": {
-        "description": "Advanced technical and research-focused interview preparation",
-        "categories": {
-          "Research Questions": {
-            "description": "Deep learning, algorithms, and research methodology",
-            "questions": [
-              {
-                "question": "Explain the attention mechanism in transformers.",
-                "difficulty": "Hard",
-                "category": "Deep Learning",
-                "key_concepts": ["Query, Key, Value", "Scaled dot-product attention", "Multi-head attention"],
-                "applications": ["Natural language processing", "Computer vision", "Speech recognition"]
-              },
-              {
-                "question": "How would you design an experiment to evaluate a new machine learning algorithm?",
-                "difficulty": "Hard",
-                "category": "Research Methodology",
-                "components": ["Hypothesis formulation", "Dataset selection", "Baseline comparison", "Statistical analysis"],
-                "considerations": ["Reproducibility", "Statistical significance", "Practical relevance"]
-              },
-              {
-                "question": "Discuss the trade-offs between different optimization algorithms (SGD, Adam, etc.).",
-                "difficulty": "Medium",
-                "category": "Optimization",
-                "comparison": ["Convergence speed", "Memory requirements", "Hyperparameter sensitivity"],
-                "selection_criteria": ["Problem type", "Dataset size", "Computational constraints"]
-              }
-            ],
-            "resources": {
-              "Papers With Code": "https://paperswithcode.com/",
-              "arXiv": "https://arxiv.org/",
-              "Deep Learning Book": "https://www.deeplearningbook.org/"
-            }
-          }
-        }
+      {
+        "id": "3",
+        "title": "Advanced Math - Matrix Chain Multiplication",
+        "description": "Given a sequence of matrices, find the most efficient way to multiply them. The problem is to determine the order of matrix multiplications that minimizes the total number of scalar multiplications.",
+        "difficulty": "Hard",
+        "category": "Dynamic Programming",
+        "example": "Matrices: A(10×30), B(30×5), C(5×60). Optimal: (AB)C = 10×30×5 + 10×5×60 = 1500 + 3000 = 4500",
+        "hint": "Use dynamic programming to try all possible split points",
+        "solution_approach": "DP[i][j] = min cost to multiply matrices i through j. Try all split points k: DP[i][j] = min(DP[i][k] + DP[k+1][j] + cost[i][k][j])",
+        "time_complexity": "O(n³)",
+        "space_complexity": "O(n²)",
+        "related_topics": ["Dynamic Programming", "Matrix Operations", "Optimization"]
       },
-      "Machine Learning Engineer": {
-        "description": "ML engineering, deployment, and production-focused questions",
-        "categories": {
-          "ML Engineering": {
-            "description": "Model deployment, MLOps, and production systems",
-            "questions": [
-              {
-                "question": "How would you deploy a machine learning model in production?",
-                "difficulty": "Medium",
-                "category": "MLOps",
-                "considerations": ["Model serving", "Monitoring", "Versioning", "Scaling"],
-                "tools": ["Docker", "Kubernetes", "MLflow", "TensorFlow Serving"]
-              },
-              {
-                "question": "Explain the concept of model drift and how to detect it.",
-                "difficulty": "Medium",
-                "category": "Model Monitoring",
-                "detection_methods": ["Data drift", "Concept drift", "Performance degradation"],
-                "mitigation": ["Retraining strategies", "Feature monitoring", "A/B testing"]
-              },
-              {
-                "question": "Design a recommendation system architecture for a streaming platform.",
+      {
+        "id": "4",
+        "title": "Algorithm Design - Sliding Window Maximum",
+        "description": "Given an array and a window size k, find the maximum element in each sliding window of size k. Optimize for both time and space complexity.",
+        "difficulty": "Hard",
+        "category": "Data Structures",
+        "example": "Array: [1,3,-1,-3,5,3,6,7], k=3. Output: [3,3,5,5,6,7]",
+        "hint": "Use a monotonic queue (deque) to maintain the maximum element",
+        "solution_approach": "Use a deque to maintain indices of elements in decreasing order. Remove elements outside window and smaller than current element",
+        "time_complexity": "O(n)",
+        "space_complexity": "O(k)",
+        "related_topics": ["Sliding Window", "Monotonic Queue", "Deque", "Optimization"]
+      },
+      {
+        "id": "5",
+        "title": "Number Theory - Prime Factorization with Pollard's Rho",
+        "description": "Implement Pollard's Rho algorithm for integer factorization. This is a probabilistic algorithm that can factor large integers efficiently.",
+        "difficulty": "Hard",
+        "category": "Number Theory",
+        "example": "Factor 8051 = 83 × 97",
+        "hint": "Use Floyd's cycle-finding algorithm with a polynomial function",
+        "solution_approach": "Use f(x) = x² + c mod n, detect cycles with Floyd's algorithm, use GCD to find factors",
+        "time_complexity": "O(n^(1/4))",
+        "space_complexity": "O(1)",
+        "related_topics": ["Number Theory", "Prime Factorization", "Pollard's Rho", "Cycle Detection"]
+      },
+      {
+        "id": "6",
+        "title": "Data Structures - Persistent Segment Tree",
+        "description": "Implement a persistent segment tree that can handle range queries and point updates while maintaining all previous versions of the tree.",
+        "difficulty": "Hard",
+        "category": "Data Structures",
+        "example": "Support range sum queries and point updates with version history",
+        "hint": "Create new nodes only when updating, share unchanged subtrees",
+        "solution_approach": "Create new nodes for modified paths, share unchanged subtrees, maintain version pointers",
+        "time_complexity": "O(log n) per operation",
+        "space_complexity": "O(n log n) total",
+        "related_topics": ["Segment Trees", "Persistence", "Range Queries", "Tree Data Structures"]
+      },
+      {
+        "id": "7",
+        "title": "Optimization - Traveling Salesman Problem with Branch and Bound",
+        "description": "Solve the Traveling Salesman Problem using Branch and Bound with a lower bound heuristic. Implement pruning strategies to improve efficiency.",
+        "difficulty": "Hard",
+        "category": "Optimization",
+        "example": "Find shortest tour visiting all cities exactly once",
+        "hint": "Use minimum spanning tree as lower bound and implement strong pruning",
+        "solution_approach": "Use MST cost as lower bound, implement branch and bound with pruning, use best-first search",
+        "time_complexity": "O(n!) worst case, much better with pruning",
+        "space_complexity": "O(n²)",
+        "related_topics": ["Optimization", "Branch and Bound", "Traveling Salesman", "Graph Theory"]
+      },
+      {
+        "id": "8",
+        "title": "Advanced Algorithms - Suffix Automaton",
+        "description": "Implement a suffix automaton for efficient string processing. Support operations like finding all occurrences of a pattern and counting distinct substrings.",
                 "difficulty": "Hard",
-                "category": "System Design",
-                "components": ["Data pipeline", "Model training", "Real-time serving", "Feedback loop"],
-                "scalability": ["Distributed training", "Caching", "Load balancing"]
-              }
-            ],
-            "resources": {
-              "MLOps Community": "https://mlops.community/",
-              "Weights & Biases": "https://wandb.ai/",
-              "MLflow Documentation": "https://mlflow.org/"
-            }
-          }
-        }
+        "category": "String Algorithms",
+        "example": "Build automaton for 'abab' and find all occurrences of 'ab'",
+        "hint": "Use online construction with clone nodes for efficient building",
+        "solution_approach": "Build incrementally, add new states for new characters, clone states when needed",
+        "time_complexity": "O(n) construction, O(m) pattern matching",
+        "space_complexity": "O(n)",
+        "related_topics": ["String Algorithms", "Automata Theory", "Pattern Matching", "Suffix Structures"]
+      },
+      {
+        "id": "9",
+        "title": "Computational Geometry - Convex Hull with Graham Scan",
+        "description": "Implement Graham's scan algorithm to find the convex hull of a set of points. Handle edge cases like collinear points and duplicate coordinates.",
+                "difficulty": "Medium",
+        "category": "Computational Geometry",
+        "example": "Find convex hull of points: (0,3), (1,1), (2,2), (4,4), (0,0), (1,2), (3,1), (3,3)",
+        "hint": "Sort by polar angle from bottommost point, use cross product for orientation",
+        "solution_approach": "Find bottommost point, sort by polar angle, use stack with cross product for orientation",
+        "time_complexity": "O(n log n)",
+        "space_complexity": "O(n)",
+        "related_topics": ["Computational Geometry", "Convex Hull", "Graham Scan", "Sorting"]
+      },
+      {
+        "id": "10",
+        "title": "Machine Learning Math - Gradient Descent with Momentum",
+        "description": "Implement gradient descent with momentum for optimizing a multivariate function. Include adaptive learning rates and convergence criteria.",
+                "difficulty": "Medium",
+        "category": "Optimization",
+        "example": "Minimize f(x,y) = x² + y² + 2x + 3y + 5",
+        "hint": "Use exponential moving average for momentum and implement backtracking line search",
+        "solution_approach": "Update velocity with momentum, apply velocity to parameters, use adaptive learning rate",
+        "time_complexity": "O(iterations × dimensions)",
+        "space_complexity": "O(dimensions)",
+        "related_topics": ["Optimization", "Gradient Descent", "Machine Learning", "Numerical Methods"]
+      },
+      {
+        "id": "11",
+        "title": "Cryptography - RSA Implementation",
+        "description": "Implement RSA encryption and decryption from scratch. Include key generation, encryption, decryption, and padding schemes.",
+                "difficulty": "Hard",
+        "category": "Cryptography",
+        "example": "Generate keys, encrypt 'HELLO', decrypt to verify",
+        "hint": "Use Fermat's little theorem and Chinese remainder theorem for efficiency",
+        "solution_approach": "Generate primes p,q, compute n=pq, choose e coprime to φ(n), compute d as e⁻¹ mod φ(n)",
+        "time_complexity": "O(log³ n) for encryption/decryption",
+        "space_complexity": "O(log n)",
+        "related_topics": ["Cryptography", "Number Theory", "RSA", "Public Key Cryptography"]
+      },
+      {
+        "id": "12",
+        "title": "Parallel Algorithms - Parallel Merge Sort",
+        "description": "Implement a parallel version of merge sort using divide-and-conquer. Handle load balancing and minimize communication overhead.",
+                "difficulty": "Hard",
+        "category": "Parallel Computing",
+        "example": "Sort array of 1M elements using 4 threads",
+        "hint": "Use recursive division, merge in parallel, minimize data movement",
+        "solution_approach": "Divide array among threads, sort locally, merge in parallel using divide-and-conquer",
+        "time_complexity": "O(n log n / p + p log p) where p is number of threads",
+        "space_complexity": "O(n)",
+        "related_topics": ["Parallel Computing", "Merge Sort", "Divide and Conquer", "Load Balancing"]
+      },
+      {
+        "id": "13",
+        "title": "Advanced Data Structures - B-Tree Implementation",
+        "description": "Implement a B-tree data structure with insert, delete, and search operations. Handle node splitting and merging efficiently.",
+        "difficulty": "Hard",
+        "category": "Data Structures",
+        "example": "Build B-tree of order 3, insert keys: 1,3,7,10,11,13,14,15,18,16,19,24,25,26,21,4,5,20,22,2,17,12,6",
+        "hint": "Maintain balance by splitting full nodes and merging underflow nodes",
+        "solution_approach": "Insert at leaf, split full nodes, delete with borrowing/merging, maintain balance",
+        "time_complexity": "O(log n) for all operations",
+        "space_complexity": "O(n)",
+        "related_topics": ["B-Trees", "Balanced Trees", "Database Indexing", "File Systems"]
+      },
+      {
+        "id": "14",
+        "title": "Network Algorithms - Maximum Flow with Ford-Fulkerson",
+        "description": "Implement Ford-Fulkerson algorithm to find maximum flow in a network. Use efficient augmenting path algorithms and handle residual graphs.",
+        "difficulty": "Hard",
+        "category": "Graph Theory",
+        "example": "Find max flow from source to sink in network with capacity constraints",
+        "hint": "Use BFS or DFS to find augmenting paths, update residual capacities",
+        "solution_approach": "Find augmenting paths, compute bottleneck capacity, update residual graph, repeat until no more paths",
+        "time_complexity": "O(VE²) with BFS, O(VE) with Dinic's algorithm",
+        "space_complexity": "O(V²)",
+        "related_topics": ["Network Flow", "Ford-Fulkerson", "Residual Graphs", "Graph Theory"]
+      },
+      {
+        "id": "15",
+        "title": "Quantum Computing - Grover's Algorithm Simulation",
+        "description": "Simulate Grover's quantum search algorithm classically. Implement quantum gates, superposition, and measurement operations.",
+                "difficulty": "Hard",
+        "category": "Quantum Computing",
+        "example": "Find marked item in unsorted database of size N using O(√N) queries",
+        "hint": "Use Hadamard gates for superposition, oracle for marking, diffusion for amplitude amplification",
+        "solution_approach": "Apply Hadamard to create superposition, apply oracle to mark solution, apply diffusion to amplify, measure",
+        "time_complexity": "O(√N) quantum queries",
+        "space_complexity": "O(log N) qubits",
+        "related_topics": ["Quantum Computing", "Grover's Algorithm", "Quantum Gates", "Amplitude Amplification"]
       }
+    ],
+    "categories": {
+      "Dynamic Programming": "Problems involving optimal substructure and overlapping subproblems",
+      "Graph Theory": "Problems involving graphs, trees, and network structures",
+      "Data Structures": "Advanced data structure implementations and optimizations",
+      "Number Theory": "Mathematical problems involving integers, primes, and divisibility",
+      "String Algorithms": "Efficient string processing and pattern matching",
+      "Computational Geometry": "Geometric algorithms and spatial problems",
+      "Optimization": "Finding optimal solutions to complex problems",
+      "Cryptography": "Security algorithms and cryptographic protocols",
+      "Parallel Computing": "Algorithms designed for concurrent execution",
+      "Quantum Computing": "Quantum algorithms and quantum information processing"
     },
-    "general_strategies": {
-      "preparation": [
-        "Research the company and role thoroughly",
-        "Practice coding problems regularly",
-        "Prepare STAR method responses for behavioral questions",
-        "Review fundamental concepts in your field",
-        "Mock interviews with peers or mentors"
-      ],
-      "interview_day": [
-        "Arrive early and be prepared",
-        "Ask clarifying questions",
-        "Think out loud during technical problems",
-        "Show enthusiasm and curiosity",
-        "Have questions ready for the interviewer"
-      ],
-      "follow_up": [
-        "Send thank-you notes within 24 hours",
-        "Follow up on next steps",
-        "Reflect on performance and areas for improvement"
-      ]
-    },
-    "resources": {
-      "coding_practice": {
-        "LeetCode": "https://leetcode.com/",
-        "HackerRank": "https://www.hackerrank.com/",
-        "CodeSignal": "https://codesignal.com/",
-        "TopCoder": "https://www.topcoder.com/"
-      },
-      "interview_prep": {
-        "Pramp": "https://www.pramp.com/",
-        "Interviewing.io": "https://interviewing.io/",
-        "Cracking the Coding Interview": "https://www.amazon.com/Cracking-Coding-Interview-Programming-Questions/dp/0984782850"
-      },
-      "salary_negotiation": {
-        "Levels.fyi": "https://www.levels.fyi/",
-        "Glassdoor": "https://www.glassdoor.com/",
-        "Salary Negotiation Guide": "https://www.amazon.com/Never-Split-Difference-Negotiating-Depended/dp/0062407805"
-      }
+    "difficulty_levels": {
+      "Easy": "Basic concepts, straightforward implementation",
+      "Medium": "Requires algorithmic thinking and optimization",
+      "Hard": "Advanced algorithms, complex data structures, mathematical insight"
     }
   }
 } 

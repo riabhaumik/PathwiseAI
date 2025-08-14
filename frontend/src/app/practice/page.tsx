@@ -38,41 +38,26 @@ interface PracticeCategory {
   completedProblems: number
 }
 
-interface InterviewPrepData {
+interface ChallengingProblem {
+  id: string
   title: string
   description: string
-  careers: {
-    [key: string]: {
-      description: string
-      categories: {
-        [key: string]: {
-          description: string
-          questions: Array<{
-            question: string
-            difficulty?: string
-            category: string
-            hint?: string
-            solution_approach?: string
-            time_complexity?: string
-            space_complexity?: string
-            star_method?: {
-              situation: string
-              task: string
-              action: string
-              result: string
-            }
-            key_points?: string[]
-            follow_up?: string
-            scale_considerations?: string
-            best_practice?: string
-          }>
-          resources: {
-            [key: string]: string
-          }
-        }
-      }
-    }
-  }
+  difficulty: string
+  category: string
+  example: string
+  hint: string
+  solution_approach: string
+  time_complexity: string
+  space_complexity: string
+  related_topics: string[]
+}
+
+interface ChallengingProblemsData {
+  title: string
+  description: string
+  problems: ChallengingProblem[]
+  categories: { [key: string]: string }
+  difficulty_levels: { [key: string]: string }
 }
 
 function PracticePageInner() {
@@ -87,10 +72,10 @@ function PracticePageInner() {
   const [showSolution, setShowSolution] = useState(false)
   const [timeLeft, setTimeLeft] = useState(0)
   const [loading, setLoading] = useState(true)
-  // Always show interview prep; removed toggle
-  const [interviewPrepData, setInterviewPrepData] = useState<InterviewPrepData | null>(null)
-  const [selectedCareer, setSelectedCareer] = useState<string>('')
-  const [selectedPrepCategory, setSelectedPrepCategory] = useState<string>('')
+  // Always show challenging problems; removed interview prep
+  const [challengingProblemsData, setChallengingProblemsData] = useState<ChallengingProblemsData | null>(null)
+  const [selectedProblemCategory, setSelectedProblemCategory] = useState<string>('')
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all')
 
   const [categories, setCategories] = useState<PracticeCategory[]>([])
   const [mathRefs, setMathRefs] = useState<{ level: string, links: { title: string, url: string }[] }[]>([])
@@ -563,34 +548,29 @@ function PracticePageInner() {
       }
     }
 
-    const fetchInterviewPrep = async () => {
+    const fetchChallengingProblems = async () => {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
-        const response = await fetch(`${baseUrl}/api/interview-prep`)
+        const response = await fetch(`${baseUrl}/api/interview_prep`)
         
         if (response.ok) {
           const data = await response.json()
-          setInterviewPrepData(data.interview_preparation)
-          
-          // Set default career if available
-          if (data.interview_preparation?.careers) {
-            const careerKeys = Object.keys(data.interview_preparation.careers)
-            if (careerKeys.length > 0) {
-              setSelectedCareer(careerKeys[0])
-              const categoryKeys = Object.keys(data.interview_preparation.careers[careerKeys[0]].categories)
-              if (categoryKeys.length > 0) {
-                setSelectedPrepCategory(categoryKeys[0])
-              }
+          if (data.challenging_problems) {
+            setChallengingProblemsData(data.challenging_problems)
+            // Set default category
+            const categoryKeys = Object.keys(data.challenging_problems.categories)
+            if (categoryKeys.length > 0) {
+              setSelectedProblemCategory(categoryKeys[0])
             }
           }
         }
       } catch (error) {
-        console.error('Error fetching interview prep data:', error)
+        console.error('Error fetching challenging problems data:', error)
       }
     }
 
     fetchProblems()
-    fetchInterviewPrep()
+    fetchChallengingProblems()
   }, [careerParam])
 
   const getCategoryIcon = (categoryId: string) => {
@@ -687,138 +667,92 @@ function PracticePageInner() {
         <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 animate-fade-in">
           <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-8 shadow-lg transform transition-all duration-300 hover:scale-[1.02] max-w-5xl mx-auto border border-slate-200/50 dark:border-slate-700/50">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-6 text-center">
-              🎯 Career-Specific Interview Preparation
+              🧠 Challenging Coding & Math Problems
             </h2>
             
-            {interviewPrepData ? (
+            {challengingProblemsData ? (
               <div className="space-y-8">
-                {/* Career Selection */}
+                {/* Category Selection */}
                 <div className="flex flex-wrap gap-3 justify-center">
-                  {Object.keys(interviewPrepData.careers).map((career) => (
+                  {Object.keys(challengingProblemsData.categories).map((category) => (
                     <button
-                      key={career}
-                      onClick={() => {
-                        setSelectedCareer(career)
-                        const categoryKeys = Object.keys(interviewPrepData.careers[career].categories)
-                        if (categoryKeys.length > 0) {
-                          setSelectedPrepCategory(categoryKeys[0])
-                        }
-                      }}
+                      key={category}
+                      onClick={() => setSelectedProblemCategory(category)}
                       className={`px-4 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                        selectedCareer === career
+                        selectedProblemCategory === category
                           ? 'bg-blue-600 text-white'
                           : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
                       }`}
                     >
-                      {career}
+                      {category}
                     </button>
                   ))}
                 </div>
 
-                {/* Category Selection */}
-                {selectedCareer && (
-                  <div className="flex flex-wrap gap-3 justify-center">
-                    {Object.keys(interviewPrepData.careers[selectedCareer].categories).map((category) => (
-                      <button
-                        key={category}
-                        onClick={() => setSelectedPrepCategory(category)}
-                        className={`px-4 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${
-                          selectedPrepCategory === category
-                            ? 'bg-green-600 text-white'
-                            : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-                        }`}
-                      >
-                        {category}
-                      </button>
-                    ))}
-                  </div>
-                )}
+                {/* Difficulty Selection */}
+                <div className="flex flex-wrap gap-3 justify-center">
+                  <button
+                    onClick={() => setSelectedDifficulty('all')}
+                    className={`px-4 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                      selectedDifficulty === 'all'
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                    }`}
+                  >
+                    All Difficulties
+                  </button>
+                  {Object.keys(challengingProblemsData.difficulty_levels).map((difficulty) => (
+                    <button
+                      key={difficulty}
+                      onClick={() => setSelectedDifficulty(difficulty)}
+                      className={`px-4 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                        selectedDifficulty === difficulty
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                      }`}
+                    >
+                      {challengingProblemsData.difficulty_levels[difficulty]}
+                    </button>
+                  ))}
+                </div>
 
-                {/* Questions and Resources */}
-                {selectedCareer && selectedPrepCategory && (
+                {/* Problems */}
+                {selectedProblemCategory && (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Questions */}
-                    <div className="space-y-4">
-                      <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
-                        {selectedPrepCategory} Questions
-                      </h3>
-                      <div className="space-y-4 max-h-96 overflow-y-auto">
-                        {interviewPrepData.careers[selectedCareer].categories[selectedPrepCategory].questions.map((q, idx) => (
-                          <div key={idx} className="bg-slate-50 dark:bg-slate-700 p-4 rounded-lg border border-slate-200 dark:border-slate-600">
-                            <h4 className="font-medium text-slate-900 dark:text-slate-100 mb-2">
-                              {q.question}
-                            </h4>
-                            {q.difficulty && (
-                              <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mb-2 ${
-                                q.difficulty === 'Easy' ? 'bg-green-100 text-green-800' :
-                                q.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
-                                'bg-red-100 text-red-800'
-                              }`}>
-                                {q.difficulty}
-                              </span>
-                            )}
-                            {q.hint && (
-                              <div className="text-sm text-slate-600 dark:text-slate-400 mb-2">
-                                <strong>Hint:</strong> {q.hint}
-                              </div>
-                            )}
-                            {q.solution_approach && (
-                              <div className="text-sm text-slate-600 dark:text-slate-400 mb-2">
-                                <strong>Approach:</strong> {q.solution_approach}
-                              </div>
-                            )}
-                            {q.star_method && (
-                              <div className="text-sm text-slate-600 dark:text-slate-400">
-                                <div className="font-medium mb-1">STAR Method:</div>
-                                <div className="grid grid-cols-2 gap-2 text-xs">
-                                  <div><strong>S:</strong> {q.star_method.situation}</div>
-                                  <div><strong>T:</strong> {q.star_method.task}</div>
-                                  <div><strong>A:</strong> {q.star_method.action}</div>
-                                  <div><strong>R:</strong> {q.star_method.result}</div>
-                                </div>
-                              </div>
-                            )}
-                            {q.key_points && (
-                              <div className="text-sm text-slate-600 dark:text-slate-400 mt-2">
-                                <strong>Key Points:</strong>
-                                <ul className="list-disc list-inside mt-1">
-                                  {q.key_points.map((point, pIdx) => (
-                                    <li key={pIdx}>{point}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
+                    {challengingProblemsData.problems
+                      .filter(p => p.category === selectedProblemCategory)
+                      .filter(p => selectedDifficulty === 'all' || p.difficulty === selectedDifficulty)
+                      .map((problem, idx) => (
+                        <div key={idx} className="bg-slate-50 dark:bg-slate-700 p-4 rounded-lg border border-slate-200 dark:border-slate-600">
+                          <h4 className="font-medium text-slate-900 dark:text-slate-100 mb-2">
+                            {problem.title}
+                          </h4>
+                          <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
+                            {problem.description}
+                          </p>
+                          <div className="text-sm text-slate-600 dark:text-slate-400 mb-2">
+                            <strong>Example:</strong> {problem.example}
                           </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Resources */}
-                    <div>
-                      <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
-                        Learning Resources
-                      </h3>
-                      <div className="space-y-3">
-                        {Object.entries(interviewPrepData.careers[selectedCareer].categories[selectedPrepCategory].resources).map(([title, url]) => (
-                          <a
-                            key={title}
-                            href={url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors border border-blue-200 dark:border-blue-800"
-                          >
-                            <ExternalLink className="h-5 w-5 text-blue-600" />
-                            <span className="text-blue-800 dark:text-blue-200 font-medium">{title}</span>
-                          </a>
-                        ))}
-                      </div>
-                    </div>
+                          <div className="text-sm text-slate-600 dark:text-slate-400 mb-2">
+                            <strong>Hint:</strong> {problem.hint}
+                          </div>
+                          <div className="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                            <strong>Approach:</strong> {problem.solution_approach}
+                          </div>
+                          <div className="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                            <strong>Complexity:</strong> Time: {problem.time_complexity}, Space: {problem.space_complexity}
+                          </div>
+                          <div className="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                            <strong>Related Topics:</strong> {problem.related_topics.join(', ')}
+                          </div>
+                        </div>
+                      ))}
                   </div>
                 )}
               </div>
             ) : (
               <div className="text-center text-slate-600 dark:text-slate-400">
-                <p>Interview preparation content will appear here once you select a career and category.</p>
+                <p>Challenging problems content will appear here once you select a category and difficulty.</p>
               </div>
             )}
           </div>
