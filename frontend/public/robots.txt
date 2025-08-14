@@ -1,0 +1,68 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://pathwiseai.com/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Allow all major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /private/
+Disallow: /temp/
+Disallow: /draft/
+
+# Allow important pages
+Allow: /careers/
+Allow: /practice/
+Allow: /roadmap/
+Allow: /learn/
+Allow: /math/
+Allow: /resources/
+Allow: /jobs/
+
+# Allow static assets
+Allow: /images/
+Allow: /css/
+Allow: /js/
+Allow: /fonts/
+
+# Block common bot patterns
+User-agent: *
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /private/
+Disallow: /temp/
+Disallow: /draft/
+Disallow: /*.json$
+Disallow: /*.xml$
+Disallow: /*.txt$
+
+# Allow sitemap and important files
+Allow: /sitemap.xml
+Allow: /robots.txt
+Allow: /favicon.ico
+Allow: /manifest.json
