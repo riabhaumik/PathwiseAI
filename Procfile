@@ -1,1 +1,1 @@
-web: python start.py
+web: chmod +x start.sh && ./start.sh
