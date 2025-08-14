@@ -329,7 +329,7 @@ export default function RoadmapPage() {
   const difficulties = ['all', 'Intermediate', 'Advanced', 'Expert']
 
   const handleStartRoadmap = (career: CareerRoadmap) => {
-    router.push(`/learn/${encodeURIComponent(career.name)}`)
+    router.push(`/careers?career=${encodeURIComponent(career.name)}`)
   }
 
   const getDifficultyColor = (difficulty: string) => {
@@ -356,11 +356,12 @@ export default function RoadmapPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+        <Navigation />
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600 dark:text-gray-400">Loading career roadmaps...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-slate-600 dark:text-slate-400">Loading career roadmaps...</p>
           </div>
         </div>
       </div>
@@ -368,20 +369,20 @@ export default function RoadmapPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       <Navigation />
       
       {/* Hero Section */}
-      <section className="relative py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center animate-fade-in">
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-              Career <span className="gradient-text">Roadmaps</span>
+            <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-6">
+              Career <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Roadmaps</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
               Discover comprehensive learning paths for {careers.length}+ STEM careers with detailed phases, skills, and resources.
             </p>
-            <div className="flex justify-center items-center gap-6 text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex justify-center items-center gap-6 text-sm text-slate-600 dark:text-slate-400">
               <div className="flex items-center gap-2">
                 <Map className="h-5 w-5 text-purple-500" />
                 <span>{careers.length} Career Paths</span>
@@ -400,28 +401,28 @@ export default function RoadmapPage() {
       </section>
 
       {/* Search and Filters */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg space-y-4">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+        <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-slate-200/50 dark:border-slate-700/50 space-y-4">
           {/* Search Bar */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-5 w-5" />
             <input
               type="text"
               placeholder="Search career roadmaps (e.g., 'software engineer', 'data scientist')..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-lg"
+              className="w-full pl-10 pr-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-slate-700 dark:text-slate-100 text-lg focus:outline-none"
             />
           </div>
           
           {/* Filters */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Category</label>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-slate-700 dark:text-slate-100 focus:outline-none"
               >
                 {categories.map(category => (
                   <option key={category} value={category}>
@@ -432,11 +433,11 @@ export default function RoadmapPage() {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Difficulty</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Difficulty</label>
               <select
                 value={selectedDifficulty}
                 onChange={(e) => setSelectedDifficulty(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-slate-700 dark:text-slate-100 focus:outline-none"
               >
                 {difficulties.map(difficulty => (
                   <option key={difficulty} value={difficulty}>
@@ -453,7 +454,7 @@ export default function RoadmapPage() {
                   setSelectedCategory('all')
                   setSelectedDifficulty('all')
                 }}
-                className="w-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                className="w-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
               >
                 Clear Filters
               </button>
@@ -463,42 +464,42 @@ export default function RoadmapPage() {
       </section>
 
       {/* Roadmap Stats */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg text-center">
+          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 shadow-lg text-center border border-slate-200/50 dark:border-slate-700/50">
             <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">
               {careers.length}
             </div>
-            <div className="text-gray-600 dark:text-gray-400">Career Paths</div>
+            <div className="text-slate-600 dark:text-slate-400">Career Paths</div>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg text-center">
+          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 shadow-lg text-center border border-slate-200/50 dark:border-slate-700/50">
             <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
               {categories.length - 1}
             </div>
-            <div className="text-gray-600 dark:text-gray-400">Categories</div>
+            <div className="text-slate-600 dark:text-slate-400">Categories</div>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg text-center">
+          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 shadow-lg text-center border border-slate-200/50 dark:border-slate-700/50">
             <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">
               {careers.reduce((sum, c) => sum + c.phases, 0)}
             </div>
-            <div className="text-gray-600 dark:text-gray-400">Total Phases</div>
+            <div className="text-slate-600 dark:text-slate-400">Total Phases</div>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg text-center">
+          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 shadow-lg text-center border border-slate-200/50 dark:border-slate-700/50">
             <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">
               {careers.reduce((sum, c) => sum + c.resources, 0)}
             </div>
-            <div className="text-gray-600 dark:text-gray-400">Resources</div>
+            <div className="text-slate-600 dark:text-slate-400">Resources</div>
           </div>
         </div>
       </section>
 
       {/* Featured Roadmaps */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
             Featured Career Roadmaps
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
+          <p className="text-lg text-slate-600 dark:text-slate-400">
             Start with these popular career paths
           </p>
         </div>
@@ -507,13 +508,13 @@ export default function RoadmapPage() {
           {careers.slice(0, 6).map((career, index) => (
             <div
               key={career.name}
-              className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 cursor-pointer animate-slide-up"
+              className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-slate-200/50 dark:border-slate-700/50 hover:shadow-xl transition-all duration-300 cursor-pointer animate-slide-up focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               style={{ animationDelay: `${index * 0.1}s` }}
               onClick={() => handleStartRoadmap(career)}
             >
               <div className="text-center mb-4">
                 <div className="text-4xl mb-3">{career.icon}</div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
                   {career.name}
                 </h3>
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${getCategoryColor(career.category)}`}>
@@ -521,31 +522,31 @@ export default function RoadmapPage() {
                 </span>
               </div>
               
-              <p className="text-gray-600 dark:text-gray-400 text-center mb-4 line-clamp-3">
+              <p className="text-slate-600 dark:text-slate-400 text-center mb-4 line-clamp-3">
                 {career.description}
               </p>
               
               <div className="space-y-3 mb-4">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500 dark:text-gray-400">Difficulty:</span>
+                  <span className="text-slate-500 dark:text-slate-400">Difficulty:</span>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(career.difficulty)}`}>
                     {career.difficulty}
                   </span>
                 </div>
                 
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500 dark:text-gray-400">Duration:</span>
-                  <span className="font-medium text-gray-700 dark:text-gray-300">{career.duration}</span>
+                  <span className="text-slate-500 dark:text-slate-400">Duration:</span>
+                  <span className="font-medium text-slate-700 dark:text-slate-300">{career.duration}</span>
                 </div>
                 
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500 dark:text-gray-400">Phases:</span>
-                  <span className="font-medium text-gray-700 dark:text-gray-300">{career.phases}</span>
+                  <span className="text-slate-500 dark:text-slate-400">Phases:</span>
+                  <span className="font-medium text-slate-700 dark:text-slate-300">{career.phases}</span>
                 </div>
                 
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500 dark:text-gray-400">Resources:</span>
-                  <span className="font-medium text-gray-700 dark:text-gray-300">{career.resources}</span>
+                  <span className="text-slate-500 dark:text-slate-400">Resources:</span>
+                  <span className="font-medium text-slate-700 dark:text-slate-300">{career.resources}</span>
                 </div>
               </div>
               
@@ -554,7 +555,7 @@ export default function RoadmapPage() {
                   e.stopPropagation()
                   handleStartRoadmap(career)
                 }}
-                className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium flex items-center justify-center gap-2"
+                className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
               >
                 <Map className="h-4 w-4" />
                 Start Roadmap
@@ -565,12 +566,12 @@ export default function RoadmapPage() {
       </section>
 
       {/* All Roadmaps Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
             All Career Roadmaps
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
+          <p className="text-lg text-slate-600 dark:text-slate-400">
             Explore all available learning paths
           </p>
         </div>
@@ -579,7 +580,7 @@ export default function RoadmapPage() {
           {filteredCareers.map((career, index) => (
             <div
               key={career.name}
-              className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 cursor-pointer animate-slide-up"
+              className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-slate-200/50 dark:border-slate-700/50 hover:shadow-xl transition-all duration-300 cursor-pointer animate-slide-up focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               style={{ animationDelay: `${index * 0.1}s` }}
               onClick={() => handleStartRoadmap(career)}
             >
@@ -587,7 +588,7 @@ export default function RoadmapPage() {
                 <div className="flex items-center gap-3">
                   <div className="text-3xl">{career.icon}</div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white line-clamp-2">
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 line-clamp-2">
                       {career.name}
                     </h3>
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(career.category)}`}>
@@ -600,28 +601,28 @@ export default function RoadmapPage() {
                 </span>
               </div>
 
-              <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
+              <p className="text-slate-600 dark:text-slate-400 mb-4 line-clamp-3">
                 {career.description}
               </p>
 
               <div className="space-y-3 mb-4">
                 <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
                     <Clock className="h-4 w-4" />
                     <span>{career.duration}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
                     <Target className="h-4 w-4" />
                     <span>{career.phases} phases</span>
                   </div>
                 </div>
                 
                 <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
                     <BookOpen className="h-4 w-4" />
                     <span>{career.resources} resources</span>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
                     <Star className="h-4 w-4" />
                     <span>4.8★</span>
                   </div>
@@ -630,7 +631,7 @@ export default function RoadmapPage() {
 
               {/* Key Skills Preview */}
               <div className="mb-4">
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Key Skills:</p>
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Key Skills:</p>
                 <div className="flex flex-wrap gap-1">
                   {career.skills.slice(0, 3).map((skill, skillIndex) => (
                     <span
@@ -641,7 +642,7 @@ export default function RoadmapPage() {
                     </span>
                   ))}
                   {career.skills.length > 3 && (
-                    <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-md text-xs">
+                    <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 rounded-md text-xs">
                       +{career.skills.length - 3} more
                     </span>
                   )}
@@ -653,7 +654,7 @@ export default function RoadmapPage() {
                   e.stopPropagation()
                   handleStartRoadmap(career)
                 }}
-                className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium flex items-center justify-center gap-2"
+                className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
               >
                 <ChevronRight className="h-4 w-4" />
                 Start Learning
@@ -664,13 +665,13 @@ export default function RoadmapPage() {
 
         {filteredCareers.length === 0 && (
           <div className="text-center py-12">
-            <div className="text-gray-400 mb-4">
+            <div className="text-slate-400 mb-4">
               <Map className="h-16 w-16 mx-auto mb-4" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
               No roadmaps found
             </h3>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-slate-600 dark:text-slate-400">
               Try adjusting your search or filter criteria.
             </p>
           </div>

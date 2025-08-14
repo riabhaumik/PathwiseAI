@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { 
   Search, Filter, TrendingUp, DollarSign, GraduationCap, 
   MapPin, Users, Award, ArrowRight, BookOpen, Target, 
@@ -34,10 +34,23 @@ export default function CareersPage() {
   const [selectedCareer, setSelectedCareer] = useState<Career | null>(null)
   const [showCareerModal, setShowCareerModal] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   useEffect(() => {
     loadCareers()
   }, [])
+
+  // Handle career parameter from URL (e.g., from roadmap)
+  useEffect(() => {
+    const careerParam = searchParams.get('career')
+    if (careerParam && careers.length > 0) {
+      const career = careers.find(c => c.name.toLowerCase() === careerParam.toLowerCase())
+      if (career) {
+        setSelectedCareer(career)
+        setShowCareerModal(true)
+      }
+    }
+  }, [searchParams, careers])
 
   const loadCareers = async () => {
     try {

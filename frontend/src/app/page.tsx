@@ -1,37 +1,13 @@
 'use client'
 
-import { useAuth } from '../lib/auth-context'
-import { useRouter } from 'next/navigation'
-import { Brain, Target, BookOpen, ArrowRight, Star, ChevronRight, Calculator, Briefcase, Award, Globe, ExternalLink, Map, Wifi, WifiOff } from 'lucide-react'
+import { Brain, Target, BookOpen, ArrowRight, Star, ChevronRight, Calculator, Briefcase, Award, Globe, ExternalLink, Map } from 'lucide-react'
 import Navigation from '@/components/Navigation'
-import { useState, useEffect } from 'react'
+import { useAuth } from '@/lib/auth-context'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
   const { user } = useAuth()
   const router = useRouter()
-  const [backendStatus, setBackendStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking')
-
-  useEffect(() => {
-    // Test backend connection
-    const testBackend = async () => {
-      try {
-        const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
-        const response = await fetch(`${baseUrl}/health`, { 
-          method: 'GET',
-          signal: AbortSignal.timeout(3000)
-        })
-        if (response.ok) {
-          setBackendStatus('connected')
-        } else {
-          setBackendStatus('disconnected')
-        }
-      } catch (error) {
-        setBackendStatus('disconnected')
-      }
-    }
-    
-    testBackend()
-  }, [])
 
   const handleGetStarted = () => {
     router.push('/careers')
@@ -116,28 +92,6 @@ export default function Home() {
           <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto leading-relaxed">
             Discover 30+ STEM careers in Computer Science, Engineering, Mathematics, Physics, and Chemistry with AI-powered guidance to build your dream career path.
           </p>
-          
-          {/* Backend Status Indicator */}
-          <div className="flex items-center justify-center gap-2 mb-6">
-            {backendStatus === 'checking' && (
-              <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                <span className="text-sm">Checking backend connection...</span>
-              </div>
-            )}
-            {backendStatus === 'connected' && (
-              <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
-                <Wifi className="h-4 w-4" />
-                <span className="text-sm font-medium">Backend Connected ✓</span>
-              </div>
-            )}
-            {backendStatus === 'disconnected' && (
-              <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
-                <WifiOff className="h-4 w-4" />
-                <span className="text-sm font-medium">Backend Disconnected ⚠️</span>
-              </div>
-            )}
-          </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
             <button

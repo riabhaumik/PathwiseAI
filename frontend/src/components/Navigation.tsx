@@ -75,20 +75,20 @@ export default function Navigation() {
           ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-lg border-b border-slate-200 dark:border-slate-700' 
           : 'bg-transparent'
       }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
           <div className="flex justify-between items-center h-16">
             
             {/* Logo Section */}
-            <div className="flex items-center">
+            <div className="flex items-center min-w-0">
               <Link href="/" className="flex items-center space-x-3 group">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200 flex-shrink-0">
                   <Brain className="w-5 h-5 text-white" />
                 </div>
-                <div className="hidden sm:block">
-                  <h1 className="text-lg font-black tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+                <div className="hidden sm:block min-w-0">
+                  <h1 className="text-base font-black tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent truncate" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
                     PATHWISE AI
                   </h1>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">STEM Career Navigator</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 truncate">STEM Career Navigator</p>
                 </div>
               </Link>
             </div>
