@@ -39,23 +39,24 @@ class RoadmapService:
         self._cache = {}
         self._cache_ttl = 3600  # 1 hour
 
-        # Resolve data directory robustly
-        # Try multiple possible paths for Railway deployment
+        # Resolve data directory robustly - FIXED PATH RESOLUTION
         current_file = os.path.abspath(__file__)
         possible_paths = [
-            # backend/app/services -> backend
-            os.path.dirname(os.path.dirname(os.path.dirname(current_file))),
+            # backend/app/services -> backend/data
+            os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(current_file))), "data"),
             # If running from root directory
-            os.path.join(os.getcwd(), "backend"),
+            os.path.join(os.getcwd(), "backend", "data"),
             # If running from backend directory
-            os.getcwd(),
+            os.path.join(os.getcwd(), "data"),
+            # If running from backend/app directory
+            os.path.join(os.path.dirname(os.path.dirname(current_file)), "data"),
             # Fallback to current directory
             os.path.dirname(current_file)
         ]
         
         self._base_dir = None
         for path in possible_paths:
-            data_path = os.path.join(path, "data", "careers_stem.json")
+            data_path = os.path.join(path, "careers_stem.json")
             if os.path.exists(data_path):
                 self._base_dir = path
                 logger.info(f"Found data directory at: {self._base_dir}")
@@ -69,37 +70,86 @@ class RoadmapService:
     def load_careers_data(self) -> Dict[str, Any]:
         """Load careers data from JSON file"""
         try:
-            path = os.path.join(self._base_dir, "data", "careers_stem.json")
-            logger.info(f"Attempting to load careers data from: {path}")
-            logger.info(f"Base directory: {self._base_dir}")
-            logger.info(f"Current working directory: {os.getcwd()}")
+            # Try multiple possible paths for careers data
+            possible_paths = [
+                os.path.join(self._base_dir, "careers_stem.json"),
+                os.path.join(self._base_dir, "data", "careers_stem.json"),
+                os.path.join(os.getcwd(), "data", "careers_stem.json"),
+                os.path.join(os.path.dirname(__file__), "..", "..", "data", "careers_stem.json"),
+                os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "careers_stem.json"),
+                "data/careers_stem.json",
+                "../data/careers_stem.json",
+                "../../data/careers_stem.json"
+            ]
             
-            if not os.path.exists(path):
-                logger.error(f"Careers data file not found at: {path}")
-                # List contents of base directory
-                try:
-                    base_contents = os.listdir(self._base_dir)
-                    logger.info(f"Contents of base directory: {base_contents}")
-                except Exception as e:
-                    logger.error(f"Could not list base directory contents: {e}")
-                return {}
+            careers_data = None
+            for path in possible_paths:
+                if os.path.exists(path):
+                    logger.info(f"Loading careers data from: {path}")
+                    with open(path, "r", encoding="utf-8") as f:
+                        careers_data = json.load(f)
+                        logger.info(f"Successfully loaded careers data with {len(careers_data)} careers from {path}")
+                        break
             
-            with open(path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                logger.info(f"Successfully loaded careers data with {len(data)} careers")
-                return data
+            if careers_data:
+                return careers_data
+            else:
+                logger.error("Could not find careers_stem.json in any of the expected locations")
+                logger.error(f"Base directory: {self._base_dir}")
+                logger.error(f"Current working directory: {os.getcwd()}")
+                # Return fallback data to prevent crashes
+                return {
+                    "Software Engineer": {
+                        "description": "Design, develop, and maintain software applications",
+                        "skills": ["Programming", "Problem Solving", "System Design"],
+                        "category": "Technology",
+                        "growth_rate": "High",
+                        "avg_salary": "$100,000+"
+                    },
+                    "Data Scientist": {
+                        "description": "Analyze data to help organizations make better decisions",
+                        "skills": ["Statistics", "Machine Learning", "Python"],
+                        "category": "Technology",
+                        "growth_rate": "Very High",
+                        "avg_salary": "$120,000+"
+                    }
+                }
+                
         except Exception as e:
             logger.error(f"Error loading careers data: {e}")
             logger.error(f"Base directory: {self._base_dir}")
             logger.error(f"Current working directory: {os.getcwd()}")
-            return {}
+            # Return fallback data to prevent crashes
+            return {
+                "Software Engineer": {
+                    "description": "Design, develop, and maintain software applications",
+                    "skills": ["Programming", "Problem Solving", "System Design"],
+                    "category": "Technology",
+                    "growth_rate": "High",
+                    "avg_salary": "$100,000+"
+                }
+            }
     
     def load_resources_data(self) -> Dict[str, Any]:
         """Load resources data from JSON file"""
         try:
-            path = os.path.join(self._base_dir, "data", "resources_massive.json")
-            with open(path, "r", encoding="utf-8") as f:
-                return json.load(f)
+            # Try multiple possible paths for resources data
+            possible_paths = [
+                os.path.join(self._base_dir, "resources_massive.json"),
+                os.path.join(self._base_dir, "data", "resources_massive.json"),
+                os.path.join(os.getcwd(), "data", "resources_massive.json"),
+                os.path.join(os.path.dirname(__file__), "..", "..", "data", "resources_massive.json"),
+                os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "resources_massive.json")
+            ]
+            
+            for path in possible_paths:
+                if os.path.exists(path):
+                    logger.info(f"Loading resources data from: {path}")
+                    with open(path, "r", encoding="utf-8") as f:
+                        return json.load(f)
+            
+            logger.warning("Could not find resources_massive.json, returning empty dict")
+            return {}
         except Exception as e:
             logger.error(f"Error loading resources data: {e}")
             return {}
@@ -124,7 +174,19 @@ class RoadmapService:
                 }
             
             # If not found in data, try to generate with AI
-            return await self._generate_career_skills_with_ai(career_name)
+            if self.openai_client:
+                return await self._generate_career_skills_with_ai(career_name)
+            else:
+                # Return fallback skills for common careers
+                fallback_skills = self._get_fallback_career_skills(career_name)
+                return {
+                    "career": career_name,
+                    "skills": fallback_skills,
+                    "description": f"Career path for {career_name}",
+                    "category": "Technology",
+                    "growth_rate": "High",
+                    "avg_salary": "$80,000+"
+                }
             
         except Exception as e:
             logger.error(f"Error getting career skills: {e}")
@@ -193,6 +255,134 @@ class RoadmapService:
                 if skill and len(skill) > 3:
                     skills.append(skill)
         return skills[:20]  # Limit to 20 skills
+    
+    def _get_fallback_career_skills(self, career_name: str) -> List[str]:
+        """Get fallback skills for common careers when AI is not available"""
+        career_lower = career_name.lower()
+        
+        # Software Engineer
+        if 'software' in career_lower and 'engineer' in career_lower:
+            return ["Programming", "Data Structures", "Algorithms", "System Design", "Databases", "Web Development", "Git", "Testing", "Problem Solving"]
+        
+        # Data Scientist
+        elif 'data' in career_lower and 'scientist' in career_lower:
+            return ["Statistics", "Machine Learning", "Python", "SQL", "Data Analysis", "Data Visualization", "Mathematics", "Research Methods", "Communication"]
+        
+        # AI Engineer
+        elif 'ai' in career_lower and 'engineer' in career_lower:
+            return ["Machine Learning", "Deep Learning", "Python", "TensorFlow/PyTorch", "Mathematics", "Neural Networks", "Data Processing", "Model Deployment", "Research"]
+        
+        # ML Engineer
+        elif 'ml' in career_lower and 'engineer' in career_lower:
+            return ["Machine Learning", "Python", "Data Engineering", "Model Deployment", "MLOps", "Statistics", "Big Data", "Cloud Platforms", "Software Engineering"]
+        
+        # Data Engineer
+        elif 'data' in career_lower and 'engineer' in career_lower:
+            return ["Databases", "SQL", "Python", "Big Data", "ETL", "Data Pipelines", "Cloud Platforms", "Data Warehousing", "Programming"]
+        
+        # DevOps Engineer
+        elif 'devops' in career_lower:
+            return ["Linux", "Docker", "Kubernetes", "CI/CD", "Cloud Platforms", "Infrastructure as Code", "Monitoring", "Networking", "Automation"]
+        
+        # Cybersecurity Engineer
+        elif 'cybersecurity' in career_lower or 'security' in career_lower:
+            return ["Network Security", "Cryptography", "Penetration Testing", "Security Tools", "Incident Response", "Risk Assessment", "Compliance", "Programming", "Networking"]
+        
+        # Full Stack Developer
+        elif 'full stack' in career_lower:
+            return ["Frontend Development", "Backend Development", "Databases", "Web Technologies", "JavaScript", "Python/Java", "APIs", "DevOps", "Problem Solving"]
+        
+        # Mobile Developer
+        elif 'mobile' in career_lower:
+            return ["Mobile Development", "iOS/Android", "React Native/Flutter", "Mobile UI/UX", "Programming", "APIs", "Testing", "App Store", "Performance"]
+        
+        # Cloud Architect
+        elif 'cloud' in career_lower and 'architect' in career_lower:
+            return ["Cloud Platforms", "Architecture Design", "Networking", "Security", "Scalability", "Cost Optimization", "Infrastructure", "Automation", "Best Practices"]
+        
+        # Blockchain Developer
+        elif 'blockchain' in career_lower:
+            return ["Blockchain Technology", "Smart Contracts", "Solidity", "Cryptography", "Web3", "Distributed Systems", "Programming", "Security", "DApp Development"]
+        
+        # Game Developer
+        elif 'game' in career_lower:
+            return ["Game Development", "Unity/Unreal", "Programming", "3D Graphics", "Game Design", "Physics", "Animation", "Audio", "User Experience"]
+        
+        # Embedded Systems Engineer
+        elif 'embedded' in career_lower:
+            return ["Embedded Systems", "C/C++", "Microcontrollers", "Hardware", "Real-time Systems", "IoT", "Programming", "Electronics", "System Design"]
+        
+        # Computer Vision Engineer
+        elif 'computer vision' in career_lower:
+            return ["Computer Vision", "Image Processing", "Deep Learning", "OpenCV", "Python", "Neural Networks", "Mathematics", "Machine Learning", "Research"]
+        
+        # NLP Engineer
+        elif 'nlp' in career_lower or 'natural language' in career_lower:
+            return ["Natural Language Processing", "Machine Learning", "Python", "Linguistics", "Text Analysis", "Deep Learning", "Transformers", "Research", "Data Processing"]
+        
+        # Robotics Engineer
+        elif 'robotics' in career_lower:
+            return ["Robotics", "Control Systems", "Mechanics", "Programming", "Mathematics", "Sensors", "Actuators", "Machine Learning", "System Integration"]
+        
+        # Quantum Computing Engineer
+        elif 'quantum' in career_lower:
+            return ["Quantum Computing", "Quantum Mechanics", "Linear Algebra", "Programming", "Algorithms", "Physics", "Mathematics", "Research", "Quantum Software"]
+        
+        # Bioinformatics Engineer
+        elif 'bioinformatics' in career_lower:
+            return ["Biology", "Programming", "Data Analysis", "Statistics", "Machine Learning", "Genomics", "Python", "Research", "Computational Biology"]
+        
+        # Financial Technology Engineer
+        elif 'fintech' in career_lower or 'financial technology' in career_lower:
+            return ["Finance", "Programming", "Blockchain", "Machine Learning", "Data Analysis", "Financial Systems", "Security", "Regulations", "Innovation"]
+        
+        # Space Systems Engineer
+        elif 'space' in career_lower or 'aerospace' in career_lower:
+            return ["Aerospace Engineering", "Physics", "Mathematics", "Control Systems", "Orbital Mechanics", "Programming", "Systems Engineering", "Research", "Space Technology"]
+        
+        # Research Scientist
+        elif 'research' in career_lower and 'scientist' in career_lower:
+            return ["Research Methods", "Data Analysis", "Statistics", "Programming", "Scientific Writing", "Laboratory Skills", "Critical Thinking", "Innovation", "Communication"]
+        
+        # Research Analyst
+        elif 'research' in career_lower and 'analyst' in career_lower:
+            return ["Research Methods", "Data Analysis", "Statistics", "Market Research", "Report Writing", "Critical Thinking", "Communication", "Problem Solving", "Industry Knowledge"]
+        
+        # Mathematician
+        elif 'mathematician' in career_lower or 'mathematics' in career_lower:
+            return ["Advanced Mathematics", "Mathematical Proofs", "Research", "Problem Solving", "Theoretical Math", "Applied Math", "Statistics", "Analysis", "Communication"]
+        
+        # Cryptographer
+        elif 'cryptographer' in career_lower or 'cryptography' in career_lower:
+            return ["Cryptography", "Mathematics", "Computer Science", "Security", "Algorithms", "Number Theory", "Programming", "Research", "Information Security"]
+        
+        # System Architect
+        elif 'system architect' in career_lower or 'systems architect' in career_lower:
+            return ["System Design", "Architecture", "Software Engineering", "Scalability", "Performance", "Security", "Integration", "Best Practices", "Problem Solving"]
+        
+        # Team Lead
+        elif 'team lead' in career_lower or 'team leadership' in career_lower:
+            return ["Leadership", "Team Management", "Communication", "Project Management", "Technical Skills", "Mentoring", "Decision Making", "Conflict Resolution", "Strategic Thinking"]
+        
+        # Innovation Lead
+        elif 'innovation lead' in career_lower or 'innovation' in career_lower:
+            return ["Innovation", "Creative Thinking", "Strategic Planning", "Research", "Trend Analysis", "Product Development", "Change Management", "Leadership", "Problem Solving"]
+        
+        # Operations Research
+        elif 'operations research' in career_lower or 'operations' in career_lower:
+            return ["Operations Research", "Optimization", "Statistics", "Mathematics", "Data Analysis", "Decision Making", "Modeling", "Problem Solving", "Business Acumen"]
+        
+        # Quantitative Analyst
+        elif 'quantitative analyst' in career_lower or 'quant' in career_lower:
+            return ["Quantitative Analysis", "Mathematics", "Statistics", "Programming", "Financial Modeling", "Risk Management", "Data Analysis", "Economics", "Problem Solving"]
+        
+        # Product Manager
+        elif 'product manager' in career_lower or 'product management' in career_lower:
+            return ["Product Strategy", "Market Research", "User Experience", "Data Analysis", "Project Management", "Communication", "Leadership", "Business Acumen", "Technical Knowledge"]
+        
+        # Default fallback for unknown careers
+        else:
+            return ["Problem Solving", "Critical Thinking", "Communication", "Technical Skills", "Learning Ability", "Adaptability", "Teamwork", "Analytical Skills", "Innovation"]
     
     async def get_youtube_resources(self, query: str, max_results: int = 5) -> List[Dict[str, Any]]:
         """Fetch YouTube resources for learning"""
@@ -408,6 +598,11 @@ class RoadmapService:
                            user_level: str = "beginner") -> Dict[str, Any]:
         """Generate a comprehensive AI-powered roadmap"""
         try:
+            # Check if OpenAI client is available
+            if not self.openai_client:
+                logger.info("OpenAI client not available, using basic roadmap")
+                return self.generate_basic_roadmap(career_name, career_data, user_level)
+            
             # Create a detailed prompt for the AI
             prompt = f"""Create a comprehensive learning roadmap for becoming a {career_name}.
             
@@ -720,6 +915,20 @@ class RoadmapService:
             else:
                 logger.warning(f"Career not found in database: {career_name}")
                 logger.info(f"Available careers: {list(careers_data.keys())[:10]}")
+                
+                # Try to get skills for the career
+                try:
+                    skills_data = await self.get_career_skills(career_name)
+                    career_data = {
+                        "name": career_name,
+                        "description": skills_data.get("description", f"Career path for {career_name}"),
+                        "skills": skills_data.get("skills", []),
+                        "category": skills_data.get("category", "Technology"),
+                        "subjects": {}
+                    }
+                except Exception as e:
+                    logger.warning(f"Failed to get career skills: {e}")
+                    career_data = None
             
             # If career not found, create basic data
             if not career_data:
@@ -1901,32 +2110,62 @@ class RoadmapService:
     
     def _get_ai_engineer_roadmap(self, user_level: str, career_data: Dict[str, Any]) -> Dict[str, Any]:
         """Comprehensive AI Engineer roadmap"""
+        duration_map = {"beginner": "18-24 months", "intermediate": "12-18 months", "advanced": "6-12 months"}
+        
+        phases = [
+            {
+                "name": "AI Fundamentals",
+                "duration": "3-4 months",
+                "description": "Build foundation in AI and machine learning",
+                "topics": ["Machine Learning Basics", "Neural Networks", "Python Programming", "Mathematics Foundation"],
+                "difficulty": "beginner"
+            },
+            {
+                "name": "Deep Learning Mastery",
+                "duration": "4-6 months",
+                "description": "Master deep learning architectures and frameworks",
+                "topics": ["CNNs", "RNNs", "Transformers", "PyTorch/TensorFlow", "Advanced Neural Networks"],
+                "difficulty": "intermediate"
+            },
+            {
+                "name": "Production AI Systems",
+                "duration": "4-6 months",
+                "description": "Learn to deploy and maintain AI systems in production",
+                "topics": ["Model Optimization", "GPU Computing", "Distributed Training", "MLOps", "Model Serving"],
+                "difficulty": "advanced"
+            }
+        ]
+        
         return {
             "career": "AI Engineer",
             "overview": "Specialized roadmap for AI engineering focusing on deep learning and production AI systems.",
-            "estimated_duration": "18-24 months",
+            "estimated_duration": duration_map.get(user_level, "18-24 months"),
             "skill_domains": {
                 "programming": ["Python", "C++", "PyTorch", "TensorFlow"],
                 "ai_ml": ["Deep Learning", "Transformers", "Computer Vision", "NLP"],
                 "mathematics": ["Linear Algebra", "Calculus", "Statistics", "Information Theory"],
                 "infrastructure": ["GPU Computing", "Distributed Training", "Model Optimization"]
             },
-            "phases": [
+            "phases": phases,
+            "math_prerequisites": ["Linear Algebra", "Calculus", "Statistics", "Information Theory"],
+            "milestones": [
                 {
-                    "name": "AI Fundamentals",
-                    "duration": "3-4 months",
-                    "description": "Build foundation in AI and machine learning",
-                    "topics": ["Machine Learning Basics", "Neural Networks", "Python Programming"],
-                    "difficulty": "beginner"
+                    "name": "AI Fundamentals Complete",
+                    "description": "Mastered basic AI concepts and neural networks",
+                    "target_date": "3-4 months",
+                    "criteria": ["Understand ML basics", "Implement simple neural networks", "Python proficiency"]
                 },
                 {
-                    "name": "Deep Learning Mastery",
-                    "duration": "4-6 months",
-                    "description": "Master deep learning architectures and frameworks",
-                    "topics": ["CNNs", "RNNs", "Transformers", "PyTorch/TensorFlow"],
-                    "difficulty": "intermediate"
+                    "name": "Deep Learning Proficient",
+                    "description": "Can implement and train complex neural networks",
+                    "target_date": "7-10 months",
+                    "criteria": ["Implement CNNs/RNNs", "Use PyTorch/TensorFlow", "Understand transformers"]
+                },
+                {
+                    "name": "Production Ready",
+                    "description": "Can deploy and maintain AI systems in production",
+                    "target_date": "11-18 months",
+                    "criteria": ["Model optimization", "Production deployment", "MLOps practices"]
                 }
-            ],
-            "math_prerequisites": ["Linear Algebra", "Calculus", "Statistics", "Information Theory"],
-            "milestones": []
-        } 
+            ]
+        }

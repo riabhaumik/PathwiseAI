@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, status
 from typing import Dict, Any, Optional
 import json
 import os
+from datetime import datetime
 
 router = APIRouter(prefix="/api", tags=["challenging-problems"])
 
@@ -376,3 +377,25 @@ async def get_problem_by_id(problem_id: str):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to retrieve problem '{problem_id}': {str(e)}"
         )
+
+@router.get("/test")
+async def test_interview_prep():
+    """Test endpoint to verify interview prep data is working"""
+    try:
+        data = load_challenging_problems_data()
+        return {
+            "status": "success",
+            "data_loaded": bool(data),
+            "has_challenging_problems": "challenging_problems" in data if data else False,
+            "problems_count": len(data.get("challenging_problems", {}).get("problems", [])) if data else 0,
+            "categories_count": len(data.get("challenging_problems", {}).get("categories", {})) if data else 0,
+            "sample_categories": list(data.get("challenging_problems", {}).get("categories", {}).keys())[:3] if data else [],
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e),
+            "error_type": type(e).__name__,
+            "timestamp": datetime.now().isoformat()
+        }

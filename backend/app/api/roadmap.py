@@ -99,18 +99,48 @@ async def debug_careers():
     try:
         roadmap_service = RoadmapService()
         careers_data = roadmap_service.load_careers_data()
+        
+        # Get current working directory and file paths for debugging
+        import os
+        current_dir = os.getcwd()
+        service_file = os.path.abspath(__file__)
+        
+        # Check if careers_stem.json exists in various locations
+        possible_paths = [
+            os.path.join(current_dir, "data", "careers_stem.json"),
+            os.path.join(os.path.dirname(service_file), "..", "..", "data", "careers_stem.json"),
+            os.path.join(os.path.dirname(service_file), "..", "..", "..", "data", "careers_stem.json"),
+            "data/careers_stem.json",
+            "../data/careers_stem.json",
+            "../../data/careers_stem.json"
+        ]
+        
+        path_status = {}
+        for path in possible_paths:
+            path_status[path] = {
+                "exists": os.path.exists(path),
+                "is_file": os.path.isfile(path) if os.path.exists(path) else False,
+                "size": os.path.getsize(path) if os.path.exists(path) and os.path.isfile(path) else 0
+            }
+        
         return {
             "success": True,
             "careers_count": len(careers_data) if careers_data else 0,
             "sample_careers": list(careers_data.keys())[:5] if careers_data else [],
             "base_dir": getattr(roadmap_service, '_base_dir', 'Not set'),
-            "current_working_dir": os.getcwd()
+            "current_working_dir": current_dir,
+            "service_file_location": service_file,
+            "path_status": path_status,
+            "careers_data_type": type(careers_data).__name__,
+            "careers_data_keys": list(careers_data.keys()) if careers_data else []
         }
     except Exception as e:
+        import traceback
         return {
             "success": False,
             "error": str(e),
-            "error_type": type(e).__name__
+            "error_type": type(e).__name__,
+            "traceback": traceback.format_exc()
         }
 
 @router.get("/debug/test-roadmap")

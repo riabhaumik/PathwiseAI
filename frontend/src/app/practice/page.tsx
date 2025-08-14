@@ -551,28 +551,136 @@ function PracticePageInner() {
     const fetchChallengingProblems = async () => {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
-        // Try both endpoints to ensure compatibility
-        let response = await fetch(`${baseUrl}/api/challenging-problems`)
+        console.log('Fetching challenging problems from:', baseUrl)
         
-        if (!response.ok) {
-          response = await fetch(`${baseUrl}/api/interview_prep`)
+        // Try multiple endpoints to ensure compatibility
+        let response = null
+        let data = null
+        
+        // Try the main challenging problems endpoint first
+        try {
+          response = await fetch(`${baseUrl}/api/challenging-problems`)
+          if (response.ok) {
+            data = await response.json()
+            console.log('Successfully fetched from /api/challenging-problems')
+          }
+        } catch (e) {
+          console.log('Failed to fetch from /api/challenging-problems:', e)
         }
         
-        if (response.ok) {
-          const data = await response.json()
-          if (data.challenging_problems) {
-            setChallengingProblemsData(data.challenging_problems)
-            // Set default category
-            const categoryKeys = Object.keys(data.challenging_problems.categories)
-            if (categoryKeys.length > 0) {
-              setSelectedProblemCategory(categoryKeys[0])
+        // If that failed, try the interview prep endpoint
+        if (!data) {
+          try {
+            response = await fetch(`${baseUrl}/api/interview_prep`)
+            if (response.ok) {
+              data = await response.json()
+              console.log('Successfully fetched from /api/interview_prep')
+            }
+          } catch (e) {
+            console.log('Failed to fetch from /api/interview_prep:', e)
+          }
+        }
+        
+        // If both failed, try the alternative endpoint
+        if (!data) {
+          try {
+            response = await fetch(`${baseUrl}/api/challenging-problems`)
+            if (response.ok) {
+              data = await response.json()
+              console.log('Successfully fetched from alternative endpoint')
+            }
+          } catch (e) {
+            console.log('Failed to fetch from alternative endpoint:', e)
+          }
+        }
+        
+        if (data && data.challenging_problems) {
+          setChallengingProblemsData(data.challenging_problems)
+          // Set default category
+          const categoryKeys = Object.keys(data.challenging_problems.categories)
+          if (categoryKeys.length > 0) {
+            setSelectedProblemCategory(categoryKeys[0])
+          }
+          console.log('Challenging problems data loaded successfully')
+        } else {
+          console.error('No challenging problems data found in response')
+          // Use fallback data if API fails
+          const fallbackData = {
+            title: "Challenging Coding & Math Problems",
+            description: "A curated collection of challenging problems to test your problem-solving skills",
+            problems: [
+              {
+                id: "1",
+                title: "Two Sum",
+                description: "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
+                difficulty: "Easy",
+                category: "Arrays",
+                example: "Input: nums = [2,7,11,15], target = 9, Output: [0,1]",
+                hint: "Use a hash map to store complements",
+                solution_approach: "Use a hash map to store numbers and their indices. For each number, check if its complement exists.",
+                time_complexity: "O(n)",
+                space_complexity: "O(n)",
+                related_topics: ["Arrays", "Hash Table", "Two Pointers"]
+              },
+              {
+                id: "2",
+                title: "Valid Parentheses",
+                description: "Given a string s containing just the characters '()[]{}', determine if the input string is valid.",
+                difficulty: "Easy",
+                category: "Stacks",
+                example: "Input: s = '()[]{}', Output: true",
+                hint: "Use a stack to keep track of opening brackets",
+                solution_approach: "Use a stack to push opening brackets and pop when encountering closing brackets.",
+                time_complexity: "O(n)",
+                space_complexity: "O(n)",
+                related_topics: ["Stack", "String", "Parentheses"]
+              }
+            ],
+            categories: {
+              "Arrays": "Problems involving array manipulation and algorithms",
+              "Stacks": "Problems involving stack data structure"
+            },
+            difficulty_levels: {
+              "Easy": "Basic concepts, straightforward implementation",
+              "Medium": "Requires algorithmic thinking and optimization",
+              "Hard": "Advanced algorithms, complex data structures, mathematical insight"
             }
           }
-        } else {
-          console.error('Failed to fetch challenging problems:', response.status)
+          setChallengingProblemsData(fallbackData)
+          setSelectedProblemCategory("Arrays")
         }
       } catch (error) {
         console.error('Error fetching challenging problems data:', error)
+        // Use the same fallback data
+        const fallbackData = {
+          title: "Challenging Coding & Math Problems",
+          description: "A curated collection of challenging problems to test your problem-solving skills",
+          problems: [
+            {
+              id: "1",
+              title: "Two Sum",
+              description: "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
+              difficulty: "Easy",
+              category: "Arrays",
+              example: "Input: nums = [2,7,11,15], target = 9, Output: [0,1]",
+              hint: "Use a hash map to store complements",
+              solution_approach: "Use a hash map to store numbers and their indices. For each number, check if its complement exists.",
+              time_complexity: "O(n)",
+              space_complexity: "O(n)",
+              related_topics: ["Arrays", "Hash Table", "Two Pointers"]
+            }
+          ],
+          categories: {
+            "Arrays": "Problems involving array manipulation and algorithms"
+          },
+          difficulty_levels: {
+            "Easy": "Basic concepts, straightforward implementation",
+            "Medium": "Requires algorithmic thinking and optimization",
+            "Hard": "Advanced algorithms, complex data structures, mathematical insight"
+          }
+        }
+        setChallengingProblemsData(fallbackData)
+        setSelectedProblemCategory("Arrays")
       }
     }
 

@@ -20,6 +20,7 @@ from app.api.roadmap import router as roadmap_router
 from app.api.resources import router as resources_router
 from app.api.math_resources import router as math_resources_router
 from app.api.ai import router as ai_router
+from app.api.practice import router as practice_router
 import httpx
 import asyncio
 
@@ -63,6 +64,7 @@ app.include_router(roadmap_router)
 app.include_router(resources_router)
 app.include_router(math_resources_router)
 app.include_router(ai_router)
+app.include_router(practice_router)
 
 # Initialize Supabase client
 supabase_url = os.getenv("SUPABASE_URL")
