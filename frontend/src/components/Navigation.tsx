@@ -48,7 +48,6 @@ export default function Navigation() {
     { name: 'Careers', href: '/careers', icon: Briefcase, description: 'Explore STEM career paths' },
     { name: 'Practice', href: '/practice', icon: Code, description: 'Interview prep & coding problems' },
     { name: 'Roadmap', href: '/roadmap', icon: Map, description: 'Learning roadmaps & guides' },
-    { name: 'Learn', href: '/learn', icon: BookOpen, description: 'Interactive learning modules' },
     { name: 'Math', href: '/math', icon: Calculator, description: 'Mathematics resources & tools' },
     { name: 'Resources', href: '/resources', icon: Brain, description: 'Educational materials & links' },
     { name: 'Jobs', href: '/jobs', icon: Target, description: 'Job opportunities & listings' }
@@ -73,7 +72,7 @@ export default function Navigation() {
       {/* Navigation Bar */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-gray-200 dark:border-gray-700' 
+          ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-lg border-b border-slate-200 dark:border-slate-700' 
           : 'bg-transparent'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -82,14 +81,14 @@ export default function Navigation() {
             {/* Logo Section */}
             <div className="flex items-center">
               <Link href="/" className="flex items-center space-x-3 group">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-                  <Brain className="w-6 h-6 text-white" />
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                  <Brain className="w-5 h-5 text-white" />
                 </div>
                 <div className="hidden sm:block">
-                  <h1 className="text-xl font-black tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+                  <h1 className="text-lg font-black tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
                     PATHWISE AI
                   </h1>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">STEM Career Navigator</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">STEM Career Navigator</p>
                 </div>
               </Link>
             </div>
@@ -100,10 +99,10 @@ export default function Navigation() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-800 ${
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-800 ${
                     pathname === item.href
                       ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                      : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100'
                   }`}
                 >
                   <item.icon className="w-4 h-4" />
@@ -116,7 +115,7 @@ export default function Navigation() {
             <div className="flex items-center space-x-4">
               
               {/* Search Button */}
-              <button className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200">
+              <button className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors duration-200">
                 <Search className="w-5 h-5" />
               </button>
 
@@ -128,27 +127,27 @@ export default function Navigation() {
                 <div className="relative hidden lg:block">
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                    className="flex items-center space-x-2 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200"
                   >
                     <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                       <User className="w-4 h-4 text-white" />
                     </div>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
                       {user.name || user.email.split('@')[0]}
                     </span>
-                    <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
+                    <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${
                       isDropdownOpen ? 'rotate-180' : ''
                     }`} />
                   </button>
 
                   {/* User Dropdown Menu */}
                   {isDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 z-50">
-                      <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-                        <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 py-2 z-50">
+                      <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
                           {user.name || 'User'}
                         </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                        <p className="text-sm text-slate-500 dark:text-slate-400">
                           {user.email}
                         </p>
                       </div>
@@ -157,14 +156,14 @@ export default function Navigation() {
                         <Link
                           key={item.name}
                           href={item.href}
-                          className="flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                          className="flex items-center space-x-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-200"
                         >
                           <item.icon className="w-4 h-4" />
                           <span>{item.name}</span>
                         </Link>
                       ))}
                       
-                      <div className="border-t border-gray-200 dark:border-gray-700 mt-2 pt-2">
+                      <div className="border-t border-slate-200 dark:border-slate-700 mt-2 pt-2">
                         <button
                           onClick={handleLogout}
                           className="flex items-center space-x-3 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 w-full transition-colors duration-200"
@@ -183,7 +182,7 @@ export default function Navigation() {
                 <div className="hidden lg:flex items-center space-x-3">
                   <Link
                     href="/login"
-                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
+                    className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors duration-200"
                   >
                     Sign In
                   </Link>
@@ -199,7 +198,7 @@ export default function Navigation() {
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="lg:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200"
+                className="lg:hidden p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors duration-200"
               >
                 {isMenuOpen ? (
                   <X className="w-6 h-6" />
@@ -217,19 +216,19 @@ export default function Navigation() {
             ? 'max-h-screen opacity-100' 
             : 'max-h-0 opacity-0 overflow-hidden'
         }`}>
-          <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-4 py-6 space-y-4">
+          <div className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 px-4 py-6 space-y-4">
             
             {/* User Info (if logged in) */}
             {user && (
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5 text-white" />
+              <div className="flex items-center space-x-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                  <User className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
                     {user.name || 'User'}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     {user.email}
                   </p>
                 </div>
@@ -245,13 +244,13 @@ export default function Navigation() {
                   className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 ${
                     pathname === item.href
                       ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                   }`}
                 >
                   <item.icon className="w-5 h-5" />
                   <div>
                     <span className="font-medium">{item.name}</span>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       {item.description}
                     </p>
                   </div>
@@ -261,12 +260,12 @@ export default function Navigation() {
 
             {/* User Menu Items (if logged in) */}
             {user && (
-              <div className="space-y-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="space-y-2 pt-4 border-t border-slate-200 dark:border-slate-700">
                 {userMenuItems.map((item) => (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="flex items-center space-x-3 p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200"
+                    className="flex items-center space-x-3 p-3 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors duration-200"
                   >
                     <item.icon className="w-5 h-5" />
                     <span>{item.name}</span>
@@ -284,10 +283,10 @@ export default function Navigation() {
 
             {/* Auth Buttons for Guests */}
             {!user && (
-              <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
+              <div className="pt-4 border-t border-slate-200 dark:border-slate-700 space-y-3">
                 <Link
                   href="/login"
-                  className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+                  className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors duration-200"
                 >
                   Sign In
                 </Link>
@@ -301,8 +300,8 @@ export default function Navigation() {
             )}
 
             {/* Device Indicator */}
-            <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-              <div className="flex items-center justify-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
+            <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
+              <div className="flex items-center justify-center space-x-2 text-xs text-slate-500 dark:text-slate-400">
                 <Smartphone className="w-4 h-4" />
                 <span>Mobile View</span>
               </div>

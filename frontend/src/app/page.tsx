@@ -2,12 +2,36 @@
 
 import { useAuth } from '../lib/auth-context'
 import { useRouter } from 'next/navigation'
-import { Brain, Target, BookOpen, ArrowRight, Star, ChevronRight, Calculator, Briefcase, Award, Globe, ExternalLink, Map } from 'lucide-react'
+import { Brain, Target, BookOpen, ArrowRight, Star, ChevronRight, Calculator, Briefcase, Award, Globe, ExternalLink, Map, Wifi, WifiOff } from 'lucide-react'
 import Navigation from '@/components/Navigation'
+import { useState, useEffect } from 'react'
 
 export default function Home() {
   const { user } = useAuth()
   const router = useRouter()
+  const [backendStatus, setBackendStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking')
+
+  useEffect(() => {
+    // Test backend connection
+    const testBackend = async () => {
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+        const response = await fetch(`${baseUrl}/health`, { 
+          method: 'GET',
+          signal: AbortSignal.timeout(3000)
+        })
+        if (response.ok) {
+          setBackendStatus('connected')
+        } else {
+          setBackendStatus('disconnected')
+        }
+      } catch (error) {
+        setBackendStatus('disconnected')
+      }
+    }
+    
+    testBackend()
+  }, [])
 
   const handleGetStarted = () => {
     router.push('/careers')
@@ -66,7 +90,7 @@ export default function Home() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 font-inter">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 font-inter">
       {/* Floating Particles Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute top-20 left-10 w-2 h-2 bg-blue-400 rounded-full animate-float opacity-60"></div>
@@ -79,30 +103,52 @@ export default function Home() {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <section className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center animate-fade-in">
-          <h1 className="text-6xl md:text-8xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">
-            <span className="block mb-4 font-black text-8xl md:text-9xl" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-6 tracking-tight">
+            <span className="block mb-4 font-black text-3xl md:text-4xl text-slate-800 dark:text-slate-200" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
               PATHWISE AI
             </span>
-            <span className="block text-4xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="block text-2xl md:text-3xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Your Personalized STEM Career Navigator
             </span>
           </h1>
-          <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto leading-relaxed">
             Discover 30+ STEM careers in Computer Science, Engineering, Mathematics, Physics, and Chemistry with AI-powered guidance to build your dream career path.
           </p>
+          
+          {/* Backend Status Indicator */}
+          <div className="flex items-center justify-center gap-2 mb-6">
+            {backendStatus === 'checking' && (
+              <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                <span className="text-sm">Checking backend connection...</span>
+              </div>
+            )}
+            {backendStatus === 'connected' && (
+              <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
+                <Wifi className="h-4 w-4" />
+                <span className="text-sm font-medium">Backend Connected ✓</span>
+              </div>
+            )}
+            {backendStatus === 'disconnected' && (
+              <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
+                <WifiOff className="h-4 w-4" />
+                <span className="text-sm font-medium">Backend Disconnected ⚠️</span>
+              </div>
+            )}
+          </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
             <button
               onClick={handleGetStarted}
-              className="group bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+              className="group bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               Explore Careers
               <ArrowRight className="inline-block ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
             </button>
             
-            <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
+            <div className="flex items-center space-x-2 text-slate-600 dark:text-slate-400">
               <Star className="h-5 w-5 text-yellow-400 fill-current" />
               <span className="font-medium">Comprehensive STEM guidance</span>
             </div>
@@ -116,14 +162,14 @@ export default function Home() {
                 className="animate-slide-up"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-gray-200 dark:border-gray-700">
+                <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-slate-200/50 dark:border-slate-700/50">
                   <div className="flex items-center justify-center mb-3">
                     <stat.icon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+                  <div className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-1">
                     {stat.number}
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                  <div className="text-sm text-slate-600 dark:text-slate-400">
                     {stat.label}
                   </div>
                 </div>
@@ -134,31 +180,31 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <section className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-16 animate-fade-in">
-          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
             Everything You Need for STEM Success
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
             Comprehensive tools and resources to explore, learn, and advance your STEM career journey.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {features.map((feature, index) => (
             <div
               key={feature.title}
-              className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg border border-gray-200 dark:border-gray-700 animate-slide-up cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl hover:-translate-y-2"
+              className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-8 shadow-lg border border-slate-200/50 dark:border-slate-700/50 animate-slide-up cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl hover:-translate-y-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               style={{ animationDelay: `${index * 0.1}s` }}
               onClick={() => router.push(feature.href)}
             >
-              <div className={`inline-flex p-3 rounded-lg bg-gray-100 dark:bg-gray-700 mb-6 ${feature.color}`}>
+              <div className={`inline-flex p-3 rounded-lg bg-slate-100 dark:bg-slate-700 mb-6 ${feature.color}`}>
                 <feature.icon className="h-8 w-8" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
                 {feature.title}
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
+              <p className="text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
                 {feature.description}
               </p>
               <div className="flex items-center text-blue-600 dark:text-blue-400 font-medium">
@@ -171,25 +217,25 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-center animate-fade-in max-w-5xl mx-auto">
-          <h2 className="text-4xl font-bold text-white mb-6">
+      <section className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-center animate-fade-in max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-white mb-6">
             Ready to Transform Your Career?
           </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+          <p className="text-lg text-blue-100 mb-8 max-w-2xl mx-auto">
             Join thousands of students discovering their perfect STEM career path in Computer Science, Engineering, Mathematics, Physics, and Chemistry with Pathwise AI.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => router.push('/careers')}
-              className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+              className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2"
             >
               Explore Careers
               <ArrowRight className="inline-block ml-2 h-5 w-5" />
             </button>
             <button
               onClick={() => router.push('/resources')}
-              className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 hover:bg-white hover:text-blue-600 transform hover:-translate-y-1"
+              className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:bg-white hover:text-blue-600 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2"
             >
               Start Learning
             </button>
@@ -198,19 +244,19 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <footer className="relative z-10 bg-slate-900 text-white py-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex items-center justify-center mb-6">
-              <Brain className="h-8 w-8 text-blue-400 mr-3" />
-              <h3 className="text-3xl font-black tracking-tight" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+              <Brain className="h-6 w-6 text-blue-400 mr-3" />
+              <h3 className="text-2xl font-black tracking-tight text-slate-100" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
                 PATHWISE AI
               </h3>
             </div>
-            <p className="text-gray-400 mb-6">
+            <p className="text-slate-400 mb-6">
               Empowering the next generation of STEM professionals with AI-powered career guidance.
             </p>
-            <div className="flex justify-center space-x-6 text-sm text-gray-400">
+            <div className="flex justify-center space-x-6 text-sm text-slate-400">
               <a href="#" className="hover:text-white transition-colors">Privacy</a>
               <a href="#" className="hover:text-white transition-colors">Terms</a>
               <a href="#" className="hover:text-white transition-colors">Contact</a>

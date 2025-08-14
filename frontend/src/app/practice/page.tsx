@@ -155,7 +155,7 @@ function PracticePageInner() {
                 points: 100,
                 completed: false,
                 code: 'def two_sum(nums, target):\n    # Your solution here\n    pass',
-                solution: 'def two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []',
+                solution: 'def two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]',
                 careers: ['Software Engineer', 'Data Scientist', 'AI Engineer']
               },
               {
@@ -550,7 +550,7 @@ function PracticePageInner() {
                 points: 100,
                 completed: false,
                 code: 'def two_sum(nums, target):\n    # Your solution here\n    pass',
-                solution: 'def two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i'
+                solution: 'def two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]'
               }
             ],
             totalProblems: 1,
@@ -644,12 +644,12 @@ function PracticePageInner() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
         <Navigation />
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600 dark:text-gray-400">Loading practice problems...</p>
+            <p className="mt-4 text-slate-600 dark:text-slate-400">Loading practice problems...</p>
           </div>
         </div>
       </div>
@@ -657,17 +657,17 @@ function PracticePageInner() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       <Navigation />
 
       {/* Hero Section */}
-      <section className="relative py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center animate-fade-in">
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-6">
               Practice & <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Interview Prep</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
               Master technical interviews and coding challenges with our comprehensive practice platform.
             </p>
             {careerParam && (
@@ -681,7 +681,7 @@ function PracticePageInner() {
             <div className="mt-6">
               <button
                 onClick={() => setShowInterviewPrep(!showInterviewPrep)}
-                className="inline-flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors"
+                className="inline-flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-xl hover:bg-purple-700 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
               >
                 <MessageSquare className="h-5 w-5" />
                 {showInterviewPrep ? 'Hide' : 'Show'} Interview Prep Guide
@@ -693,9 +693,9 @@ function PracticePageInner() {
 
       {/* Enhanced Interview Prep Section */}
       {showInterviewPrep && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 animate-fade-in">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg transform transition-all duration-300 hover:scale-[1.02] max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 animate-fade-in">
+          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-8 shadow-lg transform transition-all duration-300 hover:scale-[1.02] max-w-5xl mx-auto border border-slate-200/50 dark:border-slate-700/50">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-6 text-center">
               🎯 Career-Specific Interview Preparation
             </h2>
             
@@ -713,10 +713,10 @@ function PracticePageInner() {
                           setSelectedPrepCategory(categoryKeys[0])
                         }
                       }}
-                      className={`px-4 py-2 rounded-lg transition-colors ${
+                      className={`px-4 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                         selectedCareer === career
                           ? 'bg-blue-600 text-white'
-                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                          : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
                       }`}
                     >
                       {career}
@@ -731,10 +731,10 @@ function PracticePageInner() {
                       <button
                         key={category}
                         onClick={() => setSelectedPrepCategory(category)}
-                        className={`px-4 py-2 rounded-lg transition-colors ${
+                        className={`px-4 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${
                           selectedPrepCategory === category
                             ? 'bg-green-600 text-white'
-                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                            : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
                         }`}
                       >
                         {category}
@@ -748,13 +748,13 @@ function PracticePageInner() {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Questions */}
                     <div className="space-y-4">
-                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                      <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
                         {selectedPrepCategory} Questions
                       </h3>
                       <div className="space-y-4 max-h-96 overflow-y-auto">
                         {interviewPrepData.careers[selectedCareer].categories[selectedPrepCategory].questions.map((q, idx) => (
-                          <div key={idx} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+                          <div key={idx} className="bg-slate-50 dark:bg-slate-700 p-4 rounded-lg border border-slate-200 dark:border-slate-600">
+                            <h4 className="font-medium text-slate-900 dark:text-slate-100 mb-2">
                               {q.question}
                             </h4>
                             {q.difficulty && (
@@ -767,17 +767,17 @@ function PracticePageInner() {
                               </span>
                             )}
                             {q.hint && (
-                              <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                              <div className="text-sm text-slate-600 dark:text-slate-400 mb-2">
                                 <strong>Hint:</strong> {q.hint}
                               </div>
                             )}
                             {q.solution_approach && (
-                              <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                              <div className="text-sm text-slate-600 dark:text-slate-400 mb-2">
                                 <strong>Approach:</strong> {q.solution_approach}
                               </div>
                             )}
                             {q.star_method && (
-                              <div className="text-sm text-gray-600 dark:text-gray-400">
+                              <div className="text-sm text-slate-600 dark:text-slate-400">
                                 <div className="font-medium mb-1">STAR Method:</div>
                                 <div className="grid grid-cols-2 gap-2 text-xs">
                                   <div><strong>S:</strong> {q.star_method.situation}</div>
@@ -788,7 +788,7 @@ function PracticePageInner() {
                               </div>
                             )}
                             {q.key_points && (
-                              <div className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                              <div className="text-sm text-slate-600 dark:text-slate-400 mt-2">
                                 <strong>Key Points:</strong>
                                 <ul className="list-disc list-inside mt-1">
                                   {q.key_points.map((point, pIdx) => (
@@ -804,7 +804,7 @@ function PracticePageInner() {
 
                     {/* Resources */}
                     <div>
-                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                      <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
                         Learning Resources
                       </h3>
                       <div className="space-y-3">
@@ -814,7 +814,7 @@ function PracticePageInner() {
                             href={url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
+                            className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors border border-blue-200 dark:border-blue-800"
                           >
                             <ExternalLink className="h-5 w-5 text-blue-600" />
                             <span className="text-blue-800 dark:text-blue-200 font-medium">{title}</span>
@@ -826,7 +826,7 @@ function PracticePageInner() {
                 )}
               </div>
             ) : (
-              <div className="text-center text-gray-600 dark:text-gray-400">
+              <div className="text-center text-slate-600 dark:text-slate-400">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
                 Loading interview preparation data...
               </div>
@@ -835,33 +835,33 @@ function PracticePageInner() {
         </section>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         {!currentProblem ? (
           <div className="space-y-8">
             {/* Category Selection */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
               {categories.map((category) => (
                 <div
                   key={category.id}
-                  className={`bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer ${
+                  className={`bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border border-slate-200/50 dark:border-slate-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                     selectedCategory === category.id ? 'ring-2 ring-blue-500' : ''
                   }`}
                   onClick={() => setSelectedCategory(category.id)}
                 >
                   <div className="flex items-center mb-4">
                     <category.icon className="h-8 w-8 text-blue-600 mr-3" />
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                       {category.name}
                     </h3>
                   </div>
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  <p className="text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
                     {category.description}
                   </p>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                    <span className="text-sm text-slate-500 dark:text-slate-400">
                       {category.completedProblems}/{category.totalProblems} completed
                     </span>
-                    <div className="w-16 h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+                    <div className="w-16 h-2 bg-slate-200 dark:bg-slate-700 rounded-full">
                       <div 
                         className="h-2 bg-blue-600 rounded-full"
                         style={{ width: `${(category.completedProblems / category.totalProblems) * 100}%` }}
@@ -873,24 +873,24 @@ function PracticePageInner() {
             </div>
 
             {/* Problems List */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-6xl mx-auto">
-              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+            <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-lg max-w-5xl mx-auto border border-slate-200/50 dark:border-slate-700/50">
+              <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+                <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
                    {categories.find(c => c.id === selectedCategory)?.name || 'Problems'}
                 </h3>
               </div>
-              <div className="divide-y divide-gray-200 dark:divide-gray-700">
+              <div className="divide-y divide-slate-200 dark:divide-slate-700">
                 {categories
                   .find(c => c.id === selectedCategory)
                   ?.problems.map((problem) => (
                     <div
                       key={problem.id}
-                      className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      className="p-6 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                            <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                               {problem.title}
                             </h4>
                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -904,10 +904,10 @@ function PracticePageInner() {
                               <CheckCircle className="h-5 w-5 text-green-500" />
                             )}
                           </div>
-                          <p className="text-gray-600 dark:text-gray-400 mb-3">
+                          <p className="text-slate-600 dark:text-slate-400 mb-3 leading-relaxed">
                             {problem.description}
                           </p>
-                          <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                          <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
                             <span className="flex items-center gap-1">
                               <Timer className="h-4 w-4" />
                               {problem.timeLimit} min
@@ -940,7 +940,7 @@ function PracticePageInner() {
                         </div>
                         <button
                           onClick={() => startProblem(problem)}
-                          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                         >
                           {problem.completed ? 'Review' : 'Start'}
                         </button>
@@ -951,14 +951,14 @@ function PracticePageInner() {
             </div>
           </div>
         ) : (
-          <div className="space-y-6 max-w-6xl mx-auto">
+          <div className="space-y-6 max-w-5xl mx-auto">
             {/* Quick Math References */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Math References</h3>
+            <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-slate-200/50 dark:border-slate-700/50">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">Math References</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {mathRefs.map(ref => (
-                  <div key={ref.level} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                    <div className="mb-2 text-sm font-medium">{ref.level}</div>
+                  <div key={ref.level} className="border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+                    <div className="mb-2 text-sm font-medium text-slate-700 dark:text-slate-300">{ref.level}</div>
                     <ul className="space-y-1 text-sm">
                       {ref.links.map(l => (
                         <li key={l.url}>
@@ -974,10 +974,10 @@ function PracticePageInner() {
             </div>
             
             {/* Problem Header */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
+            <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-slate-200/50 dark:border-slate-700/50">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
                     {currentProblem.title}
                   </h2>
                   <div className="flex items-center gap-3">
@@ -988,56 +988,56 @@ function PracticePageInner() {
                     }`}>
                       {currentProblem.difficulty}
                     </span>
-                    <span className="text-gray-500 dark:text-gray-400">
+                    <span className="text-slate-500 dark:text-slate-400">
                       {currentProblem.category}
                     </span>
-                    <span className="text-gray-500 dark:text-gray-400">
+                    <span className="text-slate-500 dark:text-slate-400">
                       {timeLeft > 0 ? `${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}` : 'Time\'s up!'}
                     </span>
                   </div>
                 </div>
                 <button
                   onClick={() => setCurrentProblem(null)}
-                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 rounded-lg p-1"
                 >
                   <XCircle className="h-6 w-6" />
                 </button>
               </div>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
                 {currentProblem.description}
               </p>
             </div>
 
             {/* Code Editor */}
             {currentProblem.code && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-                <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Your Solution</h3>
+              <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-lg border border-slate-200/50 dark:border-slate-700/50">
+                <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Your Solution</h3>
                 </div>
                 <div className="p-6">
                   <textarea
                     value={userCode}
                     onChange={(e) => setUserCode(e.target.value)}
-                    className="w-full h-64 p-4 font-mono text-sm bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:text-white"
+                    className="w-full h-64 p-4 font-mono text-sm bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:text-slate-100 focus:outline-none"
                     placeholder="Write your code here..."
                   />
                   <div className="flex gap-3 mt-4">
                     <button
                       onClick={runCode}
                       disabled={isRunning}
-                      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors"
+                      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                     >
                       {isRunning ? 'Running...' : 'Run Code'}
                     </button>
                     <button
                       onClick={submitSolution}
-                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     >
                       Submit Solution
                     </button>
                     <button
                       onClick={() => setShowSolution(!showSolution)}
-                      className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+                      className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                     >
                       {showSolution ? 'Hide' : 'Show'} Solution
                     </button>
@@ -1048,13 +1048,13 @@ function PracticePageInner() {
 
             {/* Solution */}
             {showSolution && currentProblem.solution && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-                <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Solution</h3>
+              <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-lg border border-slate-200/50 dark:border-slate-700/50">
+                <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Solution</h3>
                 </div>
                 <div className="p-6">
-                  <pre className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto">
-                    <code className="text-sm text-gray-800 dark:text-gray-200">
+                  <pre className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg overflow-x-auto border border-slate-200 dark:border-slate-700">
+                    <code className="text-sm text-slate-800 dark:text-slate-200">
                       {currentProblem.solution}
                     </code>
                   </pre>
