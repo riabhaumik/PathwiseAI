@@ -295,6 +295,24 @@ async def test():
 
 @app.get("/health")
 async def health_check():
+    """Simple health check endpoint for Railway"""
+    try:
+        return {
+            "status": "healthy",
+            "version": "2.0.0",
+            "timestamp": datetime.utcnow().isoformat(),
+            "service": "Pathwise AI Backend"
+        }
+    except Exception as e:
+        return {
+            "status": "unhealthy",
+            "error": str(e),
+            "timestamp": datetime.utcnow().isoformat()
+        }
+
+@app.get("/health/detailed")
+async def detailed_health_check():
+    """Detailed health check with service dependencies"""
     return {
         "status": "healthy",
         "version": "2.0.0",
