@@ -669,52 +669,8 @@ class RoadmapService:
         resources = []
         
         # Software Engineer (Computer Science)
-        if 'software' in career_lower and 'engineer' in career_lower:
+        if ('software' in career_lower and 'engineer' in career_lower) or 'software engineer' in career_lower or 'computer science' in career_lower:
             resources.extend([
-                {
-                    'title': 'LeetCode - Programming Practice',
-                    'description': 'Practice coding problems and algorithms for technical interviews',
-                    'url': 'https://leetcode.com/',
-                    'platform': 'LeetCode',
-                    'duration': 'Ongoing',
-                    'rating': '4.8',
-                    'instructor': 'Various',
-                    'difficulty': 'Beginner to Advanced',
-                    'tags': ['coding', 'algorithms', 'data structures', 'interview prep']
-                },
-                {
-                    'title': 'HackerRank - Coding Challenges',
-                    'description': 'Practice coding skills with challenges and competitions',
-                    'url': 'https://www.hackerrank.com/',
-                    'platform': 'HackerRank',
-                    'duration': 'Ongoing',
-                    'rating': '4.7',
-                    'instructor': 'Various',
-                    'difficulty': 'Beginner to Advanced',
-                    'tags': ['coding', 'challenges', 'competitions', 'skills']
-                },
-                {
-                    'title': 'MDN Web Docs',
-                    'description': 'Comprehensive web development documentation and tutorials',
-                    'url': 'https://developer.mozilla.org/',
-                    'platform': 'Mozilla',
-                    'duration': 'Reference',
-                    'rating': '4.9',
-                    'instructor': 'Mozilla',
-                    'difficulty': 'All Levels',
-                    'tags': ['web development', 'documentation', 'tutorials', 'reference']
-                },
-                {
-                    'title': 'System Design Primer',
-                    'description': 'Learn how to design large-scale systems',
-                    'url': 'https://github.com/donnemartin/system-design-primer',
-                    'platform': 'GitHub',
-                    'duration': 'Self-paced',
-                    'rating': '4.9',
-                    'instructor': 'Donne Martin',
-                    'difficulty': 'Intermediate to Advanced',
-                    'tags': ['system design', 'architecture', 'scalability', 'distributed systems']
-                },
                 {
                     'title': 'FreeCodeCamp: Full Stack Development Curriculum',
                     'description': 'A comprehensive, free resource covering programming fundamentals, data structures, algorithms, and full-stack web development with projects.',
@@ -740,7 +696,7 @@ class RoadmapService:
             ])
         
         # Data Scientist (Data Science)
-        elif 'data' in career_lower and 'scientist' in career_lower:
+        elif ('data' in career_lower and 'scientist' in career_lower) or 'data science' in career_lower:
             resources.extend([
                 {
                     'title': 'DataCamp: Data Scientist with Python Career Track',
@@ -767,7 +723,7 @@ class RoadmapService:
             ])
         
         # AI Engineer (Artificial Intelligence)
-        elif 'ai' in career_lower and 'engineer' in career_lower:
+        elif ('ai' in career_lower and 'engineer' in career_lower) or 'artificial intelligence' in career_lower:
             resources.extend([
                 {
                     'title': 'DeepLearning.AI: AI For Everyone',
@@ -794,7 +750,7 @@ class RoadmapService:
             ])
 
         # Machine Learning Engineer (Machine Learning)
-        elif 'machine learning' in career_lower and 'engineer' in career_lower:
+        elif ('machine learning' in career_lower and 'engineer' in career_lower) or 'machine learning' in career_lower:
             resources.extend([
                 {
                     'title': 'Coursera: Machine Learning by Stanford Online',
@@ -820,44 +776,6 @@ class RoadmapService:
                 }
             ])
         
-        # Mathematics resources
-        elif 'math' in career_lower or 'mathematics' in career_lower:
-            resources.extend([
-                {
-                    'title': 'MIT OpenCourseWare - Mathematics',
-                    'description': 'Free mathematics courses from MIT',
-                    'url': 'https://ocw.mit.edu/courses/mathematics/',
-                    'platform': 'MIT OCW',
-                    'duration': 'Self-paced',
-                    'rating': '4.9',
-                    'instructor': 'MIT Faculty',
-                    'difficulty': 'Intermediate to Advanced',
-                    'tags': ['mathematics', 'calculus', 'linear algebra', 'advanced math']
-                },
-                {
-                    'title': 'Khan Academy - Mathematics',
-                    'description': 'Comprehensive mathematics courses from basic to advanced',
-                    'url': 'https://www.khanacademy.org/math',
-                    'platform': 'Khan Academy',
-                    'duration': 'Self-paced',
-                    'rating': '4.8',
-                    'instructor': 'Khan Academy',
-                    'difficulty': 'All Levels',
-                    'tags': ['mathematics', 'algebra', 'calculus', 'statistics']
-                },
-                {
-                    'title': '3Blue1Brown - Mathematics',
-                    'description': 'Beautiful visual explanations of mathematical concepts',
-                    'url': 'https://www.youtube.com/c/3blue1brown',
-                    'platform': 'YouTube',
-                    'duration': 'Self-paced',
-                    'rating': '4.9',
-                    'instructor': 'Grant Sanderson',
-                    'difficulty': 'All Levels',
-                    'tags': ['mathematics', 'visualization', 'intuition', 'concepts']
-                }
-            ])
-
         # Data Engineer (Data Engineering)
         elif 'data engineer' in career_lower:
             resources.extend([
@@ -940,7 +858,7 @@ class RoadmapService:
             ])
 
         # Full Stack Developer (Web Development)
-        elif 'full stack' in career_lower and 'developer' in career_lower:
+        elif ('full stack' in career_lower and 'developer' in career_lower) or 'web development' in career_lower:
             resources.extend([
                 {
                     'title': 'The Odin Project: Full Stack JavaScript Path',
@@ -967,7 +885,7 @@ class RoadmapService:
             ])
 
         # Mobile Developer (Mobile Development)
-        elif 'mobile' in career_lower and 'developer' in career_lower:
+        elif ('mobile' in career_lower and 'developer' in career_lower) or 'mobile development' in career_lower:
             resources.extend([
                 {
                     'title': 'Udemy: The Complete React Native + Hooks Course',
@@ -994,7 +912,7 @@ class RoadmapService:
             ])
 
         # Cloud Architect (Cloud Computing)
-        elif 'cloud' in career_lower and 'architect' in career_lower:
+        elif ('cloud' in career_lower and 'architect' in career_lower) or 'cloud computing' in career_lower:
             resources.extend([
                 {
                     'title': 'AWS Skill Builder: AWS Certified Solutions Architect – Associate',
@@ -1021,7 +939,7 @@ class RoadmapService:
             ])
 
         # Blockchain Developer (Blockchain)
-        elif 'blockchain' in career_lower and 'developer' in career_lower:
+        elif ('blockchain' in career_lower and 'developer' in career_lower) or 'blockchain' in career_lower:
             resources.extend([
                 {
                     'title': 'Coursera: Blockchain Specialization (University at Buffalo)',
@@ -1048,7 +966,7 @@ class RoadmapService:
             ])
 
         # Game Developer (Game Development)
-        elif 'game' in career_lower and 'developer' in career_lower:
+        elif ('game' in career_lower and 'developer' in career_lower) or 'game development' in career_lower:
             resources.extend([
                 {
                     'title': 'Udemy: Complete C# Unity Game Developer 2D',
@@ -1075,7 +993,7 @@ class RoadmapService:
             ])
 
         # Embedded Systems Engineer (Embedded Systems)
-        elif 'embedded' in career_lower and 'systems' in career_lower and 'engineer' in career_lower:
+        elif ('embedded' in career_lower and 'systems' in career_lower and 'engineer' in career_lower) or 'embedded systems' in career_lower:
             resources.extend([
                 {
                     'title': 'edX: Embedded Systems Essentials with Arm',
@@ -1102,7 +1020,7 @@ class RoadmapService:
             ])
 
         # Computer Vision Engineer (Computer Vision)
-        elif 'computer vision' in career_lower and 'engineer' in career_lower:
+        elif ('computer vision' in career_lower and 'engineer' in career_lower) or 'computer vision' in career_lower:
             resources.extend([
                 {
                     'title': 'Coursera: Computer Vision Basics (University at Buffalo)',
@@ -1129,7 +1047,7 @@ class RoadmapService:
             ])
 
         # NLP Engineer (Natural Language Processing)
-        elif 'nlp' in career_lower and 'engineer' in career_lower:
+        elif ('nlp' in career_lower and 'engineer' in career_lower) or 'natural language processing' in career_lower:
             resources.extend([
                 {
                     'title': 'Coursera: Natural Language Processing Specialization (DeepLearning.AI)',
@@ -1156,7 +1074,7 @@ class RoadmapService:
             ])
 
         # Robotics Engineer (Robotics)
-        elif 'robotics' in career_lower and 'engineer' in career_lower:
+        elif ('robotics' in career_lower and 'engineer' in career_lower) or 'robotics' in career_lower:
             resources.extend([
                 {
                     'title': 'edX: Robotics MicroMasters (University of Pennsylvania)',
@@ -1183,7 +1101,7 @@ class RoadmapService:
             ])
 
         # Quantum Computing Engineer (Quantum Computing)
-        elif 'quantum' in career_lower and 'computing' in career_lower and 'engineer' in career_lower:
+        elif ('quantum' in career_lower and 'computing' in career_lower and 'engineer' in career_lower) or 'quantum computing' in career_lower:
             resources.extend([
                 {
                     'title': 'Qiskit: Learn Quantum Computation Using Qiskit',
@@ -1210,7 +1128,7 @@ class RoadmapService:
             ])
 
         # Bioinformatics Engineer (Bioinformatics)
-        elif 'bioinformatics' in career_lower and 'engineer' in career_lower:
+        elif ('bioinformatics' in career_lower and 'engineer' in career_lower) or 'bioinformatics' in career_lower:
             resources.extend([
                 {
                     'title': 'Coursera: Bioinformatics Specialization (UC San Diego)',
@@ -1237,7 +1155,7 @@ class RoadmapService:
             ])
 
         # Financial Technology Engineer (FinTech)
-        elif 'financial technology' in career_lower and 'engineer' in career_lower:
+        elif ('financial technology' in career_lower and 'engineer' in career_lower) or 'fintech' in career_lower:
             resources.extend([
                 {
                     'title': 'Coursera: FinTech Foundations and Overview (HKUST)',
@@ -1264,7 +1182,7 @@ class RoadmapService:
             ])
 
         # Space Systems Engineer (Aerospace)
-        elif 'space' in career_lower and 'systems' in career_lower and 'engineer' in career_lower:
+        elif ('space' in career_lower and 'systems' in career_lower and 'engineer' in career_lower) or 'aerospace' in career_lower:
             resources.extend([
                 {
                     'title': 'edX: Introduction to Aerospace Engineering (MIT)',
@@ -1287,6 +1205,341 @@ class RoadmapService:
                     'instructor': 'University of Colorado Boulder',
                     'difficulty': 'Advanced',
                     'tags': ['spacecraft dynamics', 'control systems', 'mission planning', 'orbital mechanics']
+                }
+            ])
+        
+        # ML Engineer
+        elif 'ml engineer' in career_lower or 'machine learning engineer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Coursera: Machine Learning Engineering for Production',
+                    'description': 'Learn to build, deploy, and maintain ML systems in production',
+                    'url': 'https://www.coursera.org/specializations/machine-learning-engineering-production',
+                    'platform': 'Coursera',
+                    'duration': '6 months',
+                    'rating': '4.8',
+                    'instructor': 'Various',
+                    'difficulty': 'Advanced',
+                    'tags': ['ML engineering', 'production systems', 'deployment', 'maintenance']
+                },
+                {
+                    'title': 'edX: MLOps Fundamentals',
+                    'description': 'Learn machine learning operations and production ML workflows',
+                    'url': 'https://www.edx.org/course/mlops-fundamentals',
+                    'platform': 'edX',
+                    'duration': '8 weeks',
+                    'rating': '4.6',
+                    'instructor': 'Various',
+                    'difficulty': 'Advanced',
+                    'tags': ['MLOps', 'production workflows', 'machine learning operations']
+                }
+            ])
+        
+        # Research Scientist
+        elif 'research scientist' in career_lower or 'research' in career_lower:
+            resources.extend([
+                {
+                    'title': 'MIT OpenCourseWare - Research Methods',
+                    'description': 'Free courses on research methodology and scientific methods',
+                    'url': 'https://ocw.mit.edu/courses/',
+                    'platform': 'MIT OCW',
+                    'duration': 'Self-paced',
+                    'rating': '4.9',
+                    'instructor': 'MIT Faculty',
+                    'difficulty': 'Intermediate to Advanced',
+                    'tags': ['research methods', 'scientific methods', 'academic research']
+                },
+                {
+                    'title': 'Coursera: Research Design and Methods',
+                    'description': 'Learn research design, data collection, and analysis methods',
+                    'url': 'https://www.coursera.org/learn/research-methods',
+                    'platform': 'Coursera',
+                    'duration': '6 weeks',
+                    'rating': '4.7',
+                    'instructor': 'Various',
+                    'difficulty': 'Intermediate',
+                    'tags': ['research design', 'data collection', 'analysis methods']
+                }
+            ])
+        
+        # Research Analyst
+        elif 'research analyst' in career_lower or 'research analysis' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Coursera: Data Analysis and Statistical Inference',
+                    'description': 'Learn data analysis techniques and statistical inference methods',
+                    'url': 'https://www.coursera.org/learn/data-analysis',
+                    'platform': 'Coursera',
+                    'duration': '8 weeks',
+                    'rating': '4.7',
+                    'instructor': 'Various',
+                    'difficulty': 'Intermediate',
+                    'tags': ['data analysis', 'statistical inference', 'research methods']
+                },
+                {
+                    'title': 'edX: Research Methods and Statistics',
+                    'description': 'Learn research methodology and statistical analysis techniques',
+                    'url': 'https://www.edx.org/course/research-methods-and-statistics',
+                    'platform': 'edX',
+                    'duration': '10 weeks',
+                    'rating': '4.6',
+                    'instructor': 'Various',
+                    'difficulty': 'Intermediate',
+                    'tags': ['research methods', 'statistics', 'analysis techniques']
+                }
+            ])
+        
+        # Mathematician
+        elif 'mathematician' in career_lower or 'mathematics' in career_lower:
+            resources.extend([
+                {
+                    'title': 'MIT OpenCourseWare - Advanced Mathematics',
+                    'description': 'Free advanced mathematics courses from MIT',
+                    'url': 'https://ocw.mit.edu/courses/mathematics/',
+                    'platform': 'MIT OCW',
+                    'duration': 'Self-paced',
+                    'rating': '4.9',
+                    'instructor': 'MIT Faculty',
+                    'difficulty': 'Advanced',
+                    'tags': ['advanced mathematics', 'theoretical math', 'mathematical research']
+                },
+                {
+                    'title': 'Coursera: Mathematics for Machine Learning',
+                    'description': 'Learn the mathematical foundations needed for machine learning',
+                    'url': 'https://www.coursera.org/specializations/mathematics-machine-learning',
+                    'platform': 'Coursera',
+                    'duration': '6 months',
+                    'rating': '4.7',
+                    'instructor': 'Various',
+                    'difficulty': 'Advanced',
+                    'tags': ['mathematics', 'machine learning', 'mathematical foundations']
+                }
+            ])
+        
+        # Cryptographer
+        elif 'cryptographer' in career_lower or 'cryptography' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Coursera: Cryptography Specialization',
+                    'description': 'Learn cryptographic protocols, algorithms, and security principles',
+                    'url': 'https://www.coursera.org/specializations/cryptography',
+                    'platform': 'Coursera',
+                    'duration': '6 months',
+                    'rating': '4.8',
+                    'instructor': 'Various',
+                    'difficulty': 'Advanced',
+                    'tags': ['cryptography', 'security protocols', 'algorithms', 'security principles']
+                },
+                {
+                    'title': 'edX: Applied Cryptography',
+                    'description': 'Learn practical cryptography applications and implementations',
+                    'url': 'https://www.edx.org/course/applied-cryptography',
+                    'platform': 'edX',
+                    'duration': '10 weeks',
+                    'rating': '4.7',
+                    'instructor': 'Various',
+                    'difficulty': 'Advanced',
+                    'tags': ['applied cryptography', 'practical applications', 'implementations']
+                }
+            ])
+        
+        # System Architect
+        elif 'system architect' in career_lower or 'systems architect' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Coursera: Software Architecture Specialization',
+                    'description': 'Learn software architecture principles, patterns, and design',
+                    'url': 'https://www.coursera.org/specializations/software-architecture',
+                    'platform': 'Coursera',
+                    'duration': '6 months',
+                    'rating': '4.7',
+                    'instructor': 'Various',
+                    'difficulty': 'Advanced',
+                    'tags': ['software architecture', 'design patterns', 'system design']
+                },
+                {
+                    'title': 'edX: System Design and Architecture',
+                    'description': 'Learn to design scalable and maintainable software systems',
+                    'url': 'https://www.edx.org/course/system-design-and-architecture',
+                    'platform': 'edX',
+                    'duration': '10 weeks',
+                    'rating': '4.6',
+                    'instructor': 'Various',
+                    'difficulty': 'Advanced',
+                    'tags': ['system design', 'architecture', 'scalability', 'maintainability']
+                }
+            ])
+        
+        # Team Lead
+        elif 'team lead' in career_lower or 'team leadership' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Coursera: Leadership and Management Specialization',
+                    'description': 'Learn leadership skills, team management, and organizational behavior',
+                    'url': 'https://www.coursera.org/specializations/leadership-management',
+                    'platform': 'Coursera',
+                    'duration': '6 months',
+                    'rating': '4.7',
+                    'instructor': 'Various',
+                    'difficulty': 'Intermediate',
+                    'tags': ['leadership', 'team management', 'organizational behavior']
+                },
+                {
+                    'title': 'edX: Leadership in Engineering',
+                    'description': 'Learn to lead engineering teams and manage technical projects',
+                    'url': 'https://www.edx.org/course/leadership-in-engineering',
+                    'platform': 'edX',
+                    'duration': '8 weeks',
+                    'rating': '4.6',
+                    'instructor': 'Various',
+                    'difficulty': 'Intermediate',
+                    'tags': ['engineering leadership', 'team management', 'technical projects']
+                }
+            ])
+        
+        # Innovation Lead
+        elif 'innovation lead' in career_lower or 'innovation' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Coursera: Innovation Management Specialization',
+                    'description': 'Learn innovation strategies, design thinking, and creative problem solving',
+                    'url': 'https://www.coursera.org/specializations/innovation-management',
+                    'platform': 'Coursera',
+                    'duration': '6 months',
+                    'rating': '4.7',
+                    'instructor': 'Various',
+                    'difficulty': 'Intermediate',
+                    'tags': ['innovation management', 'design thinking', 'creative problem solving']
+                },
+                {
+                    'title': 'edX: Innovation and Entrepreneurship',
+                    'description': 'Learn to develop innovative ideas and turn them into successful businesses',
+                    'url': 'https://www.edx.org/course/innovation-and-entrepreneurship',
+                    'platform': 'edX',
+                    'duration': '10 weeks',
+                    'rating': '4.6',
+                    'instructor': 'Various',
+                    'difficulty': 'Intermediate',
+                    'tags': ['innovation', 'entrepreneurship', 'business development']
+                }
+            ])
+        
+        # Operations Research
+        elif 'operations research' in career_lower or 'operations' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Coursera: Operations Management Specialization',
+                    'description': 'Learn operations management, supply chain, and process optimization',
+                    'url': 'https://www.coursera.org/specializations/operations-management',
+                    'platform': 'Coursera',
+                    'duration': '6 months',
+                    'rating': '4.7',
+                    'instructor': 'Various',
+                    'difficulty': 'Intermediate',
+                    'tags': ['operations management', 'supply chain', 'process optimization']
+                },
+                {
+                    'title': 'edX: Introduction to Operations Management',
+                    'description': 'Learn the fundamentals of operations and supply chain management',
+                    'url': 'https://www.edx.org/course/introduction-to-operations-management',
+                    'platform': 'edX',
+                    'duration': '8 weeks',
+                    'rating': '4.6',
+                    'instructor': 'Various',
+                    'difficulty': 'Intermediate',
+                    'tags': ['operations', 'supply chain', 'management fundamentals']
+                }
+            ])
+        
+        # Quantitative Analyst
+        elif 'quantitative analyst' in career_lower or 'quant' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Coursera: Financial Engineering and Risk Management',
+                    'description': 'Learn quantitative finance, risk management, and financial modeling',
+                    'url': 'https://www.coursera.org/specializations/financial-engineering',
+                    'platform': 'Coursera',
+                    'duration': '8 months',
+                    'rating': '4.8',
+                    'instructor': 'Columbia University',
+                    'difficulty': 'Advanced',
+                    'tags': ['quantitative finance', 'risk management', 'financial modeling']
+                },
+                {
+                    'title': 'edX: Quantitative Methods for Finance',
+                    'description': 'Advanced course on mathematical and statistical methods in finance',
+                    'url': 'https://www.edx.org/course/quantitative-methods-for-finance',
+                    'platform': 'edX',
+                    'duration': '12 weeks',
+                    'rating': '4.7',
+                    'instructor': 'Various',
+                    'difficulty': 'Advanced',
+                    'tags': ['quantitative methods', 'finance', 'mathematical methods', 'statistics']
+                }
+            ])
+        
+        # Product Manager
+        elif 'product manager' in career_lower or 'product management' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Coursera: Product Management Specialization',
+                    'description': 'Learn product management fundamentals, strategy, and execution',
+                    'url': 'https://www.coursera.org/specializations/product-management',
+                    'platform': 'Coursera',
+                    'duration': '6 months',
+                    'rating': '4.7',
+                    'instructor': 'Various',
+                    'difficulty': 'Intermediate',
+                    'tags': ['product management', 'strategy', 'execution', 'fundamentals']
+                },
+                {
+                    'title': 'edX: Product Management MicroMasters',
+                    'description': 'Advanced program on product management and innovation',
+                    'url': 'https://www.edx.org/micromasters/product-management',
+                    'platform': 'edX',
+                    'duration': '1 year',
+                    'rating': '4.6',
+                    'instructor': 'Various',
+                    'difficulty': 'Advanced',
+                    'tags': ['product management', 'innovation', 'micromasters', 'advanced']
+                }
+            ])
+        
+        # Mathematics resources
+        elif 'math' in career_lower or 'mathematics' in career_lower:
+            resources.extend([
+                {
+                    'title': 'MIT OpenCourseWare - Mathematics',
+                    'description': 'Free mathematics courses from MIT',
+                    'url': 'https://ocw.mit.edu/courses/mathematics/',
+                    'platform': 'MIT OCW',
+                    'duration': 'Self-paced',
+                    'rating': '4.9',
+                    'instructor': 'MIT Faculty',
+                    'difficulty': 'Intermediate to Advanced',
+                    'tags': ['mathematics', 'calculus', 'linear algebra', 'advanced math']
+                },
+                {
+                    'title': 'Khan Academy - Mathematics',
+                    'description': 'Comprehensive mathematics courses from basic to advanced',
+                    'url': 'https://www.khanacademy.org/math',
+                    'platform': 'Khan Academy',
+                    'duration': 'Self-paced',
+                    'rating': '4.8',
+                    'instructor': 'Khan Academy',
+                    'difficulty': 'All Levels',
+                    'tags': ['mathematics', 'algebra', 'calculus', 'statistics']
+                },
+                {
+                    'title': '3Blue1Brown - Mathematics',
+                    'description': 'Beautiful visual explanations of mathematical concepts',
+                    'url': 'https://www.youtube.com/c/3blue1brown',
+                    'platform': 'YouTube',
+                    'duration': 'Self-paced',
+                    'rating': '4.9',
+                    'instructor': 'Grant Sanderson',
+                    'difficulty': 'All Levels',
+                    'tags': ['mathematics', 'visualization', 'intuition', 'concepts']
                 }
             ])
         

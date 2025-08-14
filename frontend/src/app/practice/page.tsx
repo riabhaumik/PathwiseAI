@@ -818,8 +818,7 @@ function PracticePageInner() {
               </div>
             ) : (
               <div className="text-center text-slate-600 dark:text-slate-400">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                Loading interview preparation data...
+                <p>Interview preparation content will appear here once you select a career and category.</p>
               </div>
             )}
           </div>

@@ -79,12 +79,12 @@ export default function Navigation() {
           <div className="flex justify-between items-center h-16">
             
             {/* Logo Section */}
-            <div className="flex items-center min-w-0">
+            <div className="flex items-center min-w-0 flex-shrink-0">
               <Link href="/" className="flex items-center space-x-3 group">
                 <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200 flex-shrink-0">
                   <Brain className="w-5 h-5 text-white" />
                 </div>
-                <div className="hidden sm:block min-w-0">
+                <div className="hidden sm:block min-w-0 flex-shrink-0">
                   <h1 className="text-base font-black tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent truncate" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
                     PATHWISE AI
                   </h1>
