@@ -81,9 +81,13 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center animate-fade-in">
-          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white mb-6">
-            Your Personalized
-            <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">STEM Career Navigator</span>
+          <h1 className="text-6xl md:text-8xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">
+            <span className="block mb-4 font-extrabold" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+              PATHWISE AI
+            </span>
+            <span className="block text-4xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Your Personalized STEM Career Navigator
+            </span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
             Discover 30+ STEM careers in Computer Science, Engineering, Mathematics, Physics, and Chemistry with AI-powered guidance to build your dream career path.
@@ -199,7 +203,9 @@ export default function Home() {
           <div className="text-center">
             <div className="flex items-center justify-center mb-6">
               <Brain className="h-8 w-8 text-blue-400 mr-3" />
-              <h3 className="text-2xl font-bold">Pathwise AI</h3>
+              <h3 className="text-3xl font-black tracking-tight" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+                PATHWISE AI
+              </h3>
             </div>
             <p className="text-gray-400 mb-6">
               Empowering the next generation of STEM professionals with AI-powered career guidance.

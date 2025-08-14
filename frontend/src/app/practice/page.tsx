@@ -235,9 +235,48 @@ function PracticePageInner() {
                 code: 'def max_subarray(nums):\n    # Your solution here\n    pass',
                 solution: 'def max_subarray(nums):\n    max_sum = current_sum = nums[0]\n    for num in nums[1:]:\n        current_sum = max(num, current_sum + num)\n        max_sum = max(max_sum, current_sum)\n    return max_sum',
                 careers: ['Software Engineer', 'AI Engineer', 'Data Scientist']
+              },
+              {
+                id: 'longest-palindrome',
+                title: 'Longest Palindromic Substring',
+                description: 'Given a string s, return the longest palindromic substring in s.',
+                difficulty: 'Medium',
+                category: 'Dynamic Programming',
+                timeLimit: 35,
+                points: 250,
+                completed: false,
+                code: 'def longest_palindrome(s):\n    # Your solution here\n    pass',
+                solution: 'def longest_palindrome(s):\n    if not s:\n        return ""\n    \n    start = end = 0\n    for i in range(len(s)):\n        len1 = expand_around_center(s, i, i)\n        len2 = expand_around_center(s, i, i + 1)\n        max_len = max(len1, len2)\n        \n        if max_len > end - start:\n            start = i - (max_len - 1) // 2\n            end = i + max_len // 2\n    \n    return s[start:end + 1]\n\ndef expand_around_center(s, left, right):\n    while left >= 0 and right < len(s) and s[left] == s[right]:\n        left -= 1\n        right += 1\n    return right - left - 1',
+                careers: ['Software Engineer', 'Data Scientist', 'AI Engineer']
+              },
+              {
+                id: 'valid-parentheses',
+                title: 'Valid Parentheses',
+                description: 'Given a string s containing just the characters \'(\', \')\', \'{\', \'}\', \'[\' and \']\', determine if the input string is valid.',
+                difficulty: 'Easy',
+                category: 'Stacks',
+                timeLimit: 15,
+                points: 120,
+                completed: false,
+                code: 'def is_valid(s):\n    # Your solution here\n    pass',
+                solution: 'def is_valid(s):\n    stack = []\n    brackets = {\')\': \'(\', \'}\': \'{\', \']\': \'[\'}\n    \n    for char in s:\n        if char in brackets.values():\n            stack.append(char)\n        elif char in brackets:\n            if not stack or stack.pop() != brackets[char]:\n                return False\n    \n    return len(stack) == 0',
+                careers: ['Software Engineer', 'DevOps Engineer', 'Data Scientist']
+              },
+              {
+                id: 'merge-intervals',
+                title: 'Merge Intervals',
+                description: 'Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals.',
+                difficulty: 'Medium',
+                category: 'Sorting',
+                timeLimit: 25,
+                points: 200,
+                completed: false,
+                code: 'def merge_intervals(intervals):\n    # Your solution here\n    pass',
+                solution: 'def merge_intervals(intervals):\n    if not intervals:\n        return []\n    \n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n    \n    for interval in intervals[1:]:\n        if interval[0] <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], interval[1])\n        else:\n            merged.append(interval)\n    \n    return merged',
+                careers: ['Software Engineer', 'Data Scientist', 'AI Engineer']
               }
             ],
-            totalProblems: 7,
+            totalProblems: 11,
             completedProblems: 0
           },
           {
@@ -383,7 +422,8 @@ function PracticePageInner() {
                 timeLimit: 25,
                 points: 200,
                 completed: false,
-                solution: 'Key concepts:\n- Matrix dimensions (m×n × n×p = m×p)\n- Element-wise multiplication and summation\n- Time complexity: O(mnp)\n- Space complexity: O(mp)',
+                code: 'def matrix_multiply(A, B):\n    # Your solution here\n    pass',
+                solution: 'def matrix_multiply(A, B):\n    if len(A[0]) != len(B):\n        raise ValueError("Incompatible dimensions")\n    \n    m, n = len(A), len(B[0])\n    result = [[0 for _ in range(n)] for _ in range(m)]\n    \n    for i in range(m):\n        for j in range(n):\n            for k in range(len(B)):\n                result[i][j] += A[i][k] * B[k][j]\n    \n    return result',
                 careers: ['Data Scientist', 'AI Engineer', 'ML Engineer', 'Quantitative Analyst']
               },
               {
@@ -395,7 +435,8 @@ function PracticePageInner() {
                 timeLimit: 30,
                 points: 250,
                 completed: false,
-                solution: 'Steps:\n1. State null and alternative hypotheses\n2. Choose significance level (α)\n3. Calculate test statistic\n4. Determine critical value\n5. Make decision\n6. Interpret results',
+                code: 'def t_test(sample1, sample2, alpha=0.05):\n    # Your solution here\n    pass',
+                solution: 'import numpy as np\nfrom scipy import stats\n\ndef t_test(sample1, sample2, alpha=0.05):\n    # Perform independent t-test\n    t_stat, p_value = stats.ttest_ind(sample1, sample2)\n    \n    # Decision\n    if p_value < alpha:\n        return f"Reject H0 (p={p_value:.4f})"\n    else:\n        return f"Fail to reject H0 (p={p_value:.4f})"',
                 careers: ['Data Scientist', 'Product Manager', 'Research Analyst', 'ML Engineer']
               },
               {
@@ -407,7 +448,8 @@ function PracticePageInner() {
                 timeLimit: 35,
                 points: 300,
                 completed: false,
-                solution: 'Algorithm:\n1. Initialize parameters\n2. Calculate gradients\n3. Update parameters: θ = θ - α∇J(θ)\n4. Repeat until convergence\n5. Monitor learning rate',
+                code: 'def gradient_descent(f, grad_f, x0, learning_rate=0.01, max_iter=1000):\n    # Your solution here\n    pass',
+                solution: 'import numpy as np\n\ndef gradient_descent(f, grad_f, x0, learning_rate=0.01, max_iter=1000):\n    x = np.array(x0)\n    \n    for i in range(max_iter):\n        gradient = grad_f(x)\n        x = x - learning_rate * gradient\n        \n        if np.linalg.norm(gradient) < 1e-6:\n            break\n    \n    return x',
                 careers: ['AI Engineer', 'Data Scientist', 'ML Engineer', 'Research Scientist']
               },
               {
@@ -419,11 +461,38 @@ function PracticePageInner() {
                 timeLimit: 20,
                 points: 200,
                 completed: false,
-                solution: 'Formula: P(A|B) = P(B|A)P(A)/P(B)\n- Prior probability P(A)\n- Likelihood P(B|A)\n- Evidence P(B)\n- Posterior probability P(A|B)',
+                code: 'def bayes_theorem(prior, likelihood, evidence):\n    # Your solution here\n    pass',
+                solution: 'def bayes_theorem(prior, likelihood, evidence):\n    # P(A|B) = P(B|A) * P(A) / P(B)\n    posterior = (likelihood * prior) / evidence\n    return posterior\n\n# Example: Spam detection\n# P(Spam|Word) = P(Word|Spam) * P(Spam) / P(Word)',
                 careers: ['Data Scientist', 'AI Engineer', 'ML Engineer', 'Quantitative Analyst']
+              },
+              {
+                id: 'optimization',
+                title: 'Linear Programming',
+                description: 'Solve a linear programming problem using the simplex method.',
+                difficulty: 'Hard',
+                category: 'Optimization',
+                timeLimit: 40,
+                points: 350,
+                completed: false,
+                code: 'def simplex_method(A, b, c):\n    # Your solution here\n    pass',
+                solution: 'from scipy.optimize import linprog\n\ndef simplex_method(A, b, c):\n    # Solve: minimize c^T * x subject to A * x <= b, x >= 0\n    result = linprog(c, A_ub=A, b_ub=b, method=\'simplex\')\n    return result.x, result.fun',
+                careers: ['Operations Research', 'Data Scientist', 'AI Engineer', 'Quantitative Analyst']
+              },
+              {
+                id: 'number-theory',
+                title: 'Prime Factorization',
+                description: 'Implement an efficient algorithm to find the prime factorization of a number.',
+                difficulty: 'Medium',
+                category: 'Number Theory',
+                timeLimit: 25,
+                points: 200,
+                completed: false,
+                code: 'def prime_factorization(n):\n    # Your solution here\n    pass',
+                solution: 'def prime_factorization(n):\n    factors = []\n    d = 2\n    \n    while d * d <= n:\n        while n % d == 0:\n            factors.append(d)\n            n //= d\n        d += 1\n    \n    if n > 1:\n        factors.append(n)\n    \n    return factors',
+                careers: ['Cryptographer', 'Data Scientist', 'AI Engineer', 'Mathematician']
               }
             ],
-            totalProblems: 4,
+            totalProblems: 6,
             completedProblems: 0
           }
         ]
@@ -624,8 +693,8 @@ function PracticePageInner() {
 
       {/* Enhanced Interview Prep Section */}
       {showInterviewPrep && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 animate-fade-in">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg transform transition-all duration-300 hover:scale-[1.02]">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center">
               🎯 Career-Specific Interview Preparation
             </h2>

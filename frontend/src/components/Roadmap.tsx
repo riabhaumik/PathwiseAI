@@ -145,7 +145,8 @@ export default function Roadmap({
     
     // Add math resources if relevant
     if (mathResources && (topic.toLowerCase().includes('math') || topic.toLowerCase().includes('calculus') || 
-        topic.toLowerCase().includes('algebra') || topic.toLowerCase().includes('statistics'))) {
+        topic.toLowerCase().includes('algebra') || topic.toLowerCase().includes('statistics') ||
+        topic.toLowerCase().includes('linear') || topic.toLowerCase().includes('probability'))) {
       Object.entries(mathResources.mathematics_massive?.topics || {}).forEach(([mathTopic, mathData]: [string, any]) => {
         if (mathData.courses) {
           mathData.courses.forEach((course: any) => {
@@ -165,8 +166,90 @@ export default function Roadmap({
       })
     }
     
-    // Limit to top 5 most relevant resources
-    return relevantResources.slice(0, 5)
+    // Add career-specific resources from the backend
+    if (careerName) {
+      const careerLower = careerName.toLowerCase()
+      
+      // Add specific resources based on career
+      if (careerLower.includes('software') || careerLower.includes('engineer')) {
+        if (topic.toLowerCase().includes('programming') || topic.toLowerCase().includes('coding')) {
+          relevantResources.push({
+            title: "LeetCode - Programming Practice",
+            description: "Practice coding problems and algorithms for technical interviews",
+            url: "https://leetcode.com/",
+            platform: "LeetCode",
+            duration: "Ongoing",
+            rating: "4.8",
+            instructor: "Various",
+            difficulty: "Beginner to Advanced"
+          })
+        }
+        if (topic.toLowerCase().includes('web') || topic.toLowerCase().includes('frontend')) {
+          relevantResources.push({
+            title: "MDN Web Docs",
+            description: "Comprehensive web development documentation and tutorials",
+            url: "https://developer.mozilla.org/",
+            platform: "Mozilla",
+            duration: "Reference",
+            rating: "4.9",
+            instructor: "Mozilla",
+            difficulty: "All Levels"
+          })
+        }
+      }
+      
+      if (careerLower.includes('data') && careerLower.includes('scientist')) {
+        if (topic.toLowerCase().includes('statistics') || topic.toLowerCase().includes('probability')) {
+          relevantResources.push({
+            title: "Statistics and Probability Course",
+            description: "Comprehensive statistics course for data science",
+            url: "https://www.khanacademy.org/math/statistics-probability",
+            platform: "Khan Academy",
+            duration: "8-12 weeks",
+            rating: "4.7",
+            instructor: "Khan Academy",
+            difficulty: "Beginner to Intermediate"
+          })
+        }
+        if (topic.toLowerCase().includes('machine learning') || topic.toLowerCase().includes('ml')) {
+          relevantResources.push({
+            title: "Machine Learning Course by Andrew Ng",
+            description: "Stanford's famous machine learning course",
+            url: "https://www.coursera.org/learn/machine-learning",
+            platform: "Coursera",
+            duration: "11 weeks",
+            rating: "4.9",
+            instructor: "Andrew Ng",
+            difficulty: "Intermediate"
+          })
+        }
+      }
+      
+      if (careerLower.includes('ai') || careerLower.includes('artificial intelligence')) {
+        if (topic.toLowerCase().includes('deep learning') || topic.toLowerCase().includes('neural')) {
+          relevantResources.push({
+            title: "Deep Learning Specialization",
+            description: "Comprehensive deep learning course by Andrew Ng",
+            url: "https://www.coursera.org/specializations/deep-learning",
+            platform: "Coursera",
+            duration: "16 weeks",
+            rating: "4.8",
+            instructor: "Andrew Ng",
+            difficulty: "Intermediate to Advanced"
+          })
+        }
+      }
+    }
+    
+    // Limit to top 8 most relevant resources and sort by relevance
+    return relevantResources
+      .sort((a, b) => {
+        // Prioritize resources that match the topic exactly
+        const aExactMatch = a.title.toLowerCase().includes(topic.toLowerCase()) ? 1 : 0
+        const bExactMatch = b.title.toLowerCase().includes(topic.toLowerCase()) ? 1 : 0
+        return bExactMatch - aExactMatch
+      })
+      .slice(0, 8)
   }
 
   const handleTopicComplete = (phaseName: string, topic: string) => {

@@ -569,6 +569,10 @@ class RoadmapService:
                     elif isinstance(r, list):
                         all_resources.extend(r)
 
+            # Add career-specific curated resources
+            career_specific_resources = self._get_career_specific_resources(career_name)
+            all_resources.extend(career_specific_resources)
+
             # Remove duplicates and limit total resources
             unique_resources: List[Dict[str, Any]] = []
             seen_urls = set()
@@ -576,7 +580,7 @@ class RoadmapService:
                 url = resource.get('url')
                 if not url:
                     continue
-                if url not in seen_urls and len(unique_resources) < 30:
+                if url not in seen_urls and len(unique_resources) < 40:
                     unique_resources.append(resource)
                     seen_urls.add(url)
 
@@ -585,8 +589,8 @@ class RoadmapService:
                 roadmap['resources'] = unique_resources
 
                 for i, phase in enumerate(roadmap.get('phases', [])):
-                    start = i * 4
-                    end = (i + 1) * 4
+                    start = i * 5
+                    end = (i + 1) * 5
                     phase_resources = unique_resources[start:end]
                     if phase_resources:
                         phase['resources'] = phase_resources
@@ -658,6 +662,198 @@ class RoadmapService:
                 "phases": [],
                 "milestones": []
             }
+
+    def _get_career_specific_resources(self, career_name: str) -> List[Dict[str, Any]]:
+        """Get curated career-specific learning resources"""
+        career_lower = career_name.lower()
+        resources = []
+        
+        # Software Engineering resources
+        if 'software' in career_lower or 'engineer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'LeetCode - Programming Practice',
+                    'description': 'Practice coding problems and algorithms for technical interviews',
+                    'url': 'https://leetcode.com/',
+                    'platform': 'LeetCode',
+                    'duration': 'Ongoing',
+                    'rating': '4.8',
+                    'instructor': 'Various',
+                    'difficulty': 'Beginner to Advanced',
+                    'tags': ['coding', 'algorithms', 'data structures', 'interview prep']
+                },
+                {
+                    'title': 'HackerRank - Coding Challenges',
+                    'description': 'Practice coding skills with challenges and competitions',
+                    'url': 'https://www.hackerrank.com/',
+                    'platform': 'HackerRank',
+                    'duration': 'Ongoing',
+                    'rating': '4.7',
+                    'instructor': 'Various',
+                    'difficulty': 'Beginner to Advanced',
+                    'tags': ['coding', 'challenges', 'competitions', 'skills']
+                },
+                {
+                    'title': 'MDN Web Docs',
+                    'description': 'Comprehensive web development documentation and tutorials',
+                    'url': 'https://developer.mozilla.org/',
+                    'platform': 'Mozilla',
+                    'duration': 'Reference',
+                    'rating': '4.9',
+                    'instructor': 'Mozilla',
+                    'difficulty': 'All Levels',
+                    'tags': ['web development', 'documentation', 'tutorials', 'reference']
+                },
+                {
+                    'title': 'System Design Primer',
+                    'description': 'Learn how to design large-scale systems',
+                    'url': 'https://github.com/donnemartin/system-design-primer',
+                    'platform': 'GitHub',
+                    'duration': 'Self-paced',
+                    'rating': '4.9',
+                    'instructor': 'Donne Martin',
+                    'difficulty': 'Intermediate to Advanced',
+                    'tags': ['system design', 'architecture', 'scalability', 'distributed systems']
+                }
+            ])
+        
+        # Data Science resources
+        if 'data' in career_lower and 'scientist' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Machine Learning Course by Andrew Ng',
+                    'description': 'Stanford\'s famous machine learning course',
+                    'url': 'https://www.coursera.org/learn/machine-learning',
+                    'platform': 'Coursera',
+                    'duration': '11 weeks',
+                    'rating': '4.9',
+                    'instructor': 'Andrew Ng',
+                    'difficulty': 'Intermediate',
+                    'tags': ['machine learning', 'AI', 'statistics', 'algorithms']
+                },
+                {
+                    'title': 'Statistics and Probability Course',
+                    'description': 'Comprehensive statistics course for data science',
+                    'url': 'https://www.khanacademy.org/math/statistics-probability',
+                    'platform': 'Khan Academy',
+                    'duration': '8-12 weeks',
+                    'rating': '4.7',
+                    'instructor': 'Khan Academy',
+                    'difficulty': 'Beginner to Intermediate',
+                    'tags': ['statistics', 'probability', 'data analysis', 'mathematics']
+                },
+                {
+                    'title': 'Python for Data Science Handbook',
+                    'description': 'Essential Python libraries for data analysis',
+                    'url': 'https://jakevdp.github.io/PythonDataScienceHandbook/',
+                    'platform': 'GitHub',
+                    'duration': 'Self-paced',
+                    'rating': '4.8',
+                    'instructor': 'Jake VanderPlas',
+                    'difficulty': 'Intermediate',
+                    'tags': ['python', 'pandas', 'numpy', 'data analysis']
+                },
+                {
+                    'title': 'Kaggle - Data Science Competitions',
+                    'description': 'Practice data science with real-world datasets and competitions',
+                    'url': 'https://www.kaggle.com/',
+                    'platform': 'Kaggle',
+                    'duration': 'Ongoing',
+                    'rating': '4.8',
+                    'instructor': 'Community',
+                    'difficulty': 'All Levels',
+                    'tags': ['data science', 'competitions', 'datasets', 'machine learning']
+                }
+            ])
+        
+        # AI/ML Engineering resources
+        if 'ai' in career_lower or 'artificial intelligence' in career_lower or 'ml' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Deep Learning Specialization',
+                    'description': 'Comprehensive deep learning course by Andrew Ng',
+                    'url': 'https://www.coursera.org/specializations/deep-learning',
+                    'platform': 'Coursera',
+                    'duration': '16 weeks',
+                    'rating': '4.8',
+                    'instructor': 'Andrew Ng',
+                    'difficulty': 'Intermediate to Advanced',
+                    'tags': ['deep learning', 'neural networks', 'AI', 'machine learning']
+                },
+                {
+                    'title': 'Fast.ai - Practical Deep Learning',
+                    'description': 'Practical deep learning for coders',
+                    'url': 'https://course.fast.ai/',
+                    'platform': 'Fast.ai',
+                    'duration': '8 weeks',
+                    'rating': '4.9',
+                    'instructor': 'Jeremy Howard',
+                    'difficulty': 'Intermediate',
+                    'tags': ['deep learning', 'practical', 'pytorch', 'computer vision']
+                },
+                {
+                    'title': '3Blue1Brown - Neural Networks',
+                    'description': 'Intuitive explanations of neural networks and deep learning',
+                    'url': 'https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi',
+                    'platform': 'YouTube',
+                    'duration': 'Self-paced',
+                    'rating': '4.9',
+                    'instructor': 'Grant Sanderson',
+                    'difficulty': 'Beginner to Intermediate',
+                    'tags': ['neural networks', 'deep learning', 'mathematics', 'visualization']
+                },
+                {
+                    'title': 'Papers With Code',
+                    'description': 'Latest machine learning research papers with code implementations',
+                    'url': 'https://paperswithcode.com/',
+                    'platform': 'Papers With Code',
+                    'duration': 'Ongoing',
+                    'rating': '4.8',
+                    'instructor': 'Research Community',
+                    'difficulty': 'Advanced',
+                    'tags': ['research', 'papers', 'implementations', 'state-of-the-art']
+                }
+            ])
+        
+        # Mathematics resources
+        if 'math' in career_lower or 'mathematics' in career_lower:
+            resources.extend([
+                {
+                    'title': 'MIT OpenCourseWare - Mathematics',
+                    'description': 'Free mathematics courses from MIT',
+                    'url': 'https://ocw.mit.edu/courses/mathematics/',
+                    'platform': 'MIT OCW',
+                    'duration': 'Self-paced',
+                    'rating': '4.9',
+                    'instructor': 'MIT Faculty',
+                    'difficulty': 'Intermediate to Advanced',
+                    'tags': ['mathematics', 'calculus', 'linear algebra', 'advanced math']
+                },
+                {
+                    'title': 'Khan Academy - Mathematics',
+                    'description': 'Comprehensive mathematics courses from basic to advanced',
+                    'url': 'https://www.khanacademy.org/math',
+                    'platform': 'Khan Academy',
+                    'duration': 'Self-paced',
+                    'rating': '4.8',
+                    'instructor': 'Khan Academy',
+                    'difficulty': 'All Levels',
+                    'tags': ['mathematics', 'algebra', 'calculus', 'statistics']
+                },
+                {
+                    'title': '3Blue1Brown - Mathematics',
+                    'description': 'Beautiful visual explanations of mathematical concepts',
+                    'url': 'https://www.youtube.com/c/3blue1brown',
+                    'platform': 'YouTube',
+                    'duration': 'Self-paced',
+                    'rating': '4.9',
+                    'instructor': 'Grant Sanderson',
+                    'difficulty': 'All Levels',
+                    'tags': ['mathematics', 'visualization', 'intuition', 'concepts']
+                }
+            ])
+        
+        return resources
 
     def _ensure_minimum_milestones(self, roadmap: Dict[str, Any]) -> Dict[str, Any]:
         """Ensure there are at least 10 milestones by deriving from phases/topics if needed"""
