@@ -14,6 +14,7 @@ import openai
 from openai import OpenAI
 from app.services.roadmap_service import RoadmapService
 from app.services.job_service import JobService
+from app.api.interview_prep import router as interview_prep_router
 import httpx
 import asyncio
 
@@ -49,6 +50,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include routers
+app.include_router(interview_prep_router)
 
 # Initialize Supabase client
 supabase_url = os.getenv("SUPABASE_URL")
@@ -1049,116 +1053,9 @@ async def run_code(payload: Dict[str, Any]):
         print(f"Judge0 error: {e}")
         raise HTTPException(status_code=500, detail="Code execution service unavailable")
 
-@app.get("/api/interview-prep")
-async def get_interview_prep(career_name: Optional[str] = None):
-    """Get interview preparation materials with GPT-enhanced questions"""
-    interview_data = load_interview_prep_data()
-    
-    if career_name:
-        career_prep = interview_data.get("interview_preparation", {}).get(career_name)
-        if not career_prep:
-            # Generate GPT-powered interview questions if not found
-            if client:
-                try:
-                    gpt_questions = await generate_gpt_interview_questions(career_name)
-                    return {
-                        "career": career_name,
-                        "description": f"GPT-generated interview preparation for {career_name}",
-                        "categories": {
-                            "Technical Questions": {
-                                "description": "GPT-generated technical interview questions",
-                                "questions": gpt_questions.get("technical", [])
-                            },
-                            "Behavioral Questions": {
-                                "description": "GPT-generated behavioral interview questions",
-                                "questions": gpt_questions.get("behavioral", [])
-                            },
-                            "System Design Questions": {
-                                "description": "GPT-generated system design questions",
-                                "questions": gpt_questions.get("system_design", [])
-                            }
-                        },
-                        "resources": {
-                            "LeetCode": "https://leetcode.com/problemset/all/",
-                            "HackerRank": "https://www.hackerrank.com/",
-                            "System Design Primer": "https://github.com/donnemartin/system-design-primer"
-                        }
-                    }
-                except Exception as e:
-                    print(f"Error generating GPT interview questions: {e}")
-                    return {"message": f"Interview prep not found for {career_name}"}
-            else:
-                return {"message": f"Interview prep not found for {career_name}"}
-        return career_prep
-    
-    return interview_data
+# Interview prep endpoint moved to router
 
-async def generate_gpt_interview_questions(career_name: str):
-    """Generate GPT-powered interview questions for a specific career"""
-    if not client:
-        return {"technical": [], "behavioral": [], "system_design": []}
-    
-    try:
-        system_prompt = f"""You are an expert interview preparation assistant. Generate 5 high-quality interview questions for a {career_name} position.
-
-For each question, provide:
-1. The question text
-2. Difficulty level (Easy/Medium/Hard)
-3. Category (Technical/Behavioral/System Design)
-4. Key points to address
-5. Sample answer approach
-
-Format the response as JSON with three arrays: technical, behavioral, and system_design questions."""
-
-        response = client.chat.completions.create(
-            model=openai_model,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": f"Generate interview questions for {career_name}"}
-            ],
-            max_tokens=2000,
-            temperature=0.7
-        )
-        
-        # Parse the response and extract questions
-        ai_response = response.choices[0].message.content
-        
-        # Simple parsing - in production, you'd want more robust JSON parsing
-        questions = {
-            "technical": [
-                {
-                    "question": f"Explain the key concepts of {career_name.lower()}",
-                    "difficulty": "Medium",
-                    "category": "Technical",
-                    "key_points": ["Core concepts", "Best practices", "Common challenges"],
-                    "approach": "Start with fundamentals, provide examples, discuss trade-offs"
-                }
-            ],
-            "behavioral": [
-                {
-                    "question": f"Tell me about a challenging project you worked on in {career_name.lower()}",
-                    "difficulty": "Medium",
-                    "category": "Behavioral",
-                    "key_points": ["Problem description", "Your role", "Solution approach", "Results"],
-                    "approach": "Use STAR method: Situation, Task, Action, Result"
-                }
-            ],
-            "system_design": [
-                {
-                    "question": f"Design a system for {career_name.lower()} applications",
-                    "difficulty": "Hard",
-                    "category": "System Design",
-                    "key_points": ["Requirements", "Architecture", "Scalability", "Trade-offs"],
-                    "approach": "Clarify requirements, discuss architecture, consider scale and constraints"
-                }
-            ]
-        }
-        
-        return questions
-        
-    except Exception as e:
-        print(f"Error generating GPT interview questions: {e}")
-        return {"technical": [], "behavioral": [], "system_design": []}
+# GPT interview questions function removed - using static data instead
 
 @app.get("/api/math-resources")
 async def get_math_resources():
@@ -1628,17 +1525,7 @@ async def get_math_resources(
             detail=f"Failed to retrieve math resources: {str(e)}"
         )
 
-@app.get("/api/interview-prep")
-async def get_interview_prep():
-    """Get all interview preparation data"""
-    try:
-        data = load_interview_prep_data()
-        return data
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to retrieve interview prep data: {str(e)}"
-        )
+# Interview prep endpoint moved to router
 
 if __name__ == "__main__":
     import uvicorn

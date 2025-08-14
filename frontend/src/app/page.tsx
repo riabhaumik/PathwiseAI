@@ -82,7 +82,7 @@ export default function Home() {
       <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center animate-fade-in">
           <h1 className="text-6xl md:text-8xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">
-            <span className="block mb-4 font-extrabold" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+            <span className="block mb-4 font-black text-8xl md:text-9xl" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
               PATHWISE AI
             </span>
             <span className="block text-4xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -144,7 +144,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {features.map((feature, index) => (
             <div
               key={feature.title}
@@ -172,7 +172,7 @@ export default function Home() {
 
       {/* CTA Section */}
       <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-center animate-fade-in">
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-center animate-fade-in max-w-5xl mx-auto">
           <h2 className="text-4xl font-bold text-white mb-6">
             Ready to Transform Your Career?
           </h2>

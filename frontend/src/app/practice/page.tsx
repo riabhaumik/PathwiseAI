@@ -550,7 +550,7 @@ function PracticePageInner() {
                 points: 100,
                 completed: false,
                 code: 'def two_sum(nums, target):\n    # Your solution here\n    pass',
-                solution: 'def two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []'
+                solution: 'def two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i'
               }
             ],
             totalProblems: 1,
@@ -694,7 +694,7 @@ function PracticePageInner() {
       {/* Enhanced Interview Prep Section */}
       {showInterviewPrep && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 animate-fade-in">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg transform transition-all duration-300 hover:scale-[1.02]">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg transform transition-all duration-300 hover:scale-[1.02] max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center">
               🎯 Career-Specific Interview Preparation
             </h2>
@@ -836,11 +836,10 @@ function PracticePageInner() {
       )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-
         {!currentProblem ? (
           <div className="space-y-8">
             {/* Category Selection */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
               {categories.map((category) => (
                 <div
                   key={category.id}
@@ -874,7 +873,7 @@ function PracticePageInner() {
             </div>
 
             {/* Problems List */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-6xl mx-auto">
               <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                    {categories.find(c => c.id === selectedCategory)?.name || 'Problems'}
@@ -952,7 +951,7 @@ function PracticePageInner() {
             </div>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-6 max-w-6xl mx-auto">
             {/* Quick Math References */}
             <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Math References</h3>
