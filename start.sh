@@ -8,13 +8,14 @@ echo "Python version: $(python --version 2>&1 || echo 'Python not found')"
 
 # Change to backend directory
 echo "Changing to backend directory..."
-cd backend
+# Don't change directory - stay in root so data files are accessible
 echo "Current directory: $(pwd)"
+echo "Data directory should be at: $(pwd)/backend/data/"
 
 # Check if virtual environment exists, create if not
-if [ ! -d "venv" ]; then
+if [ ! -d "backend/venv" ]; then
     echo "Creating virtual environment..."
-    python -m venv venv
+    python -m venv backend/venv
     echo "Virtual environment created successfully"
 else
     echo "Virtual environment already exists"
@@ -22,7 +23,7 @@ fi
 
 # Activate virtual environment
 echo "Activating virtual environment..."
-source venv/bin/activate
+source backend/venv/bin/activate
 echo "Virtual environment activated. Python: $(which python)"
 echo "Pip version: $(pip --version)"
 
@@ -31,14 +32,14 @@ echo "Upgrading pip to latest version..."
 pip install --upgrade pip --quiet
 
 # Install dependencies if requirements.txt exists
-if [ -f "requirements.txt" ]; then
-    echo "Installing dependencies from requirements.txt..."
+if [ -f "backend/requirements.txt" ]; then
+    echo "Installing dependencies from backend/requirements.txt..."
     echo "Requirements file contents:"
-    cat requirements.txt
+    cat backend/requirements.txt
     echo ""
     
     # Install with verbose output to see any issues
-    pip install -r requirements.txt --verbose
+    pip install -r backend/requirements.txt --verbose
     echo "Dependencies installed successfully"
     
     # Verify key packages are installed
@@ -51,18 +52,19 @@ if [ -f "requirements.txt" ]; then
     python -c "import httpx; print('✓ HTTPX installed')" || echo "✗ HTTPX missing"
     
 else
-    echo "Warning: requirements.txt not found"
+    echo "Warning: backend/requirements.txt not found"
 fi
 
 # Check if main.py exists
-if [ ! -f "main.py" ]; then
-    echo "ERROR: main.py not found in $(pwd)"
-    ls -la
+if [ ! -f "backend/main.py" ]; then
+    echo "ERROR: backend/main.py not found in $(pwd)"
+    ls -la backend/
     exit 1
 fi
 
 # Test if the application can be imported
 echo "Testing application import..."
+cd backend
 python -c "
 try:
     import main
@@ -86,6 +88,7 @@ echo "Starting application..."
 python main.py &
 APP_PID=$!
 echo "Application started with PID: $APP_PID"
+cd ..
 
 # Wait a moment for the app to start
 echo "Waiting for application to start..."

@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from app.services.roadmap_service import RoadmapService
 from app.core.auth import get_current_user
 from app.models.user import TokenData
+import os
 
 router = APIRouter(prefix="/api/roadmap", tags=["roadmap"])
 
@@ -90,4 +91,46 @@ async def get_career_skills(career_name: str):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to get career skills: {str(e)}"
-        ) 
+        )
+
+@router.get("/debug/careers")
+async def debug_careers():
+    """Debug endpoint to test careers data loading"""
+    try:
+        roadmap_service = RoadmapService()
+        careers_data = roadmap_service.load_careers_data()
+        return {
+            "success": True,
+            "careers_count": len(careers_data) if careers_data else 0,
+            "sample_careers": list(careers_data.keys())[:5] if careers_data else [],
+            "base_dir": getattr(roadmap_service, '_base_dir', 'Not set'),
+            "current_working_dir": os.getcwd()
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "error_type": type(e).__name__
+        }
+
+@router.get("/debug/test-roadmap")
+async def debug_test_roadmap():
+    """Debug endpoint to test basic roadmap generation"""
+    try:
+        roadmap_service = RoadmapService()
+        # Test with a simple career name
+        roadmap = await roadmap_service.generate_roadmap("Software Engineer", "beginner")
+        return {
+            "success": True,
+            "career": roadmap.get("career"),
+            "phases_count": len(roadmap.get("phases", [])),
+            "milestones_count": len(roadmap.get("milestones", [])),
+            "has_overview": bool(roadmap.get("overview")),
+            "error": roadmap.get("error")
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "error_type": type(e).__name__
+        } 

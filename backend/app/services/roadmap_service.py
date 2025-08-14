@@ -40,17 +40,58 @@ class RoadmapService:
         self._cache_ttl = 3600  # 1 hour
 
         # Resolve data directory robustly
-        # backend/app/services -> backend
-        self._base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        # Try multiple possible paths for Railway deployment
+        current_file = os.path.abspath(__file__)
+        possible_paths = [
+            # backend/app/services -> backend
+            os.path.dirname(os.path.dirname(os.path.dirname(current_file))),
+            # If running from root directory
+            os.path.join(os.getcwd(), "backend"),
+            # If running from backend directory
+            os.getcwd(),
+            # Fallback to current directory
+            os.path.dirname(current_file)
+        ]
+        
+        self._base_dir = None
+        for path in possible_paths:
+            data_path = os.path.join(path, "data", "careers_stem.json")
+            if os.path.exists(data_path):
+                self._base_dir = path
+                logger.info(f"Found data directory at: {self._base_dir}")
+                break
+        
+        if not self._base_dir:
+            # Last resort: use current working directory
+            self._base_dir = os.getcwd()
+            logger.warning(f"Could not find data directory, using current directory: {self._base_dir}")
     
     def load_careers_data(self) -> Dict[str, Any]:
         """Load careers data from JSON file"""
         try:
             path = os.path.join(self._base_dir, "data", "careers_stem.json")
+            logger.info(f"Attempting to load careers data from: {path}")
+            logger.info(f"Base directory: {self._base_dir}")
+            logger.info(f"Current working directory: {os.getcwd()}")
+            
+            if not os.path.exists(path):
+                logger.error(f"Careers data file not found at: {path}")
+                # List contents of base directory
+                try:
+                    base_contents = os.listdir(self._base_dir)
+                    logger.info(f"Contents of base directory: {base_contents}")
+                except Exception as e:
+                    logger.error(f"Could not list base directory contents: {e}")
+                return {}
+            
             with open(path, "r", encoding="utf-8") as f:
-                return json.load(f)
+                data = json.load(f)
+                logger.info(f"Successfully loaded careers data with {len(data)} careers")
+                return data
         except Exception as e:
             logger.error(f"Error loading careers data: {e}")
+            logger.error(f"Base directory: {self._base_dir}")
+            logger.error(f"Current working directory: {os.getcwd()}")
             return {}
     
     def load_resources_data(self) -> Dict[str, Any]:
@@ -656,13 +697,18 @@ class RoadmapService:
                         completed_topics: Optional[List[str]] = None) -> Dict[str, Any]:
         """Main method to generate a complete roadmap"""
         try:
+            logger.info(f"Starting roadmap generation for career: {career_name}, level: {user_level}")
+            
             # Load career data
             careers_data = self.load_careers_data()
+            logger.info(f"Loaded careers data: {len(careers_data)} careers available")
+            
             career_data = None
             
             # Find career in database (careers_stem.json structure)
             if career_name in careers_data:
                 career_data = careers_data[career_name]
+                logger.info(f"Found career data for: {career_name}")
                 # Convert to expected format
                 career_data = {
                     "name": career_name,
@@ -671,9 +717,13 @@ class RoadmapService:
                     "category": career_data.get("category", ""),
                     "subjects": career_data.get("subjects", {})
                 }
+            else:
+                logger.warning(f"Career not found in database: {career_name}")
+                logger.info(f"Available careers: {list(careers_data.keys())[:10]}")
             
             # If career not found, create basic data
             if not career_data:
+                logger.info(f"Creating basic career data for: {career_name}")
                 career_data = {
                     "name": career_name,
                     "description": f"Career path for {career_name}",
@@ -682,16 +732,22 @@ class RoadmapService:
             
             # Generate roadmap (try AI first, fallback to basic)
             try:
+                logger.info("Attempting to generate AI roadmap...")
                 roadmap = await self.generate_ai_roadmap(career_name, career_data, user_level)
+                logger.info("AI roadmap generated successfully")
             except Exception as e:
                 logger.warning(f"AI roadmap generation failed, using basic: {e}")
                 roadmap = self.generate_basic_roadmap(career_name, career_data, user_level)
+                logger.info("Basic roadmap generated successfully")
 
             # Enhance with resources
+            logger.info("Enhancing roadmap with resources...")
             roadmap = await self.enhance_roadmap_with_resources(roadmap, career_data)
+            logger.info("Resources enhancement completed")
 
             # Ensure minimum number of milestones (at least 10)
             roadmap = self._ensure_minimum_milestones(roadmap)
+            logger.info(f"Final roadmap has {len(roadmap.get('phases', []))} phases and {len(roadmap.get('milestones', []))} milestones")
             
             # Add completion tracking if topics provided
             if completed_topics:
@@ -706,6 +762,10 @@ class RoadmapService:
             
         except Exception as e:
             logger.error(f"Error generating roadmap: {e}")
+            logger.error(f"Career name: {career_name}")
+            logger.error(f"User level: {user_level}")
+            import traceback
+            logger.error(f"Traceback: {traceback.format_exc()}")
             return {
                 "career": career_name,
                 "overview": f"Failed to generate roadmap for {career_name}",
