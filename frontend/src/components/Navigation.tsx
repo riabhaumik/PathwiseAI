@@ -25,7 +25,7 @@ export default function Navigation() {
   const isActive = (href: string) => pathname === href
 
   return (
-    <nav className="bg-white dark:bg-gray-900 shadow-lg border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
+    <nav className="bg-white dark:bg-gray-900 shadow-lg border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 navigation-container nav-sticky">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo and Brand */}
@@ -60,7 +60,7 @@ export default function Navigation() {
             ))}
           </div>
 
-          {/* Right Side */}
+          {/* Right Side - Desktop */}
           <div className="hidden md:flex items-center space-x-4">
             <ThemeToggle />
             {user ? (
@@ -93,21 +93,22 @@ export default function Navigation() {
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu button and theme toggle */}
           <div className="md:hidden flex items-center space-x-2">
             <ThemeToggle />
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 p-2"
+              aria-label="Toggle mobile menu"
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - Only show when menu is open */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700 mobile-menu open">
             <div className="space-y-2">
               {navigation.map((item) => (
                 <button
