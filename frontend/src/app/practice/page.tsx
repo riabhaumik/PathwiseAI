@@ -8,7 +8,7 @@ import {
   Code, Database, Cpu, Globe, Zap, Heart, Share2, Eye, Clock,
   Play, CheckCircle, XCircle, Timer, Star, Calculator, BarChart3,
   Lightbulb, MessageSquare, Settings, Rocket, Shield, 
-  Layers, GitBranch, Cloud, Smartphone, Gamepad2
+  Layers, GitBranch, Cloud, Smartphone, Gamepad2, ExternalLink
 } from 'lucide-react'
 import Navigation from '@/components/Navigation'
 
@@ -38,6 +38,43 @@ interface PracticeCategory {
   completedProblems: number
 }
 
+interface InterviewPrepData {
+  title: string
+  description: string
+  careers: {
+    [key: string]: {
+      description: string
+      categories: {
+        [key: string]: {
+          description: string
+          questions: Array<{
+            question: string
+            difficulty?: string
+            category: string
+            hint?: string
+            solution_approach?: string
+            time_complexity?: string
+            space_complexity?: string
+            star_method?: {
+              situation: string
+              task: string
+              action: string
+              result: string
+            }
+            key_points?: string[]
+            follow_up?: string
+            scale_considerations?: string
+            best_practice?: string
+          }>
+          resources: {
+            [key: string]: string
+          }
+        }
+      }
+    }
+  }
+}
+
 function PracticePageInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -51,6 +88,9 @@ function PracticePageInner() {
   const [timeLeft, setTimeLeft] = useState(0)
   const [loading, setLoading] = useState(true)
   const [showInterviewPrep, setShowInterviewPrep] = useState(false)
+  const [interviewPrepData, setInterviewPrepData] = useState<InterviewPrepData | null>(null)
+  const [selectedCareer, setSelectedCareer] = useState<string>('')
+  const [selectedPrepCategory, setSelectedPrepCategory] = useState<string>('')
 
   const [categories, setCategories] = useState<PracticeCategory[]>([])
   const [mathRefs, setMathRefs] = useState<{ level: string, links: { title: string, url: string }[] }[]>([])
@@ -453,8 +493,35 @@ function PracticePageInner() {
         setLoading(false)
       }
     }
-    
+
+    const fetchInterviewPrep = async () => {
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+        const response = await fetch(`${baseUrl}/api/interview-prep`)
+        
+        if (response.ok) {
+          const data = await response.json()
+          setInterviewPrepData(data.interview_preparation)
+          
+          // Set default career if available
+          if (data.interview_preparation?.careers) {
+            const careerKeys = Object.keys(data.interview_preparation.careers)
+            if (careerKeys.length > 0) {
+              setSelectedCareer(careerKeys[0])
+              const categoryKeys = Object.keys(data.interview_preparation.careers[careerKeys[0]].categories)
+              if (categoryKeys.length > 0) {
+                setSelectedPrepCategory(categoryKeys[0])
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching interview prep data:', error)
+      }
+    }
+
     fetchProblems()
+    fetchInterviewPrep()
   }, [careerParam])
 
   const getCategoryIcon = (categoryId: string) => {
@@ -555,105 +622,146 @@ function PracticePageInner() {
         </div>
       </section>
 
-      {/* Interview Prep Section */}
+      {/* Enhanced Interview Prep Section */}
       {showInterviewPrep && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
           <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center">
-              🎯 Interview Preparation Guide
+              🎯 Career-Specific Interview Preparation
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Technical Preparation */}
-              <div className="bg-blue-50 dark:bg-blue-900/30 p-6 rounded-lg">
-                <div className="flex items-center mb-4">
-                  <Code className="h-8 w-8 text-blue-600 mr-3" />
-                  <h3 className="text-xl font-semibold text-blue-800 dark:text-blue-200">Technical Skills</h3>
+            {interviewPrepData ? (
+              <div className="space-y-8">
+                {/* Career Selection */}
+                <div className="flex flex-wrap gap-3 justify-center">
+                  {Object.keys(interviewPrepData.careers).map((career) => (
+                    <button
+                      key={career}
+                      onClick={() => {
+                        setSelectedCareer(career)
+                        const categoryKeys = Object.keys(interviewPrepData.careers[career].categories)
+                        if (categoryKeys.length > 0) {
+                          setSelectedPrepCategory(categoryKeys[0])
+                        }
+                      }}
+                      className={`px-4 py-2 rounded-lg transition-colors ${
+                        selectedCareer === career
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                      }`}
+                    >
+                      {career}
+                    </button>
+                  ))}
                 </div>
-                <ul className="space-y-2 text-blue-700 dark:text-blue-300">
-                  <li>• Practice coding problems daily</li>
-                  <li>• Review data structures & algorithms</li>
-                  <li>• Learn system design patterns</li>
-                  <li>• Master your programming language</li>
-                  <li>• Build portfolio projects</li>
-                </ul>
-              </div>
 
-              {/* Behavioral Preparation */}
-              <div className="bg-green-50 dark:bg-green-900/30 p-6 rounded-lg">
-                <div className="flex items-center mb-4">
-                  <Users className="h-8 w-8 text-green-600 mr-3" />
-                  <h3 className="text-xl font-semibold text-green-800 dark:text-green-200">Behavioral Questions</h3>
-                </div>
-                <ul className="space-y-2 text-green-700 dark:text-green-300">
-                  <li>• Use STAR method (Situation, Task, Action, Result)</li>
-                  <li>• Prepare leadership stories</li>
-                  <li>• Practice conflict resolution examples</li>
-                  <li>• Show growth mindset</li>
-                  <li>• Demonstrate teamwork skills</li>
-                </ul>
-              </div>
+                {/* Category Selection */}
+                {selectedCareer && (
+                  <div className="flex flex-wrap gap-3 justify-center">
+                    {Object.keys(interviewPrepData.careers[selectedCareer].categories).map((category) => (
+                      <button
+                        key={category}
+                        onClick={() => setSelectedPrepCategory(category)}
+                        className={`px-4 py-2 rounded-lg transition-colors ${
+                          selectedPrepCategory === category
+                            ? 'bg-green-600 text-white'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                        }`}
+                      >
+                        {category}
+                      </button>
+                    ))}
+                  </div>
+                )}
 
-              {/* Company Research */}
-              <div className="bg-purple-50 dark:bg-purple-900/30 p-6 rounded-lg">
-                <div className="flex items-center mb-4">
-                  <Globe className="h-8 w-8 text-purple-600 mr-3" />
-                  <h3 className="text-xl font-semibold text-purple-800 dark:text-purple-200">Company Research</h3>
-                </div>
-                <ul className="space-y-2 text-purple-700 dark:text-purple-300">
-                  <li>• Research company mission & values</li>
-                  <li>• Understand products & services</li>
-                  <li>• Study recent news & developments</li>
-                  <li>• Learn about company culture</li>
-                  <li>• Prepare thoughtful questions</li>
-                </ul>
-              </div>
+                {/* Questions and Resources */}
+                {selectedCareer && selectedPrepCategory && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Questions */}
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                        {selectedPrepCategory} Questions
+                      </h3>
+                      <div className="space-y-4 max-h-96 overflow-y-auto">
+                        {interviewPrepData.careers[selectedCareer].categories[selectedPrepCategory].questions.map((q, idx) => (
+                          <div key={idx} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+                              {q.question}
+                            </h4>
+                            {q.difficulty && (
+                              <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mb-2 ${
+                                q.difficulty === 'Easy' ? 'bg-green-100 text-green-800' :
+                                q.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
+                                'bg-red-100 text-red-800'
+                              }`}>
+                                {q.difficulty}
+                              </span>
+                            )}
+                            {q.hint && (
+                              <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                                <strong>Hint:</strong> {q.hint}
+                              </div>
+                            )}
+                            {q.solution_approach && (
+                              <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                                <strong>Approach:</strong> {q.solution_approach}
+                              </div>
+                            )}
+                            {q.star_method && (
+                              <div className="text-sm text-gray-600 dark:text-gray-400">
+                                <div className="font-medium mb-1">STAR Method:</div>
+                                <div className="grid grid-cols-2 gap-2 text-xs">
+                                  <div><strong>S:</strong> {q.star_method.situation}</div>
+                                  <div><strong>T:</strong> {q.star_method.task}</div>
+                                  <div><strong>A:</strong> {q.star_method.action}</div>
+                                  <div><strong>R:</strong> {q.star_method.result}</div>
+                                </div>
+                              </div>
+                            )}
+                            {q.key_points && (
+                              <div className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Key Points:</strong>
+                                <ul className="list-disc list-inside mt-1">
+                                  {q.key_points.map((point, pIdx) => (
+                                    <li key={pIdx}>{point}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
 
-              {/* Mock Interviews */}
-              <div className="bg-orange-50 dark:bg-orange-900/30 p-6 rounded-lg">
-                <div className="flex items-center mb-4">
-                  <MessageSquare className="h-8 w-8 text-orange-600 mr-3" />
-                  <h3 className="text-xl font-semibold text-orange-800 dark:text-orange-200">Mock Interviews</h3>
-                </div>
-                <ul className="space-y-2 text-orange-700 dark:text-orange-300">
-                  <li>• Practice with peers or mentors</li>
-                  <li>• Use platforms like Pramp</li>
-                  <li>• Record and review yourself</li>
-                  <li>• Get feedback on communication</li>
-                  <li>• Build confidence gradually</li>
-                </ul>
+                    {/* Resources */}
+                    <div>
+                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                        Learning Resources
+                      </h3>
+                      <div className="space-y-3">
+                        {Object.entries(interviewPrepData.careers[selectedCareer].categories[selectedPrepCategory].resources).map(([title, url]) => (
+                          <a
+                            key={title}
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
+                          >
+                            <ExternalLink className="h-5 w-5 text-blue-600" />
+                            <span className="text-blue-800 dark:text-blue-200 font-medium">{title}</span>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-
-              {/* Technical Deep Dive */}
-              <div className="bg-red-50 dark:bg-red-900/30 p-6 rounded-lg">
-                <div className="flex items-center mb-4">
-                  <Settings className="h-8 w-8 text-red-600 mr-3" />
-                  <h3 className="text-xl font-semibold text-red-800 dark:text-red-200">Technical Deep Dive</h3>
-                </div>
-                <ul className="space-y-2 text-red-700 dark:text-red-300">
-                  <li>• Understand your tech stack deeply</li>
-                  <li>• Know trade-offs and alternatives</li>
-                  <li>• Be ready to discuss architecture</li>
-                  <li>• Practice whiteboard coding</li>
-                  <li>• Review system design concepts</li>
-                </ul>
+            ) : (
+              <div className="text-center text-gray-600 dark:text-gray-400">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                Loading interview preparation data...
               </div>
-
-              {/* Follow-up Strategy */}
-              <div className="bg-indigo-50 dark:bg-indigo-900/30 p-6 rounded-lg">
-                <div className="flex items-center mb-4">
-                  <Zap className="h-8 w-8 text-indigo-600 mr-3" />
-                  <h3 className="text-xl font-semibold text-indigo-800 dark:text-indigo-200">Follow-up Strategy</h3>
-                </div>
-                <ul className="space-y-2 text-indigo-700 dark:text-indigo-300">
-                  <li>• Send thank-you notes within 24h</li>
-                  <li>• Follow up on next steps</li>
-                  <li>• Reflect on performance</li>
-                  <li>• Identify areas for improvement</li>
-                  <li>• Stay connected with interviewers</li>
-                </ul>
-              </div>
-            </div>
+            )}
           </div>
         </section>
       )}

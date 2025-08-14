@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react'
 import { 
   BookOpen, Target, TrendingUp, Clock, CheckCircle, 
   Play, ExternalLink, Star, Calendar, Award,
-  ChevronDown, ChevronRight, MapPin, Users, Zap
+  ChevronDown, ChevronRight, MapPin, Users, Zap,
+  Code, Database, Cpu, Globe, Calculator, BarChart3
 } from 'lucide-react'
 
 interface Resource {
@@ -16,6 +17,16 @@ interface Resource {
   rating: string
   instructor?: string
   image_url?: string
+  difficulty?: string
+  price?: string
+  students?: string
+  tags?: string[]
+  features?: string[]
+  prerequisites?: string
+  learning_outcomes?: string[]
+  language?: string
+  start_date?: string
+  subject?: string
 }
 
 interface Phase {
@@ -47,6 +58,7 @@ interface Roadmap {
   }
   phases: Phase[]
   milestones: Milestone[]
+  resources?: Resource[]
 }
 
 interface RoadmapProps {
@@ -67,10 +79,109 @@ export default function Roadmap({
   const [error, setError] = useState<string | null>(null)
   const [expandedPhases, setExpandedPhases] = useState<Set<string>>(new Set())
   const [selectedPhase, setSelectedPhase] = useState<string | null>(null)
+  const [resourcesData, setResourcesData] = useState<any>(null)
+  const [mathResources, setMathResources] = useState<any>(null)
 
   useEffect(() => {
     fetchRoadmap()
+    fetchResources()
   }, [careerName, userLevel])
+
+  const fetchResources = async () => {
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+      
+      // Fetch general resources
+      const resourcesResponse = await fetch(`${baseUrl}/api/resources`)
+      if (resourcesResponse.ok) {
+        const resourcesData = await resourcesResponse.json()
+        setResourcesData(resourcesData)
+      }
+      
+      // Fetch math resources
+      const mathResponse = await fetch(`${baseUrl}/api/math-resources`)
+      if (mathResponse.ok) {
+        const mathData = await mathResponse.json()
+        setMathResources(mathData)
+      }
+    } catch (error) {
+      console.error('Error fetching resources:', error)
+    }
+  }
+
+  const getRelevantResources = (phase: Phase, topic: string): Resource[] => {
+    if (!resourcesData) return phase.resources || []
+    
+    const relevantResources: Resource[] = []
+    
+    // Search for resources matching the topic or phase
+    Object.entries(resourcesData.resources || {}).forEach(([category, resources]: [string, any]) => {
+      if (Array.isArray(resources)) {
+        resources.forEach((resource: any) => {
+          if (resource.title?.toLowerCase().includes(topic.toLowerCase()) ||
+              resource.description?.toLowerCase().includes(topic.toLowerCase()) ||
+              resource.tags?.some((tag: string) => tag.toLowerCase().includes(topic.toLowerCase()))) {
+            relevantResources.push({
+              title: resource.title,
+              description: resource.description,
+              url: resource.url,
+              platform: resource.platform,
+              duration: resource.duration,
+              rating: resource.rating?.toString() || '4.5',
+              instructor: resource.instructor,
+              image_url: resource.image_url,
+              difficulty: resource.difficulty,
+              price: resource.price,
+              students: resource.students,
+              tags: resource.tags,
+              features: resource.features,
+              prerequisites: resource.prerequisites,
+              learning_outcomes: resource.learning_outcomes
+            })
+          }
+        })
+      }
+    })
+    
+    // Add math resources if relevant
+    if (mathResources && (topic.toLowerCase().includes('math') || topic.toLowerCase().includes('calculus') || 
+        topic.toLowerCase().includes('algebra') || topic.toLowerCase().includes('statistics'))) {
+      Object.entries(mathResources.mathematics_massive?.topics || {}).forEach(([mathTopic, mathData]: [string, any]) => {
+        if (mathData.courses) {
+          mathData.courses.forEach((course: any) => {
+            relevantResources.push({
+              title: course.title,
+              description: course.description,
+              url: course.url,
+              platform: course.platform,
+              duration: course.duration,
+              rating: course.rating?.toString() || '4.5',
+              instructor: course.instructor,
+              image_url: course.image_url,
+              difficulty: course.difficulty
+            })
+          })
+        }
+      })
+    }
+    
+    // Limit to top 5 most relevant resources
+    return relevantResources.slice(0, 5)
+  }
+
+  const handleTopicComplete = (phaseName: string, topic: string) => {
+    if (onPhaseComplete) {
+      onPhaseComplete(phaseName, topic)
+    }
+  }
+
+  const handleResourceClick = (resource: Resource) => {
+    if (onResourceClick) {
+      onResourceClick(resource)
+    } else {
+      window.open(resource.url, '_blank')
+    }
+  }
 
   const generateFallbackRoadmap = (careerName: string, userLevel: string): Roadmap => {
     // Generate a comprehensive fallback roadmap for any career
@@ -248,19 +359,7 @@ export default function Roadmap({
     setSelectedPhase(phaseName)
   }
 
-  const handleTopicComplete = (phaseName: string, topic: string) => {
-    if (onPhaseComplete) {
-      onPhaseComplete(phaseName, topic)
-    }
-  }
 
-  const handleResourceClick = (resource: Resource) => {
-    if (onResourceClick) {
-      onResourceClick(resource)
-    } else {
-      window.open(resource.url, '_blank')
-    }
-  }
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty.toLowerCase()) {
@@ -440,29 +539,116 @@ export default function Roadmap({
                 {/* Topics */}
                 <div className="mb-6">
                   <h4 className="text-md font-semibold text-gray-900 mb-3">Topics to Cover</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="space-y-3">
                     {phase.topics.map((topic, topicIndex) => {
                       const isCompleted = phase.completed_topics?.includes(topic) || false
+                      const relevantResources = getRelevantResources(phase, topic)
+                      const topicKey = `${phase.name}-${topic}`
+                      const isExpanded = expandedPhases.has(topicKey)
+                      
                       return (
-                        <div 
-                          key={topicIndex}
-                          className={`flex items-center gap-3 p-3 rounded-lg border ${
-                            isCompleted ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'
-                          }`}
-                        >
-                          <button
-                            onClick={() => handleTopicComplete(phase.name, topic)}
-                            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
-                              isCompleted 
-                                ? 'bg-green-500 border-green-500 text-white' 
-                                : 'border-gray-300 hover:border-blue-400'
+                        <div key={topicIndex}>
+                          <div 
+                            className={`flex items-center gap-3 p-3 rounded-lg border ${
+                              isCompleted ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'
                             }`}
                           >
-                            {isCompleted && <CheckCircle className="h-3 w-3" />}
-                          </button>
-                          <span className={`text-sm ${isCompleted ? 'text-green-800 line-through' : 'text-gray-700'}`}>
-                            {topic}
-                          </span>
+                            <button
+                              onClick={() => handleTopicComplete(phase.name, topic)}
+                              className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
+                                isCompleted 
+                                  ? 'bg-green-500 border-green-500 text-white' 
+                                  : 'border-gray-300 hover:border-blue-400'
+                              }`}
+                            >
+                              {isCompleted && <CheckCircle className="h-3 w-3" />}
+                            </button>
+                            <span className={`text-sm flex-1 ${isCompleted ? 'text-green-800 line-through' : 'text-gray-700'}`}>
+                              {topic}
+                            </span>
+                            {relevantResources.length > 0 && (
+                              <button
+                                onClick={() => setExpandedPhases(prev => {
+                                  const newSet = new Set(prev)
+                                  if (newSet.has(topicKey)) {
+                                    newSet.delete(topicKey)
+                                  } else {
+                                    newSet.add(topicKey)
+                                  }
+                                  return newSet
+                                })}
+                                className="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1 px-2 py-1 rounded hover:bg-blue-50 transition-colors"
+                              >
+                                <Code className="h-4 w-4" /> {relevantResources.length} resources
+                                {isExpanded ? (
+                                  <ChevronDown className="h-3 w-3" />
+                                ) : (
+                                  <ChevronRight className="h-3 w-3" />
+                                )}
+                              </button>
+                            )}
+                          </div>
+                          
+                          {/* Expanded Resources for Topic */}
+                          {isExpanded && relevantResources.length > 0 && (
+                            <div className="ml-8 mt-2 p-4 bg-blue-50 dark:bg-blue-900/30 border-l-2 border-blue-200 dark:border-blue-800 rounded-r-lg">
+                              <h5 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-3">
+                                Learning Resources for "{topic}"
+                              </h5>
+                              <div className="space-y-3">
+                                {relevantResources.map((resource, resIdx) => (
+                                  <div key={resIdx} className="bg-white dark:bg-gray-700 p-3 rounded-lg shadow-sm">
+                                    <div className="flex items-start justify-between">
+                                      <div className="flex-1">
+                                        <h6 className="font-medium text-gray-900 dark:text-white text-sm mb-1">
+                                          {resource.title}
+                                        </h6>
+                                        <p className="text-xs text-gray-600 dark:text-gray-400 mb-2 line-clamp-2">
+                                          {resource.description}
+                                        </p>
+                                        <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+                                          <span className="flex items-center gap-1">
+                                            <BookOpen className="h-3 w-3" />
+                                            {resource.platform}
+                                          </span>
+                                          {resource.duration && (
+                                            <span className="flex items-center gap-1">
+                                              <Clock className="h-3 w-3" />
+                                              {resource.duration}
+                                            </span>
+                                          )}
+                                          {resource.rating && (
+                                            <span className="flex items-center gap-1">
+                                              <Star className="h-3 w-3 text-yellow-500" />
+                                              {resource.rating}
+                                            </span>
+                                          )}
+                                          {resource.difficulty && (
+                                            <span className={`px-2 py-1 rounded-full text-xs ${
+                                              resource.difficulty.toLowerCase() === 'beginner' ? 'bg-green-100 text-green-800' :
+                                              resource.difficulty.toLowerCase() === 'intermediate' ? 'bg-yellow-100 text-yellow-800' :
+                                              'bg-red-100 text-red-800'
+                                            }`}>
+                                              {resource.difficulty}
+                                            </span>
+                                          )}
+                                        </div>
+                                      </div>
+                                      <a
+                                        href={resource.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="ml-3 p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+                                        onClick={() => onResourceClick?.(resource)}
+                                      >
+                                        <ExternalLink className="h-4 w-4" />
+                                      </a>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )
                     })}

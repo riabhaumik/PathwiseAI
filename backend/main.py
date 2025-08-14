@@ -1481,6 +1481,165 @@ async def search_all(
     
     return results
 
+# New API endpoints for enhanced resources and interview prep
+
+@app.get("/api/resources")
+async def get_resources(
+    category: Optional[str] = None,
+    platform: Optional[str] = None,
+    difficulty: Optional[str] = None,
+    limit: Optional[int] = 100
+):
+    """Get learning resources with optional filtering"""
+    try:
+        data = load_resources_data()
+        
+        if not data or "resources" not in data:
+            return {"resources": {}, "metadata": data.get("metadata", {})}
+        
+        resources = data["resources"]
+        
+        # Apply filters if provided
+        if category:
+            if category in resources:
+                resources = {category: resources[category]}
+            else:
+                # Search for partial matches
+                filtered_resources = {}
+                for cat, cat_resources in resources.items():
+                    if category.lower() in cat.lower():
+                        filtered_resources[cat] = cat_resources
+                resources = filtered_resources
+        
+        # Apply platform filter
+        if platform:
+            filtered_resources = {}
+            for cat, cat_resources in resources.items():
+                if isinstance(cat_resources, list):
+                    filtered_cat_resources = [
+                        res for res in cat_resources 
+                        if res.get("platform", "").lower() == platform.lower()
+                    ]
+                    if filtered_cat_resources:
+                        filtered_resources[cat] = filtered_cat_resources
+                resources = filtered_resources
+        
+        # Apply difficulty filter
+        if difficulty:
+            filtered_resources = {}
+            for cat, cat_resources in resources.items():
+                if isinstance(cat_resources, list):
+                    filtered_cat_resources = [
+                        res for res in cat_resources 
+                        if res.get("difficulty", "").lower() == difficulty.lower()
+                    ]
+                    if filtered_cat_resources:
+                        filtered_resources[cat] = filtered_cat_resources
+                resources = filtered_resources
+        
+        # Apply limit
+        if limit:
+            for cat in resources:
+                if isinstance(resources[cat], list):
+                    resources[cat] = resources[cat][:limit]
+        
+        return {
+            "resources": resources,
+            "metadata": data.get("metadata", {}),
+            "filters_applied": {
+                "category": category,
+                "platform": platform,
+                "difficulty": difficulty,
+                "limit": limit
+            }
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve resources: {str(e)}"
+        )
+
+@app.get("/api/math-resources")
+async def get_math_resources(
+    topic: Optional[str] = None,
+    difficulty: Optional[str] = None,
+    platform: Optional[str] = None,
+    limit: Optional[int] = 100
+):
+    """Get math resources with optional filtering"""
+    try:
+        data = load_math_resources_data()
+        
+        if not data or "mathematics_massive" not in data:
+            return {"topics": {}, "metadata": data.get("metadata", {})}
+        
+        topics = data["mathematics_massive"]["topics"]
+        
+        # Apply topic filter if provided
+        if topic:
+            if topic in topics:
+                topics = {topic: topics[topic]}
+            else:
+                # Search for partial matches
+                filtered_topics = {}
+                for topic_name, topic_data in topics.items():
+                    if topic.lower() in topic_name.lower():
+                        filtered_topics[topic_name] = topic_data
+                topics = filtered_topics
+        
+        # Apply difficulty filter
+        if difficulty:
+            filtered_topics = {}
+            for topic_name, topic_data in topics.items():
+                if topic_data.get("difficulty", "").lower() == difficulty.lower():
+                    filtered_topics[topic_name] = topic_data
+            topics = filtered_topics
+        
+        # Apply platform filter to courses
+        if platform:
+            for topic_name, topic_data in topics.items():
+                if "courses" in topic_data:
+                    topic_data["courses"] = [
+                        course for course in topic_data["courses"]
+                        if course.get("platform", "").lower() == platform.lower()
+                    ]
+        
+        # Apply limit to courses
+        if limit:
+            for topic_name, topic_data in topics.items():
+                if "courses" in topic_data:
+                    topic_data["courses"] = topic_data["courses"][:limit]
+        
+        return {
+            "topics": topics,
+            "metadata": data["mathematics_massive"].get("metadata", {}),
+            "filters_applied": {
+                "topic": topic,
+                "difficulty": difficulty,
+                "platform": platform,
+                "limit": limit
+            }
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve math resources: {str(e)}"
+        )
+
+@app.get("/api/interview-prep")
+async def get_interview_prep():
+    """Get all interview preparation data"""
+    try:
+        data = load_interview_prep_data()
+        return data
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve interview prep data: {str(e)}"
+        )
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000) 
