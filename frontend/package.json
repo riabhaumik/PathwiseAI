@@ -13,16 +13,17 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.4",
+    "@vercel/analytics": "^1.5.0",
     "axios": "^1.6.2",
+    "clsx": "^2.0.0",
+    "framer-motion": "^10.16.4",
     "lucide-react": "^0.294.0",
     "next": "^15.4.5",
     "openai": "^5.11.0",
     "react": "^18",
     "react-dom": "^18",
-    "framer-motion": "^10.16.4",
-    "zustand": "^4.4.6",
-    "clsx": "^2.0.0",
-    "tailwind-merge": "^2.0.0"
+    "tailwind-merge": "^2.0.0",
+    "zustand": "^4.4.6"
   },
   "devDependencies": {
     "@types/node": "^20",
