@@ -44,6 +44,7 @@ function PracticePageInner() {
   const [isRunning, setIsRunning] = useState(false)
   const [showSolution, setShowSolution] = useState(false)
   const [timeLeft, setTimeLeft] = useState(0)
+  const [loading, setLoading] = useState(true)
 
   const [categories, setCategories] = useState<PracticeCategory[]>([])
   const [mathRefs, setMathRefs] = useState<{ level: string, links: { title: string, url: string }[] }[]>([])
@@ -51,12 +52,27 @@ function PracticePageInner() {
   useEffect(() => {
     const fetchProblems = async () => {
       try {
+        setLoading(true)
+        
+        // Try to load from backend API first
         const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+        console.log('Attempting to fetch practice problems from:', `${baseUrl}/api/practice/problems`)
+        
         const params = new URLSearchParams()
         if (careerParam) params.append('career', decodeURIComponent(careerParam))
-        const res = await fetch(`${baseUrl}/api/practice/problems?${params}`)
+        
+        const res = await fetch(`${baseUrl}/api/practice/problems?${params}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          signal: AbortSignal.timeout(5000)
+        })
+        
         if (res.ok) {
           const data = await res.json()
+          console.log('Backend practice response:', data)
+          
           const mapped: PracticeCategory[] = (data.categories || []).map((c: any) => ({
             id: c.id,
             name: c.name,
@@ -66,39 +82,220 @@ function PracticePageInner() {
             totalProblems: c.totalProblems || (c.problems || []).length,
             completedProblems: c.completedProblems || 0,
           }))
-          setCategories(mapped)
-          // Add targeted math references per level
-          setMathRefs([
-            {
-              level: 'Beginner',
-              links: [
-                { title: 'Khan Academy Algebra I', url: 'https://www.khanacademy.org/math/algebra' },
-                { title: 'Coursera: Precalculus', url: 'https://www.coursera.org/learn/precalculus' },
-                { title: 'edX: College Algebra', url: 'https://www.edx.org/course/college-algebra' }
-              ]
-            },
-            {
-              level: 'Intermediate',
-              links: [
-                { title: 'MIT OCW: 18.06 Linear Algebra', url: 'https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/' },
-                { title: 'Khan: Probability & Statistics', url: 'https://www.khanacademy.org/math/statistics-probability' },
-                { title: 'Coursera: Calculus I', url: 'https://www.coursera.org/learn/calculus1' }
-              ]
-            },
-            {
-              level: 'Advanced',
-              links: [
-                { title: 'edX: Probability (MITx 6.431x)', url: 'https://www.edx.org/course/introduction-to-probability' },
-                { title: 'Stanford: Convex Optimization', url: 'https://web.stanford.edu/~boyd/cvxbook/' },
-                { title: '3Blue1Brown: Linear Algebra', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab' }
-              ]
-            }
-          ])
+          
+          if (mapped.length > 0) {
+            setCategories(mapped)
+            setLoading(false)
+            return
+          }
         }
+        
+        // Fallback to comprehensive practice problems
+        console.log('Using fallback practice problems...')
+        const fallbackCategories: PracticeCategory[] = [
+          {
+            id: 'coding',
+            name: 'Coding Challenges',
+            description: 'Practice coding problems and algorithms',
+            icon: Code,
+            problems: [
+              {
+                id: 'two-sum',
+                title: 'Two Sum',
+                description: 'Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.',
+                difficulty: 'Easy',
+                category: 'Arrays',
+                timeLimit: 15,
+                points: 100,
+                completed: false,
+                code: 'def two_sum(nums, target):\n    # Your solution here\n    pass',
+                solution: 'def two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []'
+              },
+              {
+                id: 'reverse-string',
+                title: 'Reverse String',
+                description: 'Write a function that reverses a string. The input string is given as an array of characters.',
+                difficulty: 'Easy',
+                category: 'Strings',
+                timeLimit: 10,
+                points: 80,
+                completed: false,
+                code: 'def reverse_string(s):\n    # Your solution here\n    pass',
+                solution: 'def reverse_string(s):\n    left, right = 0, len(s) - 1\n    while left < right:\n        s[left], s[right] = s[right], s[left]\n        left += 1\n        right -= 1'
+              },
+              {
+                id: 'valid-palindrome',
+                title: 'Valid Palindrome',
+                description: 'Given a string s, return true if it is a palindrome, or false otherwise.',
+                difficulty: 'Easy',
+                category: 'Strings',
+                timeLimit: 12,
+                points: 90,
+                completed: false,
+                code: 'def is_palindrome(s):\n    # Your solution here\n    pass',
+                solution: 'def is_palindrome(s):\n    s = "".join(c.lower() for c in s if c.isalnum())\n    return s == s[::-1]'
+              },
+              {
+                id: 'binary-search',
+                title: 'Binary Search',
+                description: 'Given an array of integers nums which is sorted in ascending order, and an integer target, write a function to search target in nums.',
+                difficulty: 'Medium',
+                category: 'Search',
+                timeLimit: 20,
+                points: 150,
+                completed: false,
+                code: 'def binary_search(nums, target):\n    # Your solution here\n    pass',
+                solution: 'def binary_search(nums, target):\n    left, right = 0, len(nums) - 1\n    while left <= right:\n        mid = (left + right) // 2\n        if nums[mid] == target:\n            return mid\n        elif nums[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    return -1'
+              },
+              {
+                id: 'linked-list-cycle',
+                title: 'Linked List Cycle',
+                description: 'Given head, the head of a linked list, determine if the linked list has a cycle in it.',
+                difficulty: 'Medium',
+                category: 'Linked Lists',
+                timeLimit: 25,
+                points: 180,
+                completed: false,
+                code: 'def has_cycle(head):\n    # Your solution here\n    pass',
+                solution: 'def has_cycle(head):\n    if not head or not head.next:\n        return False\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n        if slow == fast:\n            return True\n    return False'
+              }
+            ],
+            totalProblems: 5,
+            completedProblems: 0
+          },
+          {
+            id: 'system-design',
+            name: 'System Design',
+            description: 'Practice system design and architecture problems',
+            icon: Database,
+            problems: [
+              {
+                id: 'url-shortener',
+                title: 'Design URL Shortener',
+                description: 'Design a URL shortening service like TinyURL or Bitly.',
+                difficulty: 'Medium',
+                category: 'System Design',
+                timeLimit: 45,
+                points: 300,
+                completed: false,
+                code: '',
+                solution: 'Key components:\n1. URL shortening algorithm (hash-based)\n2. Database for URL mappings\n3. Rate limiting\n4. Analytics tracking\n5. Caching layer (Redis)\n6. Load balancer\n7. CDN for global distribution'
+              },
+              {
+                id: 'chat-system',
+                title: 'Design Chat System',
+                description: 'Design a real-time chat system like WhatsApp or Slack.',
+                difficulty: 'Hard',
+                category: 'System Design',
+                timeLimit: 60,
+                points: 400,
+                completed: false,
+                code: '',
+                solution: 'Key components:\n1. WebSocket connections for real-time\n2. Message queue (Kafka/RabbitMQ)\n3. Database for message history\n4. Push notifications\n5. File sharing service\n6. User presence tracking\n7. Message encryption'
+              }
+            ],
+            totalProblems: 2,
+            completedProblems: 0
+          },
+          {
+            id: 'behavioral',
+            name: 'Behavioral Questions',
+            description: 'Practice common behavioral interview questions',
+            icon: Users,
+            problems: [
+              {
+                id: 'leadership',
+                title: 'Leadership Experience',
+                description: 'Tell me about a time when you had to lead a team through a difficult situation.',
+                difficulty: 'Medium',
+                category: 'Behavioral',
+                timeLimit: 30,
+                points: 200,
+                completed: false,
+                code: '',
+                solution: 'Use STAR method:\n- Situation: Describe the context\n- Task: Explain your responsibility\n- Action: Detail what you did\n- Result: Share the outcome and lessons learned'
+              },
+              {
+                id: 'conflict',
+                title: 'Conflict Resolution',
+                description: 'Describe a situation where you had a conflict with a colleague and how you resolved it.',
+                difficulty: 'Medium',
+                category: 'Behavioral',
+                timeLimit: 25,
+                points: 180,
+                completed: false,
+                code: '',
+                solution: 'Focus on:\n- Understanding the other person\'s perspective\n- Finding common ground\n- Compromising when possible\n- Learning from the experience'
+              }
+            ],
+            totalProblems: 2,
+            completedProblems: 0
+          }
+        ]
+        
+        setCategories(fallbackCategories)
+        
+        // Add targeted math references per level
+        setMathRefs([
+          {
+            level: 'Beginner',
+            links: [
+              { title: 'Khan Academy Algebra I', url: 'https://www.khanacademy.org/math/algebra' },
+              { title: 'Coursera: Precalculus', url: 'https://www.coursera.org/learn/precalculus' },
+              { title: 'edX: College Algebra', url: 'https://www.edx.org/course/college-algebra' }
+            ]
+          },
+          {
+            level: 'Intermediate',
+            links: [
+              { title: 'MIT OCW: 18.06 Linear Algebra', url: 'https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/' },
+              { title: 'Khan: Probability & Statistics', url: 'https://www.khanacademy.org/math/statistics-probability' },
+              { title: 'Coursera: Calculus I', url: 'https://www.coursera.org/learn/calculus1' }
+            ]
+          },
+          {
+            level: 'Advanced',
+            links: [
+              { title: 'edX: Probability (MITx 6.431x)', url: 'https://www.edx.org/course/introduction-to-probability' },
+              { title: 'Stanford: Convex Optimization', url: 'https://web.stanford.edu/~boyd/cvxbook/' },
+              { title: '3Blue1Brown: Linear Algebra', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab' }
+            ]
+          }
+        ])
+        
       } catch (e) {
-        setCategories([])
+        console.error('Error loading practice problems:', e)
+        // Use the same fallback data
+        const fallbackCategories: PracticeCategory[] = [
+          {
+            id: 'coding',
+            name: 'Coding Challenges',
+            description: 'Practice coding problems and algorithms',
+            icon: Code,
+            problems: [
+              {
+                id: 'two-sum',
+                title: 'Two Sum',
+                description: 'Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.',
+                difficulty: 'Easy',
+                category: 'Arrays',
+                timeLimit: 15,
+                points: 100,
+                completed: false,
+                code: 'def two_sum(nums, target):\n    # Your solution here\n    pass',
+                solution: 'def two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []'
+              }
+            ],
+            totalProblems: 1,
+            completedProblems: 0
+          }
+        ]
+        setCategories(fallbackCategories)
+      } finally {
+        setLoading(false)
       }
     }
+    
     fetchProblems()
   }, [careerParam])
 
@@ -141,6 +338,20 @@ function PracticePageInner() {
     }
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+        <Navigation />
+        <div className="flex items-center justify-center py-20">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600 dark:text-gray-400">Loading practice problems...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       <Navigation />
@@ -150,7 +361,7 @@ function PracticePageInner() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center animate-fade-in">
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-              Practice & <span className="gradient-text">Interview Prep</span>
+              Practice & <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Interview Prep</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
               Master technical interviews and coding challenges with our comprehensive practice platform.

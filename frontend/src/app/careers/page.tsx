@@ -41,12 +41,26 @@ export default function CareersPage() {
 
   const loadCareers = async () => {
     try {
+      setLoading(true)
+      
       // Try to load from backend API first
       const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
-      const response = await fetch(`${baseUrl}/api/careers`)
+      console.log('Attempting to fetch from:', `${baseUrl}/api/careers`)
+      
+      const response = await fetch(`${baseUrl}/api/careers`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // Add timeout to prevent hanging
+        signal: AbortSignal.timeout(5000)
+      })
+      
       if (response.ok) {
         const data = await response.json()
-        if (data.careers) {
+        console.log('Backend response:', data)
+        
+        if (data.careers && Object.keys(data.careers).length > 0) {
           const careersArray = Object.entries(data.careers).map(([name, careerData]: [string, any]) => ({
             id: careerData.id || Math.random(),
             name: name,
@@ -63,36 +77,44 @@ export default function CareersPage() {
             certifications: careerData.certifications || [],
             related_careers: careerData.related_careers || []
           }))
+          console.log(`Loaded ${careersArray.length} careers from backend`)
           setCareers(careersArray)
+          setLoading(false)
+          return
         }
+      }
+      
+      // Fallback to local STEM careers data
+      console.log('Falling back to local data...')
+      const localResponse = await fetch('/careers_stem.json')
+      if (localResponse.ok) {
+        const data = await localResponse.json()
+        const careersArray = Object.entries(data).map(([name, careerData]: [string, any]) => ({
+          id: Math.random(),
+          name: name,
+          description: careerData.description || '',
+          skills: careerData.skills || [],
+          degree_required: careerData.degree_required || '',
+          growth_rate: careerData.growth_rate || '',
+          avg_salary: careerData.avg_salary || '',
+          category: careerData.category || 'STEM',
+          subjects: careerData.subjects || {},
+          detailed_description: careerData.detailed_description || '',
+          work_environment: careerData.work_environment || '',
+          top_companies: careerData.top_companies || [],
+          certifications: careerData.certifications || [],
+          related_careers: careerData.related_careers || []
+        }))
+        console.log(`Loaded ${careersArray.length} careers from local data`)
+        setCareers(careersArray)
       } else {
-        // Fallback to local STEM careers data
-        const response = await fetch('/careers_stem.json')
-        if (response.ok) {
-          const data = await response.json()
-          const careersArray = Object.entries(data).map(([name, careerData]: [string, any]) => ({
-            id: Math.random(),
-            name: name,
-            description: careerData.description || '',
-            skills: careerData.skills || [],
-            degree_required: careerData.degree_required || '',
-            growth_rate: careerData.growth_rate || '',
-            avg_salary: careerData.avg_salary || '',
-            category: careerData.category || 'STEM',
-            subjects: careerData.subjects || {},
-            detailed_description: careerData.detailed_description || '',
-            work_environment: careerData.work_environment || '',
-            top_companies: careerData.top_companies || [],
-            certifications: careerData.certifications || [],
-            related_careers: careerData.related_careers || []
-          }))
-          setCareers(careersArray)
-        }
+        throw new Error('Failed to load local data')
       }
     } catch (error) {
       console.error('Error loading careers:', error)
-      // Fallback to STEM careers data
-      setCareers([
+      
+      // Final fallback with comprehensive STEM careers
+      const fallbackCareers = [
         {
           id: 1,
           name: "Software Engineer",
@@ -122,8 +144,221 @@ export default function CareersPage() {
           growth_rate: "40% (Much faster than average)",
           avg_salary: "$130,000",
           category: "Computer Science"
+        },
+        {
+          id: 4,
+          name: "Cybersecurity Analyst",
+          description: "Protects computer systems and networks from security threats using advanced security tools and techniques",
+          skills: ["Network Security", "Incident Response", "Risk Assessment", "Security Tools", "Compliance"],
+          degree_required: "Bachelor's in Cybersecurity, Computer Science, or related field",
+          growth_rate: "35% (Much faster than average)",
+          avg_salary: "$102,600",
+          category: "Computer Science"
+        },
+        {
+          id: 5,
+          name: "DevOps Engineer",
+          description: "Manages the development and operations infrastructure using automation and cloud technologies",
+          skills: ["Linux", "Docker", "Kubernetes", "CI/CD", "Cloud Platforms"],
+          degree_required: "Bachelor's in Computer Science or related field",
+          growth_rate: "30% (Much faster than average)",
+          avg_salary: "$115,000",
+          category: "Computer Science"
+        },
+        {
+          id: 6,
+          name: "Machine Learning Engineer",
+          description: "Builds and deploys machine learning models and systems for production use",
+          skills: ["Python", "Machine Learning", "Deep Learning", "MLOps", "Data Engineering"],
+          degree_required: "Bachelor's in Computer Science, AI, or related field",
+          growth_rate: "38% (Much faster than average)",
+          avg_salary: "$125,000",
+          category: "Computer Science"
+        },
+        {
+          id: 7,
+          name: "Civil Engineer",
+          description: "Designs and oversees construction of infrastructure projects like roads, bridges, and buildings",
+          skills: ["Structural Analysis", "CAD Software", "Project Management", "Construction Methods", "Materials Science"],
+          degree_required: "Bachelor's in Civil Engineering",
+          growth_rate: "8% (As fast as average)",
+          avg_salary: "$88,050",
+          category: "Engineering"
+        },
+        {
+          id: 8,
+          name: "Mechanical Engineer",
+          description: "Designs and builds mechanical devices, engines, and machines",
+          skills: ["Mechanical Design", "Thermodynamics", "CAD/CAM", "Manufacturing Processes", "Materials"],
+          degree_required: "Bachelor's in Mechanical Engineering",
+          growth_rate: "7% (As fast as average)",
+          avg_salary: "$95,300",
+          category: "Engineering"
+        },
+        {
+          id: 9,
+          name: "Electrical Engineer",
+          description: "Designs and develops electrical systems, circuits, and electronic devices",
+          skills: ["Circuit Design", "Electronics", "Power Systems", "Control Systems", "Signal Processing"],
+          degree_required: "Bachelor's in Electrical Engineering",
+          growth_rate: "7% (As fast as average)",
+          avg_salary: "$101,780",
+          category: "Engineering"
+        },
+        {
+          id: 10,
+          name: "Chemical Engineer",
+          description: "Develops chemical manufacturing processes and designs chemical plants",
+          skills: ["Chemistry", "Process Design", "Thermodynamics", "Safety Protocols", "Equipment Design"],
+          degree_required: "Bachelor's in Chemical Engineering",
+          growth_rate: "9% (As fast as average)",
+          avg_salary: "$105,550",
+          category: "Engineering"
+        },
+        {
+          id: 11,
+          name: "Biomedical Engineer",
+          description: "Combines engineering principles with biological sciences to develop medical devices and technologies",
+          skills: ["Biomechanics", "Medical Device Design", "Biology", "Regulatory Compliance", "Clinical Testing"],
+          degree_required: "Bachelor's in Biomedical Engineering",
+          growth_rate: "10% (As fast as average)",
+          avg_salary: "$97,410",
+          category: "Engineering"
+        },
+        {
+          id: 12,
+          name: "Aerospace Engineer",
+          description: "Designs aircraft, spacecraft, satellites, and missiles",
+          skills: ["Aerodynamics", "Flight Mechanics", "Propulsion Systems", "Materials Science", "Control Systems"],
+          degree_required: "Bachelor's in Aerospace Engineering",
+          growth_rate: "8% (As fast as average)",
+          avg_salary: "$118,610",
+          category: "Engineering"
+        },
+        {
+          id: 13,
+          name: "Robotics Engineer",
+          description: "Designs and builds robots and automated systems for various applications",
+          skills: ["Robotics", "Control Systems", "Computer Vision", "Mechanical Design", "Programming"],
+          degree_required: "Bachelor's in Robotics, Mechanical, or Electrical Engineering",
+          growth_rate: "15% (Faster than average)",
+          avg_salary: "$110,000",
+          category: "Engineering"
+        },
+        {
+          id: 14,
+          name: "Statistician",
+          description: "Collects, analyzes, and interprets data to help solve real-world problems",
+          skills: ["Statistics", "Data Analysis", "Statistical Software", "Research Methods", "Mathematics"],
+          degree_required: "Master's in Statistics or related field",
+          growth_rate: "33% (Much faster than average)",
+          avg_salary: "$95,570",
+          category: "Mathematics"
+        },
+        {
+          id: 15,
+          name: "Mathematician",
+          description: "Develops mathematical theories and applies mathematical techniques to solve problems",
+          skills: ["Advanced Mathematics", "Mathematical Modeling", "Research", "Problem Solving", "Analysis"],
+          degree_required: "Master's or PhD in Mathematics",
+          growth_rate: "31% (Much faster than average)",
+          avg_salary: "$112,110",
+          category: "Mathematics"
+        },
+        {
+          id: 16,
+          name: "Actuary",
+          description: "Analyzes financial costs of risk and uncertainty using mathematics and statistics",
+          skills: ["Statistics", "Probability", "Financial Mathematics", "Risk Assessment", "Business Acumen"],
+          degree_required: "Bachelor's in Mathematics, Statistics, or Actuarial Science",
+          growth_rate: "24% (Much faster than average)",
+          avg_salary: "$111,030",
+          category: "Mathematics"
+        },
+        {
+          id: 17,
+          name: "Operations Research Analyst",
+          description: "Uses mathematical and analytical methods to help organizations solve complex problems",
+          skills: ["Operations Research", "Mathematical Modeling", "Optimization", "Data Analysis", "Problem Solving"],
+          degree_required: "Bachelor's in Operations Research, Mathematics, or related field",
+          growth_rate: "25% (Much faster than average)",
+          avg_salary: "$84,810",
+          category: "Mathematics"
+        },
+        {
+          id: 18,
+          name: "Physicist",
+          description: "Studies the fundamental nature of matter, energy, and the universe",
+          skills: ["Physics", "Mathematics", "Research Methods", "Laboratory Techniques", "Computer Modeling"],
+          degree_required: "PhD in Physics",
+          growth_rate: "8% (As fast as average)",
+          avg_salary: "$142,850",
+          category: "Physics"
+        },
+        {
+          id: 19,
+          name: "Astronomer",
+          description: "Studies celestial objects and phenomena in the universe",
+          skills: ["Astronomy", "Physics", "Mathematics", "Observational Techniques", "Data Analysis"],
+          degree_required: "PhD in Astronomy or Physics",
+          growth_rate: "6% (As fast as average)",
+          avg_salary: "$119,730",
+          category: "Physics"
+        },
+        {
+          id: 20,
+          name: "Quantum Physicist",
+          description: "Studies quantum mechanics and quantum phenomena for applications in computing and technology",
+          skills: ["Quantum Mechanics", "Physics", "Mathematics", "Research", "Computer Science"],
+          degree_required: "PhD in Physics with focus on Quantum Mechanics",
+          growth_rate: "12% (Faster than average)",
+          avg_salary: "$130,000",
+          category: "Physics"
+        },
+        {
+          id: 21,
+          name: "Chemist",
+          description: "Studies the composition, structure, and properties of matter",
+          skills: ["Chemistry", "Laboratory Techniques", "Analytical Methods", "Research", "Safety Protocols"],
+          degree_required: "Bachelor's in Chemistry",
+          growth_rate: "6% (As fast as average)",
+          avg_salary: "$79,430",
+          category: "Chemistry"
+        },
+        {
+          id: 22,
+          name: "Biochemist",
+          description: "Studies the chemical processes and substances that occur in living organisms",
+          skills: ["Biochemistry", "Biology", "Chemistry", "Laboratory Techniques", "Research Methods"],
+          degree_required: "Bachelor's in Biochemistry or related field",
+          growth_rate: "15% (Faster than average)",
+          avg_salary: "$102,270",
+          category: "Chemistry"
+        },
+        {
+          id: 23,
+          name: "Materials Chemist",
+          description: "Develops new materials with specific properties for various applications",
+          skills: ["Materials Science", "Chemistry", "Characterization Techniques", "Synthesis", "Testing"],
+          degree_required: "Bachelor's in Chemistry or Materials Science",
+          growth_rate: "10% (As fast as average)",
+          avg_salary: "$89,000",
+          category: "Chemistry"
+        },
+        {
+          id: 24,
+          name: "Blockchain Developer",
+          description: "Develops decentralized applications and smart contracts using blockchain technology",
+          skills: ["Blockchain", "Smart Contracts", "Cryptography", "Programming", "Distributed Systems"],
+          degree_required: "Bachelor's in Computer Science or related field",
+          growth_rate: "45% (Much faster than average)",
+          avg_salary: "$140,000",
+          category: "Computer Science"
         }
-      ])
+      ]
+      
+      console.log(`Using fallback data with ${fallbackCareers.length} careers`)
+      setCareers(fallbackCareers)
     } finally {
       setLoading(false)
     }
@@ -178,7 +413,7 @@ export default function CareersPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center animate-fade-in">
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-              Explore <span className="gradient-text">STEM Careers</span>
+              Explore <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">STEM Careers</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
               Discover {careers.length}+ detailed STEM career paths with comprehensive information about skills, salaries, and growth potential.
@@ -256,7 +491,7 @@ export default function CareersPage() {
           {filteredCareers.map((career, index) => (
             <div
               key={career.id || index}
-              className="card-hover bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 cursor-pointer animate-slide-up"
+              className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl hover:-translate-y-2 animate-slide-up"
               style={{ animationDelay: `${index * 0.1}s` }}
               onClick={() => handleCareerClick(career)}
             >
