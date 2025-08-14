@@ -21,6 +21,25 @@ class RoadmapResponse(BaseModel):
     milestones: List[Dict[str, Any]]
     resources: List[Dict[str, Any]]
 
+@router.get("/")
+async def get_roadmap(
+    career_name: str,
+    user_level: str = "beginner"
+):
+    """Get a roadmap for a specific career without authentication"""
+    try:
+        roadmap_service = RoadmapService()
+        roadmap = await roadmap_service.generate_roadmap(
+            career_name=career_name,
+            user_level=user_level
+        )
+        return roadmap
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get roadmap: {str(e)}"
+        )
+
 @router.post("/generate", response_model=RoadmapResponse)
 async def generate_roadmap(
     request: RoadmapRequest,

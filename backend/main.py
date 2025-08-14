@@ -1287,51 +1287,7 @@ async def save_career(career_name: str, current_user: TokenData = Depends(get_cu
     except Exception as e:
         raise HTTPException(status_code=500, detail="Failed to save career")
 
-@app.post("/api/roadmap/generate")
-async def generate_roadmap(
-    career_name: str, 
-    user_level: str = "beginner",
-    completed_topics: Optional[List[str]] = None,
-    current_user: TokenData = Depends(get_current_user)
-):
-    """Generate personalized learning roadmap using AI and external APIs"""
-    try:
-        roadmap_service = RoadmapService()
-        roadmap = await roadmap_service.generate_roadmap(
-            career_name=career_name,
-            user_level=user_level,
-            completed_topics=completed_topics
-        )
-        return roadmap
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-    except Exception as e:
-        print(f"Error generating roadmap: {e}")
-        raise HTTPException(status_code=500, detail="Failed to generate roadmap")
-
-@app.get("/api/roadmap/preview/{career_name}")
-async def preview_roadmap(
-    career_name: str,
-    user_level: str = "beginner"
-):
-    """Preview roadmap without authentication (for public access)"""
-    try:
-        roadmap_service = RoadmapService()
-        roadmap = await roadmap_service.generate_roadmap(
-            career_name=career_name,
-            user_level=user_level,
-            completed_topics=None
-        )
-        return roadmap
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-    except Exception as e:
-        print(f"Error generating roadmap preview: {e}")
-        raise HTTPException(status_code=500, detail="Failed to generate roadmap preview")
-
-@app.get("/api/roadmap/{career_name}")
-async def roadmap_alias(career_name: str, user_level: str = "beginner"):
-    return await preview_roadmap(career_name=career_name, user_level=user_level)
+# Roadmap endpoints are now handled by the roadmap router
 
 @app.get("/api/search")
 async def search_all(
@@ -1539,4 +1495,6 @@ async def get_math_resources(
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000) 
+    import os
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port) 

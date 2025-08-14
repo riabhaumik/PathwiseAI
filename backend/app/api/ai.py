@@ -12,8 +12,18 @@ security = HTTPBearer()
 
 logger = logging.getLogger(__name__)
 
-# Initialize AI service
-ai_service = AIService()
+# Initialize AI service lazily
+ai_service = None
+
+def get_ai_service():
+    global ai_service
+    if ai_service is None:
+        try:
+            ai_service = AIService()
+        except ValueError:
+            # If AI service fails to initialize, return None
+            return None
+    return ai_service
 
 class ChatRequest(BaseModel):
     message: str
@@ -46,6 +56,11 @@ async def chat_with_ai(
         
         # Get user ID for conversation memory
         user_id = str(current_user.id) if current_user else None
+        
+        # Get AI service
+        ai_service = get_ai_service()
+        if not ai_service:
+            raise HTTPException(status_code=503, detail="AI service not available")
         
         # Call AI service
         response = await ai_service.chat_with_ai(
@@ -85,6 +100,10 @@ async def get_career_insights(
     try:
         if not career_name.strip():
             raise HTTPException(status_code=400, detail="Career name cannot be empty")
+        
+        ai_service = get_ai_service()
+        if not ai_service:
+            raise HTTPException(status_code=503, detail="AI service not available")
         
         insights = await ai_service.generate_career_insights(career_name)
         
@@ -126,6 +145,10 @@ async def analyze_user_profile(
         if not request.experience or request.experience not in ["beginner", "intermediate", "advanced"]:
             raise HTTPException(status_code=400, detail="Experience level must be beginner, intermediate, or advanced")
         
+        ai_service = get_ai_service()
+        if not ai_service:
+            raise HTTPException(status_code=503, detail="AI service not available")
+        
         analysis = await ai_service.analyze_user_profile(request.skills, request.interests, request.experience)
         
         if "error" in analysis:
@@ -146,7 +169,7 @@ async def analyze_user_profile(
 @router.get("/suggestions")
 async def get_ai_suggestions(
     message: str = Query(..., description="User message to generate suggestions for"),
-    context: Optional[Dict[str, Any]] = Query(None, description="Additional context")
+    context: Optional[str] = Query(None, description="Additional context as JSON string")
 ):
     """
     Get AI-generated suggestions for next steps based on user message.
@@ -160,6 +183,10 @@ async def get_ai_suggestions(
     try:
         if not message.strip():
             raise HTTPException(status_code=400, detail="Message cannot be empty")
+        
+        ai_service = get_ai_service()
+        if not ai_service:
+            raise HTTPException(status_code=503, detail="AI service not available")
         
         suggestions = ai_service._generate_enhanced_suggestions(message, context)
         
@@ -180,7 +207,7 @@ async def get_ai_suggestions(
 @router.get("/follow-up-questions")
 async def get_follow_up_questions(
     message: str = Query(..., description="User message to generate follow-up questions for"),
-    context: Optional[Dict[str, Any]] = Query(None, description="Additional context")
+    context: Optional[str] = Query(None, description="Additional context as JSON string")
 ):
     """
     Get AI-generated follow-up questions to keep conversation engaging.
@@ -193,6 +220,10 @@ async def get_follow_up_questions(
     try:
         if not message.strip():
             raise HTTPException(status_code=400, detail="Message cannot be empty")
+        
+        ai_service = get_ai_service()
+        if not ai_service:
+            raise HTTPException(status_code=503, detail="AI service not available")
         
         follow_up_questions = ai_service._generate_follow_up_questions(message, context)
         
@@ -229,6 +260,10 @@ async def get_user_preferences(
         if current_user and str(current_user.id) != user_id:
             raise HTTPException(status_code=403, detail="Access denied")
         
+        ai_service = get_ai_service()
+        if not ai_service:
+            raise HTTPException(status_code=503, detail="AI service not available")
+        
         preferences = ai_service._get_user_preferences(user_id)
         
         return {
@@ -261,6 +296,10 @@ async def get_conversation_history(
         if current_user and str(current_user.id) != user_id:
             raise HTTPException(status_code=403, detail="Access denied")
         
+        ai_service = get_ai_service()
+        if not ai_service:
+            raise HTTPException(status_code=503, detail="AI service not available")
+        
         history = ai_service._get_conversation_history(user_id)
         
         return {
@@ -291,6 +330,10 @@ async def ai_service_health():
     try:
         # Test basic service functionality
         test_message = "Hello, can you help me with career guidance?"
+        ai_service = get_ai_service()
+        if not ai_service:
+            raise HTTPException(status_code=503, detail="AI service not available")
+        
         response = await ai_service.chat_with_ai(test_message)
         
         return {

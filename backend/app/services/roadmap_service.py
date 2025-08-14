@@ -584,7 +584,11 @@ class RoadmapService:
                     unique_resources.append(resource)
                     seen_urls.add(url)
 
-            # Add resources to roadmap phases
+            # Ensure we have at least some resources
+            if not unique_resources:
+                unique_resources = career_specific_resources
+
+            # Add resources to roadmap phases - ensure each phase has at least 2 resources
             if unique_resources:
                 roadmap['resources'] = unique_resources
 
@@ -592,8 +596,38 @@ class RoadmapService:
                     start = i * 5
                     end = (i + 1) * 5
                     phase_resources = unique_resources[start:end]
-                    if phase_resources:
-                        phase['resources'] = phase_resources
+                    
+                    # Ensure each phase has at least 2 resources
+                    if len(phase_resources) < 2:
+                        # Fill with career-specific resources if available
+                        if career_specific_resources:
+                            phase_resources = career_specific_resources[:2]
+                        else:
+                            # Create generic resources for the phase
+                            phase_resources = [
+                                {
+                                    'title': f'Learning Resource for {phase.get("name", "Phase")}',
+                                    'description': f'Comprehensive learning materials for {phase.get("name", "Phase")}',
+                                    'url': 'https://www.khanacademy.org/',
+                                    'platform': 'Khan Academy',
+                                    'duration': 'Self-paced',
+                                    'rating': '4.8',
+                                    'instructor': 'Khan Academy',
+                                    'difficulty': phase.get('difficulty', 'beginner')
+                                },
+                                {
+                                    'title': f'Advanced Course for {phase.get("name", "Phase")}',
+                                    'description': f'Advanced learning path for {phase.get("name", "Phase")}',
+                                    'url': 'https://ocw.mit.edu/',
+                                    'platform': 'MIT OCW',
+                                    'duration': 'Self-paced',
+                                    'rating': '4.9',
+                                    'instructor': 'MIT Faculty',
+                                    'difficulty': phase.get('difficulty', 'beginner')
+                                }
+                            ]
+                    
+                    phase['resources'] = phase_resources
 
             # Ensure roadmap has proper structure and no circular references
             roadmap = self._clean_roadmap_structure(roadmap)
@@ -601,7 +635,22 @@ class RoadmapService:
 
         except Exception as e:
             logger.error(f"Error enhancing roadmap with resources: {e}")
-            return roadmap
+            # Fallback: ensure basic resources are available
+            try:
+                career_name = roadmap.get('career', '')
+                career_specific_resources = self._get_career_specific_resources(career_name)
+                
+                if career_specific_resources:
+                    roadmap['resources'] = career_specific_resources
+                    
+                    # Ensure each phase has resources
+                    for phase in roadmap.get('phases', []):
+                        phase['resources'] = career_specific_resources[:2]
+                
+                return roadmap
+            except Exception as fallback_error:
+                logger.error(f"Fallback resource enhancement also failed: {fallback_error}")
+                return roadmap
     
     async def generate_roadmap(self, career_name: str, user_level: str = "beginner", 
                         completed_topics: Optional[List[str]] = None) -> Dict[str, Any]:
@@ -1545,9 +1594,10 @@ class RoadmapService:
                 }
             ])
         
-        # General fallback for other careers
-        else:
-            resources.extend([
+        # General fallback for other careers - ALWAYS ensure at least 2 links
+        if len(resources) < 2:
+            # Add generic STEM resources to ensure minimum of 2 links
+            generic_resources = [
                 {
                     'title': 'Khan Academy - STEM Courses',
                     'description': 'Free comprehensive courses in science, technology, engineering, and mathematics.',
@@ -1570,10 +1620,15 @@ class RoadmapService:
                     'difficulty': 'Intermediate to Advanced',
                     'tags': ['MIT', 'free', 'university level', 'comprehensive']
                 }
-            ])
+            ]
+            
+            # Add generic resources to fill up to 2 minimum
+            for i, resource in enumerate(generic_resources):
+                if len(resources) < 2:
+                    resources.append(resource)
         
         return resources
-
+    
     def _ensure_minimum_milestones(self, roadmap: Dict[str, Any]) -> Dict[str, Any]:
         """Ensure there are at least 10 milestones by deriving from phases/topics if needed"""
         try:

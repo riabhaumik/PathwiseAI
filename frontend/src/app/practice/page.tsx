@@ -551,7 +551,12 @@ function PracticePageInner() {
     const fetchChallengingProblems = async () => {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
-        const response = await fetch(`${baseUrl}/api/interview_prep`)
+        // Try both endpoints to ensure compatibility
+        let response = await fetch(`${baseUrl}/api/challenging-problems`)
+        
+        if (!response.ok) {
+          response = await fetch(`${baseUrl}/api/interview_prep`)
+        }
         
         if (response.ok) {
           const data = await response.json()
@@ -563,6 +568,8 @@ function PracticePageInner() {
               setSelectedProblemCategory(categoryKeys[0])
             }
           }
+        } else {
+          console.error('Failed to fetch challenging problems:', response.status)
         }
       } catch (error) {
         console.error('Error fetching challenging problems data:', error)
