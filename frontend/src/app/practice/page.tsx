@@ -6,7 +6,9 @@ import { Suspense } from 'react'
 import { 
   Brain, BookOpen, Target, TrendingUp, Users, Award, ArrowRight, 
   Code, Database, Cpu, Globe, Zap, Heart, Share2, Eye, Clock,
-  Play, CheckCircle, XCircle, Timer, Star
+  Play, CheckCircle, XCircle, Timer, Star, Calculator, BarChart3,
+  Lightbulb, MessageSquare, Settings, Rocket, Shield, 
+  Layers, GitBranch, Cloud, Smartphone, Gamepad2
 } from 'lucide-react'
 import Navigation from '@/components/Navigation'
 
@@ -21,6 +23,9 @@ interface PracticeProblem {
   completed: boolean
   code?: string
   solution?: string
+  careers?: string[]
+  language?: string
+  testcases?: any[]
 }
 
 interface PracticeCategory {
@@ -45,6 +50,7 @@ function PracticePageInner() {
   const [showSolution, setShowSolution] = useState(false)
   const [timeLeft, setTimeLeft] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [showInterviewPrep, setShowInterviewPrep] = useState(false)
 
   const [categories, setCategories] = useState<PracticeCategory[]>([])
   const [mathRefs, setMathRefs] = useState<{ level: string, links: { title: string, url: string }[] }[]>([])
@@ -77,7 +83,7 @@ function PracticePageInner() {
             id: c.id,
             name: c.name,
             description: c.description,
-            icon: c.id === 'coding' ? Code : c.id === 'system-design' ? Database : Users,
+            icon: getCategoryIcon(c.id),
             problems: c.problems || [],
             totalProblems: c.totalProblems || (c.problems || []).length,
             completedProblems: c.completedProblems || 0,
@@ -91,7 +97,7 @@ function PracticePageInner() {
         }
         
         // Fallback to comprehensive practice problems
-        console.log('Using fallback practice problems...')
+        console.log('Using enhanced fallback practice problems...')
         const fallbackCategories: PracticeCategory[] = [
           {
             id: 'coding',
@@ -109,7 +115,8 @@ function PracticePageInner() {
                 points: 100,
                 completed: false,
                 code: 'def two_sum(nums, target):\n    # Your solution here\n    pass',
-                solution: 'def two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []'
+                solution: 'def two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []',
+                careers: ['Software Engineer', 'Data Scientist', 'AI Engineer']
               },
               {
                 id: 'reverse-string',
@@ -121,7 +128,8 @@ function PracticePageInner() {
                 points: 80,
                 completed: false,
                 code: 'def reverse_string(s):\n    # Your solution here\n    pass',
-                solution: 'def reverse_string(s):\n    left, right = 0, len(s) - 1\n    while left < right:\n        s[left], s[right] = s[right], s[left]\n        left += 1\n        right -= 1'
+                solution: 'def reverse_string(s):\n    left, right = 0, len(s) - 1\n    while left < right:\n        s[left], s[right] = s[right], s[left]\n        left += 1\n        right -= 1',
+                careers: ['Software Engineer', 'DevOps Engineer']
               },
               {
                 id: 'valid-palindrome',
@@ -133,7 +141,8 @@ function PracticePageInner() {
                 points: 90,
                 completed: false,
                 code: 'def is_palindrome(s):\n    # Your solution here\n    pass',
-                solution: 'def is_palindrome(s):\n    s = "".join(c.lower() for c in s if c.isalnum())\n    return s == s[::-1]'
+                solution: 'def is_palindrome(s):\n    s = "".join(c.lower() for c in s if c.isalnum())\n    return s == s[::-1]',
+                careers: ['Software Engineer', 'Data Scientist']
               },
               {
                 id: 'binary-search',
@@ -145,7 +154,8 @@ function PracticePageInner() {
                 points: 150,
                 completed: false,
                 code: 'def binary_search(nums, target):\n    # Your solution here\n    pass',
-                solution: 'def binary_search(nums, target):\n    left, right = 0, len(nums) - 1\n    while left <= right:\n        mid = (left + right) // 2\n        if nums[mid] == target:\n            return mid\n        elif nums[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    return -1'
+                solution: 'def binary_search(nums, target):\n    left, right = 0, len(nums) - 1\n    while left <= right:\n        mid = (left + right) // 2\n        if nums[mid] == target:\n            return mid\n        elif nums[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    return -1',
+                careers: ['Software Engineer', 'AI Engineer', 'Data Scientist']
               },
               {
                 id: 'linked-list-cycle',
@@ -157,10 +167,37 @@ function PracticePageInner() {
                 points: 180,
                 completed: false,
                 code: 'def has_cycle(head):\n    # Your solution here\n    pass',
-                solution: 'def has_cycle(head):\n    if not head or not head.next:\n        return False\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n        if slow == fast:\n            return True\n    return False'
+                solution: 'def has_cycle(head):\n    if not head or not head.next:\n        return False\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n        if slow == fast:\n            return True\n    return False',
+                careers: ['Software Engineer', 'DevOps Engineer']
+              },
+              {
+                id: 'merge-sorted-arrays',
+                title: 'Merge Sorted Arrays',
+                description: 'Merge two sorted arrays into one sorted array efficiently.',
+                difficulty: 'Medium',
+                category: 'Arrays',
+                timeLimit: 20,
+                points: 150,
+                completed: false,
+                code: 'def merge(nums1, m, nums2, n):\n    # Your solution here\n    pass',
+                solution: 'def merge(nums1, m, nums2, n):\n    i, j, k = m - 1, n - 1, m + n - 1\n    while j >= 0:\n        if i >= 0 and nums1[i] > nums2[j]:\n            nums1[k] = nums1[i]\n            i -= 1\n        else:\n            nums1[k] = nums2[j]\n            j -= 1\n        k -= 1',
+                careers: ['Software Engineer', 'Data Scientist']
+              },
+              {
+                id: 'max-subarray',
+                title: 'Maximum Subarray (Kadane\'s Algorithm)',
+                description: 'Find the contiguous subarray with the largest sum and return its sum.',
+                difficulty: 'Medium',
+                category: 'Dynamic Programming',
+                timeLimit: 30,
+                points: 200,
+                completed: false,
+                code: 'def max_subarray(nums):\n    # Your solution here\n    pass',
+                solution: 'def max_subarray(nums):\n    max_sum = current_sum = nums[0]\n    for num in nums[1:]:\n        current_sum = max(num, current_sum + num)\n        max_sum = max(max_sum, current_sum)\n    return max_sum',
+                careers: ['Software Engineer', 'AI Engineer', 'Data Scientist']
               }
             ],
-            totalProblems: 5,
+            totalProblems: 7,
             completedProblems: 0
           },
           {
@@ -172,29 +209,53 @@ function PracticePageInner() {
               {
                 id: 'url-shortener',
                 title: 'Design URL Shortener',
-                description: 'Design a URL shortening service like TinyURL or Bitly.',
+                description: 'Design a URL shortening service like TinyURL or Bitly. Consider scalability, storage, and URL generation.',
                 difficulty: 'Medium',
                 category: 'System Design',
                 timeLimit: 45,
                 points: 300,
                 completed: false,
-                code: '',
-                solution: 'Key components:\n1. URL shortening algorithm (hash-based)\n2. Database for URL mappings\n3. Rate limiting\n4. Analytics tracking\n5. Caching layer (Redis)\n6. Load balancer\n7. CDN for global distribution'
+                solution: 'Key components:\n1. URL shortening algorithm (hash-based)\n2. Database for URL mappings\n3. Rate limiting\n4. Analytics tracking\n5. Caching layer (Redis)\n6. Load balancer\n7. CDN for global distribution',
+                careers: ['Software Engineer', 'DevOps Engineer', 'System Architect']
               },
               {
                 id: 'chat-system',
                 title: 'Design Chat System',
-                description: 'Design a real-time chat system like WhatsApp or Slack.',
+                description: 'Design a real-time chat system like WhatsApp or Slack. Consider message delivery, online presence, and push notifications.',
                 difficulty: 'Hard',
                 category: 'System Design',
                 timeLimit: 60,
                 points: 400,
                 completed: false,
-                code: '',
-                solution: 'Key components:\n1. WebSocket connections for real-time\n2. Message queue (Kafka/RabbitMQ)\n3. Database for message history\n4. Push notifications\n5. File sharing service\n6. User presence tracking\n7. Message encryption'
+                solution: 'Key components:\n1. WebSocket connections for real-time\n2. Message queue (Kafka/RabbitMQ)\n3. Database for message history\n4. Push notifications\n5. File sharing service\n6. User presence tracking\n7. Message encryption',
+                careers: ['Software Engineer', 'DevOps Engineer', 'System Architect']
+              },
+              {
+                id: 'recommendation-system',
+                title: 'Design Recommendation System',
+                description: 'Design a recommendation system for an e-commerce platform. Discuss collaborative filtering, content-based filtering, and scalability.',
+                difficulty: 'Hard',
+                category: 'System Design',
+                timeLimit: 50,
+                points: 350,
+                completed: false,
+                solution: 'Key components:\n1. Data collection and preprocessing\n2. Feature engineering\n3. Model training pipeline\n4. Real-time serving layer\n5. A/B testing framework\n6. Monitoring and feedback loop\n7. Scalable infrastructure',
+                careers: ['Data Scientist', 'AI Engineer', 'Software Engineer', 'ML Engineer']
+              },
+              {
+                id: 'data-pipeline',
+                title: 'Design Data Processing Pipeline',
+                description: 'Design a real-time data processing pipeline for analytics. Consider data ingestion, processing, storage, and monitoring.',
+                difficulty: 'Medium',
+                category: 'System Design',
+                timeLimit: 40,
+                points: 250,
+                completed: false,
+                solution: 'Key components:\n1. Data ingestion (Kafka/Pulsar)\n2. Stream processing (Spark/Flink)\n3. Data storage (Data Lake/Warehouse)\n4. Real-time analytics\n5. Monitoring and alerting\n6. Data quality checks\n7. Backup and recovery',
+                careers: ['Data Engineer', 'DevOps Engineer', 'Data Scientist']
               }
             ],
-            totalProblems: 2,
+            totalProblems: 4,
             completedProblems: 0
           },
           {
@@ -212,8 +273,8 @@ function PracticePageInner() {
                 timeLimit: 30,
                 points: 200,
                 completed: false,
-                code: '',
-                solution: 'Use STAR method:\n- Situation: Describe the context\n- Task: Explain your responsibility\n- Action: Detail what you did\n- Result: Share the outcome and lessons learned'
+                solution: 'Use STAR method:\n- Situation: Describe the context\n- Task: Explain your responsibility\n- Action: Detail what you did\n- Result: Share the outcome and lessons learned',
+                careers: ['Software Engineer', 'Product Manager', 'Data Scientist', 'Team Lead']
               },
               {
                 id: 'conflict',
@@ -224,25 +285,120 @@ function PracticePageInner() {
                 timeLimit: 25,
                 points: 180,
                 completed: false,
-                code: '',
-                solution: 'Focus on:\n- Understanding the other person\'s perspective\n- Finding common ground\n- Compromising when possible\n- Learning from the experience'
+                solution: 'Focus on:\n- Understanding the other person\'s perspective\n- Finding common ground\n- Compromising when possible\n- Learning from the experience',
+                careers: ['Software Engineer', 'Product Manager', 'Data Scientist', 'DevOps Engineer']
+              },
+              {
+                id: 'technical-decision',
+                title: 'Technical Decision Making',
+                description: 'Explain a difficult technical decision you made and the trade-offs you considered.',
+                difficulty: 'Hard',
+                category: 'Behavioral',
+                timeLimit: 35,
+                points: 250,
+                completed: false,
+                solution: 'Structure your response:\n- Context and problem\n- Available options\n- Trade-offs considered\n- Decision criteria\n- Outcome and lessons',
+                careers: ['Software Engineer', 'DevOps Engineer', 'AI Engineer', 'System Architect']
+              },
+              {
+                id: 'failure-learning',
+                title: 'Failure and Learning',
+                description: 'Tell me about a time you failed and what you learned from it.',
+                difficulty: 'Medium',
+                category: 'Behavioral',
+                timeLimit: 30,
+                points: 200,
+                completed: false,
+                solution: 'Key points:\n- Honest description of failure\n- What you learned\n- How you applied lessons\n- Growth mindset\n- Future prevention',
+                careers: ['Software Engineer', 'Product Manager', 'Data Scientist', 'AI Engineer']
+              },
+              {
+                id: 'innovation',
+                title: 'Innovation and Creativity',
+                description: 'Describe a time when you had to think outside the box to solve a problem.',
+                difficulty: 'Medium',
+                category: 'Behavioral',
+                timeLimit: 25,
+                points: 180,
+                completed: false,
+                solution: 'Structure:\n- Problem description\n- Conventional approaches tried\n- Creative solution developed\n- Implementation process\n- Results and impact',
+                careers: ['Software Engineer', 'Product Manager', 'Data Scientist', 'AI Engineer', 'Innovation Lead']
               }
             ],
-            totalProblems: 2,
+            totalProblems: 5,
+            completedProblems: 0
+          },
+          {
+            id: 'mathematics',
+            name: 'Mathematics & Statistics',
+            description: 'Mathematical concepts essential for STEM careers',
+            icon: Calculator,
+            problems: [
+              {
+                id: 'linear-algebra',
+                title: 'Matrix Operations',
+                description: 'Implement matrix multiplication and verify dimension compatibility.',
+                difficulty: 'Medium',
+                category: 'Linear Algebra',
+                timeLimit: 25,
+                points: 200,
+                completed: false,
+                solution: 'Key concepts:\n- Matrix dimensions (m×n × n×p = m×p)\n- Element-wise multiplication and summation\n- Time complexity: O(mnp)\n- Space complexity: O(mp)',
+                careers: ['Data Scientist', 'AI Engineer', 'ML Engineer', 'Quantitative Analyst']
+              },
+              {
+                id: 'statistics',
+                title: 'Hypothesis Testing',
+                description: 'Design and conduct a t-test to determine if two sample means are significantly different.',
+                difficulty: 'Medium',
+                category: 'Statistics',
+                timeLimit: 30,
+                points: 250,
+                completed: false,
+                solution: 'Steps:\n1. State null and alternative hypotheses\n2. Choose significance level (α)\n3. Calculate test statistic\n4. Determine critical value\n5. Make decision\n6. Interpret results',
+                careers: ['Data Scientist', 'Product Manager', 'Research Analyst', 'ML Engineer']
+              },
+              {
+                id: 'calculus',
+                title: 'Gradient Descent',
+                description: 'Implement gradient descent algorithm to minimize a quadratic function.',
+                difficulty: 'Hard',
+                category: 'Calculus & Optimization',
+                timeLimit: 35,
+                points: 300,
+                completed: false,
+                solution: 'Algorithm:\n1. Initialize parameters\n2. Calculate gradients\n3. Update parameters: θ = θ - α∇J(θ)\n4. Repeat until convergence\n5. Monitor learning rate',
+                careers: ['AI Engineer', 'Data Scientist', 'ML Engineer', 'Research Scientist']
+              },
+              {
+                id: 'probability',
+                title: 'Bayes\' Theorem',
+                description: 'Apply Bayes\' theorem to solve a real-world classification problem.',
+                difficulty: 'Medium',
+                category: 'Probability',
+                timeLimit: 20,
+                points: 200,
+                completed: false,
+                solution: 'Formula: P(A|B) = P(B|A)P(A)/P(B)\n- Prior probability P(A)\n- Likelihood P(B|A)\n- Evidence P(B)\n- Posterior probability P(A|B)',
+                careers: ['Data Scientist', 'AI Engineer', 'ML Engineer', 'Quantitative Analyst']
+              }
+            ],
+            totalProblems: 4,
             completedProblems: 0
           }
         ]
         
         setCategories(fallbackCategories)
         
-        // Add targeted math references per level
+        // Enhanced math references per level
         setMathRefs([
           {
             level: 'Beginner',
             links: [
               { title: 'Khan Academy Algebra I', url: 'https://www.khanacademy.org/math/algebra' },
               { title: 'Coursera: Precalculus', url: 'https://www.coursera.org/learn/precalculus' },
-              { title: 'edX: College Algebra', url: 'https://www.edx.org/course/college-algebra' }
+              { title: 'edX: College Algebra', url: 'https://www.edx.org/course/college-algebra' },
+              { title: 'MIT OCW: 18.01 Calculus', url: 'https://ocw.mit.edu/courses/mathematics/18-01sc-single-variable-calculus-fall-2010/' }
             ]
           },
           {
@@ -250,7 +406,8 @@ function PracticePageInner() {
             links: [
               { title: 'MIT OCW: 18.06 Linear Algebra', url: 'https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/' },
               { title: 'Khan: Probability & Statistics', url: 'https://www.khanacademy.org/math/statistics-probability' },
-              { title: 'Coursera: Calculus I', url: 'https://www.coursera.org/learn/calculus1' }
+              { title: 'Coursera: Calculus I', url: 'https://www.coursera.org/learn/calculus1' },
+              { title: 'Stanford: CS229 Machine Learning', url: 'https://cs229.stanford.edu/' }
             ]
           },
           {
@@ -258,7 +415,8 @@ function PracticePageInner() {
             links: [
               { title: 'edX: Probability (MITx 6.431x)', url: 'https://www.edx.org/course/introduction-to-probability' },
               { title: 'Stanford: Convex Optimization', url: 'https://web.stanford.edu/~boyd/cvxbook/' },
-              { title: '3Blue1Brown: Linear Algebra', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab' }
+              { title: '3Blue1Brown: Linear Algebra', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab' },
+              { title: 'MIT: 6.042 Discrete Mathematics', url: 'https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/' }
             ]
           }
         ])
@@ -298,6 +456,16 @@ function PracticePageInner() {
     
     fetchProblems()
   }, [careerParam])
+
+  const getCategoryIcon = (categoryId: string) => {
+    const iconMap: { [key: string]: any } = {
+      'coding': Code,
+      'system-design': Database,
+      'behavioral': Users,
+      'mathematics': Calculator
+    }
+    return iconMap[categoryId] || Code
+  }
 
   const startProblem = (problem: PracticeProblem) => {
     setCurrentProblem(problem)
@@ -372,16 +540,130 @@ function PracticePageInner() {
                 Practicing for: {decodeURIComponent(careerParam)}
               </div>
             )}
+            
+            {/* Interview Prep Toggle */}
+            <div className="mt-6">
+              <button
+                onClick={() => setShowInterviewPrep(!showInterviewPrep)}
+                className="inline-flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors"
+              >
+                <MessageSquare className="h-5 w-5" />
+                {showInterviewPrep ? 'Hide' : 'Show'} Interview Prep Guide
+              </button>
+            </div>
           </div>
         </div>
       </section>
+
+      {/* Interview Prep Section */}
+      {showInterviewPrep && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+              🎯 Interview Preparation Guide
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Technical Preparation */}
+              <div className="bg-blue-50 dark:bg-blue-900/30 p-6 rounded-lg">
+                <div className="flex items-center mb-4">
+                  <Code className="h-8 w-8 text-blue-600 mr-3" />
+                  <h3 className="text-xl font-semibold text-blue-800 dark:text-blue-200">Technical Skills</h3>
+                </div>
+                <ul className="space-y-2 text-blue-700 dark:text-blue-300">
+                  <li>• Practice coding problems daily</li>
+                  <li>• Review data structures & algorithms</li>
+                  <li>• Learn system design patterns</li>
+                  <li>• Master your programming language</li>
+                  <li>• Build portfolio projects</li>
+                </ul>
+              </div>
+
+              {/* Behavioral Preparation */}
+              <div className="bg-green-50 dark:bg-green-900/30 p-6 rounded-lg">
+                <div className="flex items-center mb-4">
+                  <Users className="h-8 w-8 text-green-600 mr-3" />
+                  <h3 className="text-xl font-semibold text-green-800 dark:text-green-200">Behavioral Questions</h3>
+                </div>
+                <ul className="space-y-2 text-green-700 dark:text-green-300">
+                  <li>• Use STAR method (Situation, Task, Action, Result)</li>
+                  <li>• Prepare leadership stories</li>
+                  <li>• Practice conflict resolution examples</li>
+                  <li>• Show growth mindset</li>
+                  <li>• Demonstrate teamwork skills</li>
+                </ul>
+              </div>
+
+              {/* Company Research */}
+              <div className="bg-purple-50 dark:bg-purple-900/30 p-6 rounded-lg">
+                <div className="flex items-center mb-4">
+                  <Globe className="h-8 w-8 text-purple-600 mr-3" />
+                  <h3 className="text-xl font-semibold text-purple-800 dark:text-purple-200">Company Research</h3>
+                </div>
+                <ul className="space-y-2 text-purple-700 dark:text-purple-300">
+                  <li>• Research company mission & values</li>
+                  <li>• Understand products & services</li>
+                  <li>• Study recent news & developments</li>
+                  <li>• Learn about company culture</li>
+                  <li>• Prepare thoughtful questions</li>
+                </ul>
+              </div>
+
+              {/* Mock Interviews */}
+              <div className="bg-orange-50 dark:bg-orange-900/30 p-6 rounded-lg">
+                <div className="flex items-center mb-4">
+                  <MessageSquare className="h-8 w-8 text-orange-600 mr-3" />
+                  <h3 className="text-xl font-semibold text-orange-800 dark:text-orange-200">Mock Interviews</h3>
+                </div>
+                <ul className="space-y-2 text-orange-700 dark:text-orange-300">
+                  <li>• Practice with peers or mentors</li>
+                  <li>• Use platforms like Pramp</li>
+                  <li>• Record and review yourself</li>
+                  <li>• Get feedback on communication</li>
+                  <li>• Build confidence gradually</li>
+                </ul>
+              </div>
+
+              {/* Technical Deep Dive */}
+              <div className="bg-red-50 dark:bg-red-900/30 p-6 rounded-lg">
+                <div className="flex items-center mb-4">
+                  <Settings className="h-8 w-8 text-red-600 mr-3" />
+                  <h3 className="text-xl font-semibold text-red-800 dark:text-red-200">Technical Deep Dive</h3>
+                </div>
+                <ul className="space-y-2 text-red-700 dark:text-red-300">
+                  <li>• Understand your tech stack deeply</li>
+                  <li>• Know trade-offs and alternatives</li>
+                  <li>• Be ready to discuss architecture</li>
+                  <li>• Practice whiteboard coding</li>
+                  <li>• Review system design concepts</li>
+                </ul>
+              </div>
+
+              {/* Follow-up Strategy */}
+              <div className="bg-indigo-50 dark:bg-indigo-900/30 p-6 rounded-lg">
+                <div className="flex items-center mb-4">
+                  <Zap className="h-8 w-8 text-indigo-600 mr-3" />
+                  <h3 className="text-xl font-semibold text-indigo-800 dark:text-indigo-200">Follow-up Strategy</h3>
+                </div>
+                <ul className="space-y-2 text-indigo-700 dark:text-indigo-300">
+                  <li>• Send thank-you notes within 24h</li>
+                  <li>• Follow up on next steps</li>
+                  <li>• Reflect on performance</li>
+                  <li>• Identify areas for improvement</li>
+                  <li>• Stay connected with interviewers</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
 
         {!currentProblem ? (
           <div className="space-y-8">
             {/* Category Selection */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {categories.map((category) => (
                 <div
                   key={category.id}
@@ -463,6 +745,22 @@ function PracticePageInner() {
                               {problem.category}
                             </span>
                           </div>
+                          
+                          {/* Career Tags */}
+                          {problem.careers && problem.careers.length > 0 && (
+                            <div className="mt-3">
+                              <div className="flex flex-wrap gap-2">
+                                {problem.careers.map((career, idx) => (
+                                  <span
+                                    key={idx}
+                                    className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-xs"
+                                  >
+                                    {career}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                         <button
                           onClick={() => startProblem(problem)}
@@ -498,6 +796,7 @@ function PracticePageInner() {
                 ))}
               </div>
             </div>
+            
             {/* Problem Header */}
             <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
               <div className="flex items-center justify-between mb-4">

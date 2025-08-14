@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '../../lib/auth-context'
 import { Eye, EyeOff, Loader2, Brain, ArrowLeft } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -11,8 +11,18 @@ export default function LoginForm() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
   const { login, error } = useAuth()
   const router = useRouter()
+
+  // Load saved email on component mount
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('user_email')
+    if (savedEmail) {
+      setEmail(savedEmail)
+      setRememberMe(true)
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -20,8 +30,15 @@ export default function LoginForm() {
     
     try {
       await login({ email, password })
+      // Store email for persistence if remember me is checked
+      if (rememberMe) {
+        localStorage.setItem('user_email', email)
+      } else {
+        localStorage.removeItem('user_email')
+      }
       router.push('/careers')
     } catch (error) {
+      console.error('Login error:', error)
       // Error is handled by the auth context
     } finally {
       setIsLoading(false)
@@ -111,6 +128,19 @@ export default function LoginForm() {
             </div>
 
             <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                  Remember me
+                </label>
+              </div>
               <div className="text-sm">
                 <a href="#" className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors">
                   Forgot your password?

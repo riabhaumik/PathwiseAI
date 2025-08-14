@@ -30,12 +30,16 @@ class AuthClient {
   setToken(token: string) {
     this.token = token
     localStorage.setItem('auth_token', token)
+    localStorage.setItem('auth_timestamp', Date.now().toString())
     try {
       // Optional: decode email from JWT if available for progress persistence
       const [, payload] = token.split('.')
       const decoded = JSON.parse(atob(payload))
       if (decoded?.sub) {
         localStorage.setItem('user_email', decoded.sub)
+      }
+      if (decoded?.exp) {
+        localStorage.setItem('auth_expires', decoded.exp.toString())
       }
     } catch {}
   }
@@ -50,10 +54,26 @@ class AuthClient {
   removeToken() {
     this.token = null
     localStorage.removeItem('auth_token')
+    localStorage.removeItem('auth_timestamp')
+    localStorage.removeItem('auth_expires')
+    localStorage.removeItem('user_email')
   }
 
   isAuthenticated(): boolean {
-    return !!this.getToken()
+    const token = this.getToken()
+    if (!token) return false
+    
+    // Check if token is expired
+    const expires = localStorage.getItem('auth_expires')
+    if (expires) {
+      const expiryTime = parseInt(expires) * 1000 // Convert to milliseconds
+      if (Date.now() >= expiryTime) {
+        this.removeToken()
+        return false
+      }
+    }
+    
+    return true
   }
 
   async login(credentials: LoginCredentials): Promise<{ access_token: string; user: User }> {

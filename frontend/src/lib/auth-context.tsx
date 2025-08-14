@@ -29,10 +29,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (authClient.isAuthenticated()) {
           const user = await authClient.getCurrentUser()
           setState({ user, loading: false, error: null })
+          setIsGuest(false)
         } else {
-          setState({ user: null, loading: false, error: null })
+          // Check if there's a stored user email for guest mode
+          const storedEmail = localStorage.getItem('user_email')
+          if (storedEmail) {
+            setState({ 
+              user: { id: 'guest', email: storedEmail, name: storedEmail.split('@')[0] }, 
+              loading: false, 
+              error: null 
+            })
+            setIsGuest(true)
+          } else {
+            setState({ user: null, loading: false, error: null })
+          }
         }
       } catch (error) {
+        console.error('Auth check error:', error)
         // Clear invalid token
         authClient.removeToken()
         setState({ user: null, loading: false, error: null })

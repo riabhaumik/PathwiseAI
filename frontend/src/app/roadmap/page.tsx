@@ -74,9 +74,9 @@ export default function RoadmapPage() {
       difficulty: 'Intermediate',
       duration: '2-4 years',
       description: 'Comprehensive roadmap covering programming fundamentals, data structures, algorithms, web development, and system design.',
-      skills: ['Programming', 'Data Structures', 'Algorithms', 'Web Development', 'System Design'],
-      phases: 5,
-      resources: 25,
+      skills: ['Programming', 'Data Structures', 'Algorithms', 'Web Development', 'System Design', 'Version Control', 'Testing', 'CI/CD'],
+      phases: 6,
+      resources: 35,
       icon: '💻'
     },
     {
@@ -85,9 +85,9 @@ export default function RoadmapPage() {
       difficulty: 'Advanced',
       duration: '3-5 years',
       description: 'Complete learning path from mathematics and statistics to machine learning, deep learning, and production deployment.',
-      skills: ['Mathematics', 'Statistics', 'Programming', 'Machine Learning', 'MLOps'],
-      phases: 6,
-      resources: 30,
+      skills: ['Mathematics', 'Statistics', 'Programming', 'Machine Learning', 'Deep Learning', 'Data Visualization', 'Big Data', 'MLOps'],
+      phases: 7,
+      resources: 40,
       icon: '📊'
     },
     {
