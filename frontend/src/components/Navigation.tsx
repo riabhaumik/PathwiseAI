@@ -1,13 +1,11 @@
 'use client'
 
-import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { Brain, Menu, X, Target, BookOpen, Briefcase, Calculator, Code, Home, Map } from 'lucide-react'
+import { Brain, Target, BookOpen, Briefcase, Calculator, Code, Home, Map } from 'lucide-react'
 import ThemeToggle from './ThemeToggle'
 import { useAuth } from '../lib/auth-context'
 
 export default function Navigation() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
   const { user } = useAuth()
@@ -25,7 +23,7 @@ export default function Navigation() {
   const isActive = (href: string) => pathname === href
 
   return (
-    <nav className="bg-white dark:bg-gray-900 shadow-lg border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 navigation-container nav-sticky">
+    <nav className="bg-white dark:bg-gray-900 shadow-lg border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo and Brand */}
@@ -43,7 +41,7 @@ export default function Navigation() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="flex items-center space-x-8">
             {navigation.map((item) => (
               <button
                 key={item.name}
@@ -60,8 +58,8 @@ export default function Navigation() {
             ))}
           </div>
 
-          {/* Right Side - Desktop */}
-          <div className="hidden md:flex items-center space-x-4">
+          {/* Right Side - Theme Toggle and Auth */}
+          <div className="flex items-center space-x-4">
             <ThemeToggle />
             {user ? (
               <div className="flex items-center space-x-3">
@@ -92,84 +90,7 @@ export default function Navigation() {
               </div>
             )}
           </div>
-
-          {/* Mobile menu button and theme toggle */}
-          <div className="md:hidden flex items-center space-x-2">
-            <ThemeToggle />
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 p-2"
-              aria-label="Toggle mobile menu"
-            >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
-          </div>
         </div>
-
-        {/* Mobile Navigation - Only show when menu is open */}
-        {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700 mobile-menu open">
-            <div className="space-y-2">
-              {navigation.map((item) => (
-                <button
-                  key={item.name}
-                  onClick={() => {
-                    router.push(item.href)
-                    setIsMenuOpen(false)
-                  }}
-                  className={`flex items-center space-x-3 w-full px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
-                    isActive(item.href)
-                      ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
-                      : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800'
-                  }`}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.name}</span>
-                </button>
-              ))}
-              
-              <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-                {user ? (
-                  <div className="space-y-2">
-                    <p className="text-sm text-gray-600 dark:text-gray-400 px-3">
-                      Welcome back!
-                    </p>
-                    <button
-                      onClick={() => {
-                        router.push('/login')
-                        setIsMenuOpen(false)
-                      }}
-                      className="w-full bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg font-medium transition-colors"
-                    >
-                      Sign Out
-                    </button>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <button
-                      onClick={() => {
-                        router.push('/login')
-                        setIsMenuOpen(false)
-                      }}
-                      className="w-full bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900 text-blue-600 dark:text-blue-400 px-3 py-2 rounded-lg font-medium border border-blue-200 dark:border-blue-800 transition-colors"
-                    >
-                      Sign In
-                    </button>
-                    <button
-                      onClick={() => {
-                        router.push('/signup')
-                        setIsMenuOpen(false)
-                      }}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-medium transition-colors"
-                    >
-                      Get Started
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </nav>
   )

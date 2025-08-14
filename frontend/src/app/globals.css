@@ -224,39 +224,4 @@ body {
 /* Theme toggle improvements */
 .theme-toggle {
   @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700;
-}
-
-/* Ensure mobile menu is properly hidden on desktop */
-@media (min-width: 768px) {
-  .md\:hidden {
-    display: none !important;
-  }
-}
-
-/* Prevent duplicate navigation elements */
-.navigation-container {
-  position: relative;
-  z-index: 50;
-}
-
-/* Ensure proper stacking context */
-.nav-sticky {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
-
-/* Fix any potential mobile menu display issues */
-.mobile-menu {
-  display: none;
-}
-
-.mobile-menu.open {
-  display: block;
-}
-
-@media (min-width: 768px) {
-  .mobile-menu {
-    display: none !important;
-  }
 } 
