@@ -668,8 +668,8 @@ class RoadmapService:
         career_lower = career_name.lower()
         resources = []
         
-        # Software Engineering resources
-        if 'software' in career_lower or 'engineer' in career_lower:
+        # Software Engineer (Computer Science)
+        if 'software' in career_lower and 'engineer' in career_lower:
             resources.extend([
                 {
                     'title': 'LeetCode - Programming Practice',
@@ -714,109 +714,114 @@ class RoadmapService:
                     'instructor': 'Donne Martin',
                     'difficulty': 'Intermediate to Advanced',
                     'tags': ['system design', 'architecture', 'scalability', 'distributed systems']
+                },
+                {
+                    'title': 'FreeCodeCamp: Full Stack Development Curriculum',
+                    'description': 'A comprehensive, free resource covering programming fundamentals, data structures, algorithms, and full-stack web development with projects.',
+                    'url': 'https://www.freecodecamp.org/learn/',
+                    'platform': 'FreeCodeCamp',
+                    'duration': 'Self-paced',
+                    'rating': '4.8',
+                    'instructor': 'FreeCodeCamp',
+                    'difficulty': 'Beginner to Advanced',
+                    'tags': ['programming', 'web development', 'full-stack', 'free']
+                },
+                {
+                    'title': 'Coursera: Introduction to Computer Science and Programming Specialization (University of London)',
+                    'description': 'Covers programming, data structures, algorithms, and system design concepts for intermediate learners.',
+                    'url': 'https://www.coursera.org/specializations/computer-science',
+                    'platform': 'Coursera',
+                    'duration': '16-24 weeks',
+                    'rating': '4.7',
+                    'instructor': 'University of London',
+                    'difficulty': 'Intermediate',
+                    'tags': ['computer science', 'programming', 'algorithms', 'university']
                 }
             ])
         
-        # Data Science resources
-        if 'data' in career_lower and 'scientist' in career_lower:
+        # Data Scientist (Data Science)
+        elif 'data' in career_lower and 'scientist' in career_lower:
             resources.extend([
                 {
-                    'title': 'Machine Learning Course by Andrew Ng',
-                    'description': 'Stanford\'s famous machine learning course',
+                    'title': 'DataCamp: Data Scientist with Python Career Track',
+                    'description': 'A complete learning path covering Python, statistics, machine learning, and deep learning with hands-on projects.',
+                    'url': 'https://www.datacamp.com/tracks/data-scientist-with-python',
+                    'platform': 'DataCamp',
+                    'duration': 'Self-paced',
+                    'rating': '4.6',
+                    'instructor': 'DataCamp',
+                    'difficulty': 'Intermediate',
+                    'tags': ['python', 'statistics', 'machine learning', 'data science']
+                },
+                {
+                    'title': 'edX: Data Science MicroMasters (UC San Diego)',
+                    'description': 'Advanced program focusing on mathematics, statistics, machine learning, and production-ready data science skills.',
+                    'url': 'https://www.edx.org/micromasters/data-science',
+                    'platform': 'edX',
+                    'duration': '1-2 years',
+                    'rating': '4.8',
+                    'instructor': 'UC San Diego',
+                    'difficulty': 'Advanced',
+                    'tags': ['data science', 'statistics', 'machine learning', 'micromasters']
+                }
+            ])
+        
+        # AI Engineer (Artificial Intelligence)
+        elif 'ai' in career_lower and 'engineer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'DeepLearning.AI: AI For Everyone',
+                    'description': 'A beginner-to-intermediate course introducing AI fundamentals, neural networks, and practical AI applications.',
+                    'url': 'https://www.deeplearning.ai/courses/ai-for-everyone/',
+                    'platform': 'DeepLearning.AI',
+                    'duration': '4 weeks',
+                    'rating': '4.8',
+                    'instructor': 'DeepLearning.AI',
+                    'difficulty': 'Beginner to Intermediate',
+                    'tags': ['AI fundamentals', 'neural networks', 'practical applications']
+                },
+                {
+                    'title': 'Coursera: Deep Learning Specialization (DeepLearning.AI)',
+                    'description': 'Advanced specialization covering neural networks, deep learning frameworks, and production AI systems.',
+                    'url': 'https://www.coursera.org/specializations/deep-learning',
+                    'platform': 'Coursera',
+                    'duration': '16 weeks',
+                    'rating': '4.8',
+                    'instructor': 'Andrew Ng',
+                    'difficulty': 'Advanced',
+                    'tags': ['deep learning', 'neural networks', 'production AI', 'frameworks']
+                }
+            ])
+
+        # Machine Learning Engineer (Machine Learning)
+        elif 'machine learning' in career_lower and 'engineer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Coursera: Machine Learning by Stanford Online',
+                    'description': 'A foundational course on ML algorithms, model development, and deployment by Andrew Ng.',
                     'url': 'https://www.coursera.org/learn/machine-learning',
                     'platform': 'Coursera',
                     'duration': '11 weeks',
                     'rating': '4.9',
                     'instructor': 'Andrew Ng',
                     'difficulty': 'Intermediate',
-                    'tags': ['machine learning', 'AI', 'statistics', 'algorithms']
+                    'tags': ['machine learning', 'algorithms', 'model development', 'deployment']
                 },
                 {
-                    'title': 'Statistics and Probability Course',
-                    'description': 'Comprehensive statistics course for data science',
-                    'url': 'https://www.khanacademy.org/math/statistics-probability',
-                    'platform': 'Khan Academy',
-                    'duration': '8-12 weeks',
+                    'title': 'Udacity: Machine Learning Engineer Nanodegree',
+                    'description': 'Focuses on advanced ML techniques, MLOps, and production-ready machine learning systems.',
+                    'url': 'https://www.udacity.com/course/machine-learning-engineer-nanodegree--nd009t',
+                    'platform': 'Udacity',
+                    'duration': '4 months',
                     'rating': '4.7',
-                    'instructor': 'Khan Academy',
-                    'difficulty': 'Beginner to Intermediate',
-                    'tags': ['statistics', 'probability', 'data analysis', 'mathematics']
-                },
-                {
-                    'title': 'Python for Data Science Handbook',
-                    'description': 'Essential Python libraries for data analysis',
-                    'url': 'https://jakevdp.github.io/PythonDataScienceHandbook/',
-                    'platform': 'GitHub',
-                    'duration': 'Self-paced',
-                    'rating': '4.8',
-                    'instructor': 'Jake VanderPlas',
-                    'difficulty': 'Intermediate',
-                    'tags': ['python', 'pandas', 'numpy', 'data analysis']
-                },
-                {
-                    'title': 'Kaggle - Data Science Competitions',
-                    'description': 'Practice data science with real-world datasets and competitions',
-                    'url': 'https://www.kaggle.com/',
-                    'platform': 'Kaggle',
-                    'duration': 'Ongoing',
-                    'rating': '4.8',
-                    'instructor': 'Community',
-                    'difficulty': 'All Levels',
-                    'tags': ['data science', 'competitions', 'datasets', 'machine learning']
-                }
-            ])
-        
-        # AI/ML Engineering resources
-        if 'ai' in career_lower or 'artificial intelligence' in career_lower or 'ml' in career_lower:
-            resources.extend([
-                {
-                    'title': 'Deep Learning Specialization',
-                    'description': 'Comprehensive deep learning course by Andrew Ng',
-                    'url': 'https://www.coursera.org/specializations/deep-learning',
-                    'platform': 'Coursera',
-                    'duration': '16 weeks',
-                    'rating': '4.8',
-                    'instructor': 'Andrew Ng',
-                    'difficulty': 'Intermediate to Advanced',
-                    'tags': ['deep learning', 'neural networks', 'AI', 'machine learning']
-                },
-                {
-                    'title': 'Fast.ai - Practical Deep Learning',
-                    'description': 'Practical deep learning for coders',
-                    'url': 'https://course.fast.ai/',
-                    'platform': 'Fast.ai',
-                    'duration': '8 weeks',
-                    'rating': '4.9',
-                    'instructor': 'Jeremy Howard',
-                    'difficulty': 'Intermediate',
-                    'tags': ['deep learning', 'practical', 'pytorch', 'computer vision']
-                },
-                {
-                    'title': '3Blue1Brown - Neural Networks',
-                    'description': 'Intuitive explanations of neural networks and deep learning',
-                    'url': 'https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi',
-                    'platform': 'YouTube',
-                    'duration': 'Self-paced',
-                    'rating': '4.9',
-                    'instructor': 'Grant Sanderson',
-                    'difficulty': 'Beginner to Intermediate',
-                    'tags': ['neural networks', 'deep learning', 'mathematics', 'visualization']
-                },
-                {
-                    'title': 'Papers With Code',
-                    'description': 'Latest machine learning research papers with code implementations',
-                    'url': 'https://paperswithcode.com/',
-                    'platform': 'Papers With Code',
-                    'duration': 'Ongoing',
-                    'rating': '4.8',
-                    'instructor': 'Research Community',
+                    'instructor': 'Udacity',
                     'difficulty': 'Advanced',
-                    'tags': ['research', 'papers', 'implementations', 'state-of-the-art']
+                    'tags': ['MLOps', 'production systems', 'advanced techniques']
                 }
             ])
         
         # Mathematics resources
-        if 'math' in career_lower or 'mathematics' in career_lower:
+        elif 'math' in career_lower or 'mathematics' in career_lower:
             resources.extend([
                 {
                     'title': 'MIT OpenCourseWare - Mathematics',
@@ -850,6 +855,465 @@ class RoadmapService:
                     'instructor': 'Grant Sanderson',
                     'difficulty': 'All Levels',
                     'tags': ['mathematics', 'visualization', 'intuition', 'concepts']
+                }
+            ])
+
+        # Data Engineer (Data Engineering)
+        elif 'data engineer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'DataCamp: Data Engineer with Python Track',
+                    'description': 'Covers databases, ETL processes, and big data technologies like Spark for intermediate learners.',
+                    'url': 'https://www.datacamp.com/tracks/data-engineer-with-python',
+                    'platform': 'DataCamp',
+                    'duration': 'Self-paced',
+                    'rating': '4.6',
+                    'instructor': 'DataCamp',
+                    'difficulty': 'Intermediate',
+                    'tags': ['databases', 'ETL', 'big data', 'Spark', 'Python']
+                },
+                {
+                    'title': 'Udemy: The Complete Data Engineering Course',
+                    'description': 'A practical course on data pipelines, databases, and big data tools for building robust data infrastructure.',
+                    'url': 'https://www.udemy.com/course/data-engineering/',
+                    'platform': 'Udemy',
+                    'duration': 'Self-paced',
+                    'rating': '4.5',
+                    'instructor': 'Various',
+                    'difficulty': 'Intermediate',
+                    'tags': ['data pipelines', 'databases', 'big data tools', 'infrastructure']
+                }
+            ])
+
+        # DevOps Engineer (DevOps)
+        elif 'devops' in career_lower and 'engineer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Udemy: AWS Certified DevOps Engineer – Professional',
+                    'description': 'Covers CI/CD pipelines, cloud-native development, and infrastructure automation using AWS tools.',
+                    'url': 'https://www.udemy.com/course/aws-certified-devops-engineer-professional/',
+                    'platform': 'Udemy',
+                    'duration': 'Self-paced',
+                    'rating': '4.6',
+                    'instructor': 'Various',
+                    'difficulty': 'Intermediate to Advanced',
+                    'tags': ['AWS', 'CI/CD', 'cloud-native', 'infrastructure automation']
+                },
+                {
+                    'title': 'Pluralsight: DevOps Fundamentals',
+                    'description': 'A learning path focusing on Linux, Docker, Kubernetes, and DevOps practices for intermediate learners.',
+                    'url': 'https://www.pluralsight.com/paths/devops-fundamentals',
+                    'platform': 'Pluralsight',
+                    'duration': 'Self-paced',
+                    'rating': '4.5',
+                    'instructor': 'Pluralsight',
+                    'difficulty': 'Intermediate',
+                    'tags': ['Linux', 'Docker', 'Kubernetes', 'DevOps practices']
+                }
+            ])
+
+        # Cybersecurity Engineer (Cybersecurity)
+        elif 'cybersecurity' in career_lower and 'engineer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Cybrary: Cybersecurity Fundamentals',
+                    'description': 'Covers security fundamentals, network security, and incident response for intermediate to advanced learners.',
+                    'url': 'https://www.cybrary.it/course/cybersecurity-fundamentals/',
+                    'platform': 'Cybrary',
+                    'duration': 'Self-paced',
+                    'rating': '4.6',
+                    'instructor': 'Cybrary',
+                    'difficulty': 'Intermediate to Advanced',
+                    'tags': ['security fundamentals', 'network security', 'incident response']
+                },
+                {
+                    'title': 'Coursera: IBM Cybersecurity Analyst Professional Certificate',
+                    'description': 'Focuses on ethical hacking, network security, and incident response with practical labs.',
+                    'url': 'https://www.coursera.org/professional-certificates/ibm-cybersecurity-analyst',
+                    'platform': 'Coursera',
+                    'duration': '8 months',
+                    'rating': '4.7',
+                    'instructor': 'IBM',
+                    'difficulty': 'Intermediate',
+                    'tags': ['ethical hacking', 'network security', 'incident response', 'labs']
+                }
+            ])
+
+        # Full Stack Developer (Web Development)
+        elif 'full stack' in career_lower and 'developer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'The Odin Project: Full Stack JavaScript Path',
+                    'description': 'A free, open-source curriculum covering frontend, backend, and database development with JavaScript.',
+                    'url': 'https://www.theodinproject.com/paths/full-stack-javascript',
+                    'platform': 'The Odin Project',
+                    'duration': 'Self-paced',
+                    'rating': '4.8',
+                    'instructor': 'The Odin Project',
+                    'difficulty': 'Intermediate',
+                    'tags': ['JavaScript', 'frontend', 'backend', 'database', 'free']
+                },
+                {
+                    'title': 'Coursera: Full-Stack Web Development with React Specialization (HKUST)',
+                    'description': 'Intermediate course on frontend, backend, and deployment using React and Node.js.',
+                    'url': 'https://www.coursera.org/specializations/full-stack-react',
+                    'platform': 'Coursera',
+                    'duration': '6 months',
+                    'rating': '4.6',
+                    'instructor': 'HKUST',
+                    'difficulty': 'Intermediate',
+                    'tags': ['React', 'Node.js', 'full-stack', 'deployment']
+                }
+            ])
+
+        # Mobile Developer (Mobile Development)
+        elif 'mobile' in career_lower and 'developer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Udemy: The Complete React Native + Hooks Course',
+                    'description': 'Covers cross-platform mobile development with React Native for iOS and Android.',
+                    'url': 'https://www.udemy.com/course/the-complete-react-native-and-redux-course/',
+                    'platform': 'Udemy',
+                    'duration': 'Self-paced',
+                    'rating': '4.6',
+                    'instructor': 'Various',
+                    'difficulty': 'Intermediate',
+                    'tags': ['React Native', 'cross-platform', 'iOS', 'Android', 'mobile']
+                },
+                {
+                    'title': 'Coursera: Android App Development Specialization (Vanderbilt University)',
+                    'description': 'Focuses on native Android development with Java and Kotlin for intermediate learners.',
+                    'url': 'https://www.coursera.org/specializations/android-app-development',
+                    'platform': 'Coursera',
+                    'duration': '6 months',
+                    'rating': '4.7',
+                    'instructor': 'Vanderbilt University',
+                    'difficulty': 'Intermediate',
+                    'tags': ['Android', 'Java', 'Kotlin', 'native development']
+                }
+            ])
+
+        # Cloud Architect (Cloud Computing)
+        elif 'cloud' in career_lower and 'architect' in career_lower:
+            resources.extend([
+                {
+                    'title': 'AWS Skill Builder: AWS Certified Solutions Architect – Associate',
+                    'description': 'Covers AWS cloud infrastructure design and cloud-native architecture.',
+                    'url': 'https://aws.amazon.com/training/digital/aws-certified-solutions-architect-associate/',
+                    'platform': 'AWS Skill Builder',
+                    'duration': 'Self-paced',
+                    'rating': '4.8',
+                    'instructor': 'AWS',
+                    'difficulty': 'Intermediate',
+                    'tags': ['AWS', 'cloud infrastructure', 'architecture', 'certification']
+                },
+                {
+                    'title': 'Pluralsight: Microsoft Azure Architect Design (AZ-304)',
+                    'description': 'Advanced course on Azure-based cloud architecture and multi-cloud strategies.',
+                    'url': 'https://www.pluralsight.com/paths/microsoft-azure-architect-design-az-304',
+                    'platform': 'Pluralsight',
+                    'duration': 'Self-paced',
+                    'rating': '4.7',
+                    'instructor': 'Pluralsight',
+                    'difficulty': 'Advanced',
+                    'tags': ['Azure', 'cloud architecture', 'multi-cloud', 'design']
+                }
+            ])
+
+        # Blockchain Developer (Blockchain)
+        elif 'blockchain' in career_lower and 'developer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Coursera: Blockchain Specialization (University at Buffalo)',
+                    'description': 'Covers blockchain fundamentals, smart contracts, and Solidity for Web3 development.',
+                    'url': 'https://www.coursera.org/specializations/blockchain',
+                    'platform': 'Coursera',
+                    'duration': '6 months',
+                    'rating': '4.6',
+                    'instructor': 'University at Buffalo',
+                    'difficulty': 'Intermediate',
+                    'tags': ['blockchain', 'smart contracts', 'Solidity', 'Web3']
+                },
+                {
+                    'title': 'Dapp University: Blockchain Developer Bootcamp',
+                    'description': 'A practical course on building decentralized applications with Ethereum and Solidity.',
+                    'url': 'https://www.dappuniversity.com/bootcamp',
+                    'platform': 'Dapp University',
+                    'duration': 'Self-paced',
+                    'rating': '4.7',
+                    'instructor': 'Dapp University',
+                    'difficulty': 'Intermediate',
+                    'tags': ['Ethereum', 'Solidity', 'DApps', 'decentralized applications']
+                }
+            ])
+
+        # Game Developer (Game Development)
+        elif 'game' in career_lower and 'developer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Udemy: Complete C# Unity Game Developer 2D',
+                    'description': 'Covers game development with Unity, focusing on game design and graphics programming.',
+                    'url': 'https://www.udemy.com/course/unitycourse/',
+                    'platform': 'Udemy',
+                    'duration': 'Self-paced',
+                    'rating': '4.7',
+                    'instructor': 'Various',
+                    'difficulty': 'Intermediate',
+                    'tags': ['Unity', 'C#', 'game design', '2D games', 'graphics programming']
+                },
+                {
+                    'title': 'Coursera: Game Design and Development with Unity (Michigan State University)',
+                    'description': 'Intermediate course on game engines, graphics, and game design principles.',
+                    'url': 'https://www.coursera.org/specializations/game-development',
+                    'platform': 'Coursera',
+                    'duration': '6 months',
+                    'rating': '4.6',
+                    'instructor': 'Michigan State University',
+                    'difficulty': 'Intermediate',
+                    'tags': ['game engines', 'graphics', 'game design', 'Unity']
+                }
+            ])
+
+        # Embedded Systems Engineer (Embedded Systems)
+        elif 'embedded' in career_lower and 'systems' in career_lower and 'engineer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'edX: Embedded Systems Essentials with Arm',
+                    'description': 'Covers embedded C, real-time systems, and hardware-software integration.',
+                    'url': 'https://www.edx.org/course/embedded-systems-essentials-with-arm',
+                    'platform': 'edX',
+                    'duration': 'Self-paced',
+                    'rating': '4.6',
+                    'instructor': 'Arm',
+                    'difficulty': 'Intermediate',
+                    'tags': ['embedded C', 'real-time systems', 'hardware-software integration', 'Arm']
+                },
+                {
+                    'title': 'Udemy: Mastering Microcontroller and Embedded Driver Development',
+                    'description': 'Advanced course on embedded systems and IoT device development.',
+                    'url': 'https://www.udemy.com/course/mastering-microcontroller-with-embedded-driver-development/',
+                    'platform': 'Udemy',
+                    'duration': 'Self-paced',
+                    'rating': '4.7',
+                    'instructor': 'Various',
+                    'difficulty': 'Advanced',
+                    'tags': ['microcontrollers', 'embedded systems', 'IoT', 'driver development']
+                }
+            ])
+
+        # Computer Vision Engineer (Computer Vision)
+        elif 'computer vision' in career_lower and 'engineer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Coursera: Computer Vision Basics (University at Buffalo)',
+                    'description': 'Introduces image processing and computer vision algorithms for advanced learners.',
+                    'url': 'https://www.coursera.org/learn/computer-vision-basics',
+                    'platform': 'Coursera',
+                    'duration': '4 weeks',
+                    'rating': '4.6',
+                    'instructor': 'University at Buffalo',
+                    'difficulty': 'Advanced',
+                    'tags': ['computer vision', 'image processing', 'algorithms']
+                },
+                {
+                    'title': 'DeepLearning.AI: Computer Vision with Deep Learning',
+                    'description': 'Focuses on deep learning for computer vision tasks like object detection and image segmentation.',
+                    'url': 'https://www.deeplearning.ai/courses/computer-vision-with-deep-learning/',
+                    'platform': 'DeepLearning.AI',
+                    'duration': '8 weeks',
+                    'rating': '4.8',
+                    'instructor': 'DeepLearning.AI',
+                    'difficulty': 'Advanced',
+                    'tags': ['computer vision', 'deep learning', 'object detection', 'image segmentation']
+                }
+            ])
+
+        # NLP Engineer (Natural Language Processing)
+        elif 'nlp' in career_lower and 'engineer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Coursera: Natural Language Processing Specialization (DeepLearning.AI)',
+                    'description': 'Advanced specialization on NLP, text processing, and language model development.',
+                    'url': 'https://www.coursera.org/specializations/natural-language-processing',
+                    'platform': 'Coursera',
+                    'duration': '16 weeks',
+                    'rating': '4.8',
+                    'instructor': 'DeepLearning.AI',
+                    'difficulty': 'Advanced',
+                    'tags': ['NLP', 'text processing', 'language models', 'deep learning']
+                },
+                {
+                    'title': 'Fast.ai: Practical Deep Learning for NLP',
+                    'description': 'A practical course on building NLP models with modern frameworks like Transformers.',
+                    'url': 'https://course.fast.ai/',
+                    'platform': 'Fast.ai',
+                    'duration': '8 weeks',
+                    'rating': '4.9',
+                    'instructor': 'Jeremy Howard',
+                    'difficulty': 'Intermediate',
+                    'tags': ['NLP', 'deep learning', 'Transformers', 'practical']
+                }
+            ])
+
+        # Robotics Engineer (Robotics)
+        elif 'robotics' in career_lower and 'engineer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'edX: Robotics MicroMasters (University of Pennsylvania)',
+                    'description': 'Covers robotics fundamentals, control systems, and autonomous robot development.',
+                    'url': 'https://www.edx.org/micromasters/upenn-robotics',
+                    'platform': 'edX',
+                    'duration': '1-2 years',
+                    'rating': '4.7',
+                    'instructor': 'University of Pennsylvania',
+                    'difficulty': 'Advanced',
+                    'tags': ['robotics', 'control systems', 'autonomous robots', 'micromasters']
+                },
+                {
+                    'title': 'Udemy: Robotics and ROS – Learn Robot Operating System',
+                    'description': 'Advanced course on ROS, control systems, and robotics programming.',
+                    'url': 'https://www.udemy.com/course/robotics-and-ros-learn-robot-operating-system/',
+                    'platform': 'Udemy',
+                    'duration': 'Self-paced',
+                    'rating': '4.6',
+                    'instructor': 'Various',
+                    'difficulty': 'Advanced',
+                    'tags': ['ROS', 'control systems', 'robotics programming']
+                }
+            ])
+
+        # Quantum Computing Engineer (Quantum Computing)
+        elif 'quantum' in career_lower and 'computing' in career_lower and 'engineer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Qiskit: Learn Quantum Computation Using Qiskit',
+                    'description': 'Free resource covering quantum mechanics, quantum algorithms, and Qiskit programming.',
+                    'url': 'https://qiskit.org/learn/',
+                    'platform': 'Qiskit',
+                    'duration': 'Self-paced',
+                    'rating': '4.7',
+                    'instructor': 'IBM',
+                    'difficulty': 'Intermediate',
+                    'tags': ['quantum computing', 'Qiskit', 'quantum algorithms', 'free']
+                },
+                {
+                    'title': 'edX: Quantum Computing Fundamentals (MIT)',
+                    'description': 'Advanced course on quantum mechanics, linear algebra, and quantum software development.',
+                    'url': 'https://www.edx.org/course/quantum-computing-fundamentals',
+                    'platform': 'edX',
+                    'duration': '12 weeks',
+                    'rating': '4.8',
+                    'instructor': 'MIT',
+                    'difficulty': 'Advanced',
+                    'tags': ['quantum mechanics', 'linear algebra', 'quantum software', 'MIT']
+                }
+            ])
+
+        # Bioinformatics Engineer (Bioinformatics)
+        elif 'bioinformatics' in career_lower and 'engineer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Coursera: Bioinformatics Specialization (UC San Diego)',
+                    'description': 'Covers biological data analysis, computational biology, and bioinformatics tools.',
+                    'url': 'https://www.coursera.org/specializations/bioinformatics',
+                    'platform': 'Coursera',
+                    'duration': '8 months',
+                    'rating': '4.6',
+                    'instructor': 'UC San Diego',
+                    'difficulty': 'Advanced',
+                    'tags': ['bioinformatics', 'biological data', 'computational biology', 'tools']
+                },
+                {
+                    'title': 'edX: Introduction to Computational Biology and Bioinformatics',
+                    'description': 'Focuses on programming and data analysis for biological applications.',
+                    'url': 'https://www.edx.org/course/introduction-to-computational-biology-and-bioinformatics',
+                    'platform': 'edX',
+                    'duration': '8 weeks',
+                    'rating': '4.5',
+                    'instructor': 'Various',
+                    'difficulty': 'Intermediate',
+                    'tags': ['computational biology', 'programming', 'data analysis', 'biology']
+                }
+            ])
+
+        # Financial Technology Engineer (FinTech)
+        elif 'financial technology' in career_lower and 'engineer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'Coursera: FinTech Foundations and Overview (HKUST)',
+                    'description': 'Covers financial systems, algorithmic trading, and fintech application development.',
+                    'url': 'https://www.coursera.org/learn/fintech-foundations',
+                    'platform': 'Coursera',
+                    'duration': '4 weeks',
+                    'rating': '4.6',
+                    'instructor': 'HKUST',
+                    'difficulty': 'Intermediate',
+                    'tags': ['fintech', 'financial systems', 'algorithmic trading', 'applications']
+                },
+                {
+                    'title': 'Udemy: Algorithmic Trading & Quantitative Analysis Using Python',
+                    'description': 'Advanced course on building fintech applications and algorithmic trading systems.',
+                    'url': 'https://www.udemy.com/course/algorithmic-trading-quantitative-analysis-using-python/',
+                    'platform': 'Udemy',
+                    'duration': 'Self-paced',
+                    'rating': '4.7',
+                    'instructor': 'Various',
+                    'difficulty': 'Advanced',
+                    'tags': ['algorithmic trading', 'quantitative analysis', 'Python', 'fintech']
+                }
+            ])
+
+        # Space Systems Engineer (Aerospace)
+        elif 'space' in career_lower and 'systems' in career_lower and 'engineer' in career_lower:
+            resources.extend([
+                {
+                    'title': 'edX: Introduction to Aerospace Engineering (MIT)',
+                    'description': 'Covers spacecraft design, orbital mechanics, and systems engineering.',
+                    'url': 'https://www.edx.org/course/introduction-to-aerospace-engineering',
+                    'platform': 'edX',
+                    'duration': '16 weeks',
+                    'rating': '4.8',
+                    'instructor': 'MIT',
+                    'difficulty': 'Advanced',
+                    'tags': ['aerospace', 'spacecraft design', 'orbital mechanics', 'systems engineering']
+                },
+                {
+                    'title': 'Coursera: Spacecraft Dynamics and Control Specialization (University of Colorado Boulder)',
+                    'description': 'Advanced specialization on space mission planning and orbital mechanics.',
+                    'url': 'https://www.coursera.org/specializations/spacecraft-dynamics-control',
+                    'platform': 'Coursera',
+                    'duration': '8 months',
+                    'rating': '4.7',
+                    'instructor': 'University of Colorado Boulder',
+                    'difficulty': 'Advanced',
+                    'tags': ['spacecraft dynamics', 'control systems', 'mission planning', 'orbital mechanics']
+                }
+            ])
+        
+        # General fallback for other careers
+        else:
+            resources.extend([
+                {
+                    'title': 'Khan Academy - STEM Courses',
+                    'description': 'Free comprehensive courses in science, technology, engineering, and mathematics.',
+                    'url': 'https://www.khanacademy.org/',
+                    'platform': 'Khan Academy',
+                    'duration': 'Self-paced',
+                    'rating': '4.8',
+                    'instructor': 'Khan Academy',
+                    'difficulty': 'All Levels',
+                    'tags': ['STEM', 'free', 'comprehensive', 'all levels']
+                },
+                {
+                    'title': 'MIT OpenCourseWare',
+                    'description': 'Free access to MIT course materials across all STEM disciplines.',
+                    'url': 'https://ocw.mit.edu/',
+                    'platform': 'MIT OCW',
+                    'duration': 'Self-paced',
+                    'rating': '4.9',
+                    'instructor': 'MIT Faculty',
+                    'difficulty': 'Intermediate to Advanced',
+                    'tags': ['MIT', 'free', 'university level', 'comprehensive']
                 }
             ])
         

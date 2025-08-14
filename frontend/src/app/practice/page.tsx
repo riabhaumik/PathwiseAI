@@ -7,7 +7,7 @@ import {
   Brain, BookOpen, Target, TrendingUp, Users, Award, ArrowRight, 
   Code, Database, Cpu, Globe, Zap, Heart, Share2, Eye, Clock,
   Play, CheckCircle, XCircle, Timer, Star, Calculator, BarChart3,
-  Lightbulb, MessageSquare, Settings, Rocket, Shield, 
+  Lightbulb, Settings, Rocket, Shield, 
   Layers, GitBranch, Cloud, Smartphone, Gamepad2, ExternalLink
 } from 'lucide-react'
 import Navigation from '@/components/Navigation'
@@ -87,7 +87,7 @@ function PracticePageInner() {
   const [showSolution, setShowSolution] = useState(false)
   const [timeLeft, setTimeLeft] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [showInterviewPrep, setShowInterviewPrep] = useState(false)
+  // Always show interview prep; removed toggle
   const [interviewPrepData, setInterviewPrepData] = useState<InterviewPrepData | null>(null)
   const [selectedCareer, setSelectedCareer] = useState<string>('')
   const [selectedPrepCategory, setSelectedPrepCategory] = useState<string>('')
@@ -677,22 +677,13 @@ function PracticePageInner() {
               </div>
             )}
             
-            {/* Interview Prep Toggle */}
-            <div className="mt-6">
-              <button
-                onClick={() => setShowInterviewPrep(!showInterviewPrep)}
-                className="inline-flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-xl hover:bg-purple-700 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
-              >
-                <MessageSquare className="h-5 w-5" />
-                {showInterviewPrep ? 'Hide' : 'Show'} Interview Prep Guide
-              </button>
-            </div>
+            {/* Interview Prep is always visible now */}
           </div>
         </div>
       </section>
 
-      {/* Enhanced Interview Prep Section */}
-      {showInterviewPrep && (
+      {/* Enhanced Interview Prep Section (always shown) */}
+      {(
         <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 animate-fade-in">
           <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-8 shadow-lg transform transition-all duration-300 hover:scale-[1.02] max-w-5xl mx-auto border border-slate-200/50 dark:border-slate-700/50">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-6 text-center">
