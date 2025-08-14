@@ -1,0 +1,25 @@
+# Vercel Environment Variables Configuration
+# Copy these to your Vercel project settings under Environment Variables
+
+# Supabase Configuration (Required for authentication)
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+
+# API Configuration (Required for backend communication)
+NEXT_PUBLIC_API_URL=https://your-backend-domain.com
+NEXT_PUBLIC_BACKEND_URL=https://your-backend-domain.com
+
+# Base URL for production (Required for SEO and sitemap)
+NEXT_PUBLIC_BASE_URL=https://your-vercel-domain.vercel.app
+
+# OpenAI API Key (Optional - for AI features)
+NEXT_PUBLIC_OPENAI_API_KEY=your_openai_api_key_here
+
+# Environment
+NODE_ENV=production
+
+# Instructions:
+# 1. Go to your Vercel project dashboard
+# 2. Navigate to Settings > Environment Variables
+# 3. Add each variable above with appropriate values
+# 4. Redeploy your project

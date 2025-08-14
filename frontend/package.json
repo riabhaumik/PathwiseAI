@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:vercel": "next build",
     "start": "next start",
     "lint": "next lint",
     "build:css": "tailwindcss -i ./src/app/globals.css -o ./src/app/output.css --watch=false",
